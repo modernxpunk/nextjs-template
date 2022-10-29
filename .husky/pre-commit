@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+if [[ -t 1 && -t 2 ]]; then
+	exec >/dev/tty 2>&1;
+	npx lint-staged
+else
+	pnpm run lint
+	pnpm run format
+fi

@@ -1,0 +1,8 @@
+{
+	"plugins": ["prettier"],
+	"extends": ["eslint:recommended", "prettier", "next/core-web-vitals"],
+	"rules": {
+		"prettier/prettier": "error",
+		"no-unused-vars": "warn"
+	}
+}
