@@ -1,38 +1,31 @@
-import { cva, VariantProps } from "class-variance-authority";
-import { ReactNode } from "react";
+import React from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 
-const buttonStyles = cva("rounded-full", {
+const button = cva("button", {
 	variants: {
 		intent: {
-			primary: "bg-slate-400",
-			secondary: "bg-slate-600",
-			error: "bg-red-500",
+			primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
+			secondary: "bg-white text-gray-800 boder-gray-400 hover:bg-gray-100",
 		},
 		size: {
-			sm: "text-sm px-2 py-1",
-			md: "text-base px-4 py-2",
-			lg: "text-lg px-6 py-4",
-		},
-		fullWidth: {
-			true: "w-full",
+			small: "text-sm py-1 px-2",
+			medium: "text-base py-2 px-4",
 		},
 	},
+	compoundVariants: [{ intent: "primary", size: "medium", class: "uppercase" }],
 	defaultVariants: {
 		intent: "primary",
-		size: "md",
-		fullWidth: false,
+		size: "medium",
 	},
 });
 
-type ButtonStylesProps = VariantProps<typeof buttonStyles>;
+export interface ButtonProps
+	extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+		VariantProps<typeof button> {}
 
-export interface ButtonProps extends ButtonStylesProps {
-	children?: ReactNode;
-	onClick?: () => void;
-}
-
-const Button = ({ intent, size, fullWidth, ...props }: ButtonProps) => (
-	<button className={buttonStyles({ intent, size, fullWidth })} {...props} />
-);
-
-export default Button;
+export const Button: React.FC<ButtonProps> = ({
+	className,
+	intent,
+	size,
+	...props
+}) => <button className={button({ intent, size, className })} {...props} />;
