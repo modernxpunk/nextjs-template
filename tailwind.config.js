@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+const { fontFamily } = require("tailwindcss/defaultTheme");
+
 module.exports = {
 	content: ["./src/**/*.{js,ts,jsx,tsx}"],
 	future: {
@@ -22,7 +25,11 @@ module.exports = {
 			xl: "1280px",
 			"2xl": "1536px",
 		},
-		extend: {},
+		extend: {
+			fontFamily: {
+				sans: ["var(--font-roboto)", ...fontFamily.sans],
+			},
+		},
 	},
 	variants: {
 		extend: {},

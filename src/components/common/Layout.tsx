@@ -1,4 +1,6 @@
+import { cx } from "class-variance-authority";
 import { ReactNode } from "react";
+import { roboto } from "src/pages/_app";
 
 type Props = {
 	children: ReactNode;
@@ -6,7 +8,13 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
 	return (
-		<div className="flex flex-col min-h-screen">
+		<div
+			className={cx(
+				"flex flex-col min-h-screen overflow-hidden",
+				roboto.variable,
+				"font-sans"
+			)}
+		>
 			<header>
 				<nav></nav>
 			</header>
