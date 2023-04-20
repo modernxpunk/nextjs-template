@@ -21,6 +21,7 @@ const modal_body = cva("px-4 py-2 animate-appear", {
 		intent: "primary",
 	},
 });
+
 export interface ModalProps
 	extends React.ButtonHTMLAttributes<HTMLDivElement>,
 		VariantProps<typeof modal> {

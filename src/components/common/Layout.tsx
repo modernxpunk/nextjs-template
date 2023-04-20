@@ -1,6 +1,6 @@
 import { cx } from "class-variance-authority";
 import { ReactNode } from "react";
-import { monserrat, roboto } from "src/pages/_app";
+import { fontsVariables } from "src/utils/config";
 
 type Props = {
 	children: ReactNode;
@@ -11,8 +11,7 @@ const Layout = ({ children }: Props) => {
 		<div
 			className={cx(
 				"flex flex-col min-h-screen overflow-hidden",
-				roboto.variable,
-				monserrat.variable,
+				fontsVariables.map((fontVariable: string) => fontVariable),
 				"font-sans"
 			)}
 		>

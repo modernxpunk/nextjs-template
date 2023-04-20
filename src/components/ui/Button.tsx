@@ -1,7 +1,7 @@
 import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 
-const button = cva("", {
+const button = cva("rounded-lg", {
 	variants: {
 		intent: {
 			primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
