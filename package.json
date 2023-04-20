@@ -6,6 +6,7 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
+		"export": "next export",
 		"lint": "next lint --ignore-path .gitignore --cache",
 		"format": "prettier --ignore-path .gitignore \"src/**/*.{js,ts,jsx,tsx}\" --write --cache",
 		"prepare": "husky install"
