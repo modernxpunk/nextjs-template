@@ -1,6 +1,4 @@
-import { cx } from "class-variance-authority";
 import { ReactNode } from "react";
-import { fontsVariables } from "src/utils/config";
 
 type Props = {
 	children: ReactNode;
@@ -8,13 +6,7 @@ type Props = {
 
 const Layout = ({ children }: Props) => {
 	return (
-		<div
-			className={cx(
-				"flex flex-col min-h-screen overflow-hidden",
-				fontsVariables.map((fontVariable: string) => fontVariable),
-				"font-sans"
-			)}
-		>
+		<div className="flex flex-col min-h-screen overflow-hidden font-sans">
 			<header>
 				<nav></nav>
 			</header>
