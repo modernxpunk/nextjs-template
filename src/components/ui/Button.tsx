@@ -1,21 +1,27 @@
 import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { twMerge } from "tailwind-merge";
 
 const button = cva("rounded-lg", {
 	variants: {
 		intent: {
-			primary: "bg-blue-500 text-white border-transparent hover:bg-blue-600",
-			secondary: "bg-white text-gray-800 boder-gray-400 hover:bg-gray-100",
+			primary: "bg-primary text-white border-transparent hover:bg-primary-600",
+			secondary:
+				"bg-secondary text-white boder-secondary-400 hover:bg-secondary-100",
 		},
 		size: {
 			small: "text-sm py-1 px-2",
 			medium: "text-base py-2 px-4",
+		},
+		full: {
+			true: "w-full",
 		},
 	},
 	compoundVariants: [{ intent: "primary", size: "medium", class: "uppercase" }],
 	defaultVariants: {
 		intent: "primary",
 		size: "medium",
+		full: false,
 	},
 });
 
@@ -27,5 +33,14 @@ export const Button: React.FC<ButtonProps> = ({
 	className,
 	intent,
 	size,
+	full,
+	children,
 	...props
-}) => <button className={button({ intent, size, className })} {...props} />;
+}) => (
+	<button
+		className={twMerge(button({ intent, size, full, className }))}
+		{...props}
+	>
+		{children}
+	</button>
+);
