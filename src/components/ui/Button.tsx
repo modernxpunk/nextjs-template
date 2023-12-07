@@ -2,12 +2,11 @@ import React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
-const button = cva("rounded-lg", {
+const buttonStyles = cva("rounded-lg text-white", {
 	variants: {
 		intent: {
-			primary: "bg-primary text-white border-transparent hover:bg-primary-600",
-			secondary:
-				"bg-secondary text-white boder-secondary-400 hover:bg-secondary-100",
+			primary: "bg-primary border-transparent hover:bg-primary-600",
+			secondary: "bg-secondary boder-secondary-400 hover:bg-secondary-100",
 		},
 		size: {
 			small: "text-sm py-1 px-2",
@@ -25,9 +24,13 @@ const button = cva("rounded-lg", {
 	},
 });
 
+type ButtonStylesProps = VariantProps<typeof buttonStyles>;
 export interface ButtonProps
 	extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-		VariantProps<typeof button> {}
+		ButtonStylesProps {
+	full?: boolean;
+	intent?: NonNullable<ButtonStylesProps["intent"]>;
+}
 
 export const Button: React.FC<ButtonProps> = ({
 	className,
@@ -38,7 +41,7 @@ export const Button: React.FC<ButtonProps> = ({
 	...props
 }) => (
 	<button
-		className={twMerge(button({ intent, size, full, className }))}
+		className={twMerge(buttonStyles({ intent, size, full, className }))}
 		{...props}
 	>
 		{children}
