@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ButtonHTMLAttributes, FC } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { twMerge } from "tailwind-merge";
 
@@ -26,13 +26,14 @@ const buttonStyles = cva("rounded-lg text-white", {
 
 type ButtonStylesProps = VariantProps<typeof buttonStyles>;
 export interface ButtonProps
-	extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+	extends ButtonHTMLAttributes<HTMLButtonElement>,
 		ButtonStylesProps {
 	full?: boolean;
 	intent?: NonNullable<ButtonStylesProps["intent"]>;
+	size?: NonNullable<ButtonStylesProps["size"]>;
 }
 
-export const Button: React.FC<ButtonProps> = ({
+export const Button: FC<ButtonProps> = ({
 	className,
 	intent,
 	size,
