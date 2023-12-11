@@ -10,6 +10,7 @@
 		"lint": "next lint --ignore-path .gitignore --cache",
 		"format": "prettier --ignore-path .gitignore \"src/**/*.{js,ts,jsx,tsx}\" --write --cache",
 		"prepare": "husky install",
+		"db:seed": "pnpx prisma db seed",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
 	},
@@ -19,13 +20,25 @@
 			"prettier --write --ignore-path .gitignore"
 		]
 	},
+	"prisma": {
+		"seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+	},
 	"dependencies": {
+		"@prisma/client": "^5.7.0",
+		"@tanstack/react-query": "^4.36.1",
+		"@trpc/client": "^10.44.1",
+		"@trpc/next": "^10.44.1",
+		"@trpc/react-query": "^10.44.1",
+		"@trpc/server": "^10.44.1",
 		"husky": "^8.0.3",
 		"next": "14.0.2",
 		"react": "18.2.0",
-		"react-dom": "18.2.0"
+		"react-dom": "18.2.0",
+		"superjson": "^2.2.1",
+		"zod": "^3.22.4"
 	},
 	"devDependencies": {
+		"@faker-js/faker": "^8.3.1",
 		"@types/node": "20.9.0",
 		"@types/react": "18.2.37",
 		"@types/react-dom": "18.2.15",
@@ -38,7 +51,9 @@
 		"lint-staged": "^15.0.2",
 		"postcss": "^8.4.31",
 		"prettier": "^3.0.3",
+		"prisma": "^5.7.0",
 		"tailwindcss": "^3.3.5",
+		"ts-node": "^10.9.2",
 		"typescript": "5.2.2"
 	}
 }

@@ -1,4 +1,5 @@
 import { AppPropsWithLayout } from "@/types/common";
+import { trpc } from "@/utils/trpc";
 import "@/styles/global.css";
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
@@ -6,4 +7,4 @@ function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 	return getLayout(<Component {...pageProps} />);
 }
 
-export default MyApp;
+export default trpc.withTRPC(MyApp);
