@@ -1,32 +1,9 @@
 import Layout from "@/components/layout";
-import { appRouter } from "@/server/routes/_app";
 import { NextPageWithLayout } from "@/types/common";
 import { trpc } from "@/utils/trpc";
-import { createServerSideHelpers } from "@trpc/react-query/server";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
-import superjson from "superjson";
 import { signOut } from "next-auth/react";
 
-export async function getServerSideProps(
-	context: GetServerSidePropsContext<{ id: string }>,
-) {
-	const helpers = createServerSideHelpers({
-		router: appRouter,
-		// @ts-ignore
-		ctx: {},
-		transformer: superjson,
-	});
-
-	await helpers.user.getAll.prefetch();
-
-	return {
-		props: {
-			trpcState: helpers.dehydrate(),
-		},
-	};
-}
-
-const Home: NextPageWithLayout = (props: any) => {
+const Home: NextPageWithLayout = () => {
 	const utils = trpc.useUtils();
 
 	const { data: users } = trpc.user.getAll.useQuery(undefined);
@@ -74,7 +51,10 @@ const Home: NextPageWithLayout = (props: any) => {
 					</tbody>
 				</table>
 			</div>
-			<button className="btn" onClick={() => signOut()}>
+			<button
+				className="btn"
+				onClick={() => signOut({ callbackUrl: "/sign-in" })}
+			>
 				sign out
 			</button>
 		</div>

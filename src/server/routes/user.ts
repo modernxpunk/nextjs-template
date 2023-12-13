@@ -5,7 +5,7 @@ import z from "zod";
 const prisma = new PrismaClient();
 
 const userRouter = router({
-	getAll: protectedProcedure.query(async (opts) => {
+	getAll: protectedProcedure.query(async () => {
 		const users = await prisma.user.findMany();
 		return users;
 	}),

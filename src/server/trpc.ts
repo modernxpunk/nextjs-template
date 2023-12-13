@@ -1,9 +1,20 @@
-import { initTRPC } from "@trpc/server";
+import { TRPCError, initTRPC } from "@trpc/server";
+import { Context } from "./context";
 
-const t = initTRPC.create();
+const t = initTRPC.context<Context>().create();
 
-const isAuthed = t.middleware(async (opts) => {
-	return opts.next();
+const isAuthed = t.middleware(({ next, ctx }) => {
+	if (!ctx.session?.user?.email) {
+		throw new TRPCError({
+			code: "UNAUTHORIZED",
+		});
+	}
+
+	return next({
+		ctx: {
+			session: ctx.session,
+		},
+	});
 });
 
 export const router = t.router;
