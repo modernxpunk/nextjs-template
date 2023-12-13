@@ -2,26 +2,26 @@ import Layout from "@/components/layout";
 import { appRouter } from "@/server/routes/_app";
 import { NextPageWithLayout } from "@/types/common";
 import { trpc } from "@/utils/trpc";
-
 import { createServerSideHelpers } from "@trpc/react-query/server";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import superjson from "superjson";
+import { signOut } from "next-auth/react";
 
 export async function getServerSideProps(
 	context: GetServerSidePropsContext<{ id: string }>,
 ) {
 	const helpers = createServerSideHelpers({
 		router: appRouter,
+		// @ts-ignore
 		ctx: {},
 		transformer: superjson,
 	});
-	const id = +(context?.params?.id as string) || 31;
-	await helpers.user.getById.prefetch({ id });
+
+	await helpers.user.getAll.prefetch();
 
 	return {
 		props: {
 			trpcState: helpers.dehydrate(),
-			id,
 		},
 	};
 }
@@ -30,9 +30,9 @@ const Home: NextPageWithLayout = (props: any) => {
 	const utils = trpc.useUtils();
 
 	const { data: users } = trpc.user.getAll.useQuery(undefined);
-	const { data: user } = trpc.user.getById.useQuery({
-		id: props.id,
-	});
+	// const { data: user } = trpc.user.getById.useQuery({
+	// 	id: props.id,
+	// });
 	const { mutate: createUser } = trpc.user.editById.useMutation({
 		onSuccess() {
 			utils.user.getAll.invalidate();
@@ -74,6 +74,9 @@ const Home: NextPageWithLayout = (props: any) => {
 					</tbody>
 				</table>
 			</div>
+			<button className="btn" onClick={() => signOut()}>
+				sign out
+			</button>
 		</div>
 	);
 };

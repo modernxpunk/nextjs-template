@@ -1,11 +1,11 @@
 import { PrismaClient } from "@prisma/client";
-import { publicProcedure, router } from "../trpc";
+import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import z from "zod";
 
 const prisma = new PrismaClient();
 
 const userRouter = router({
-	getAll: publicProcedure.query(async () => {
+	getAll: protectedProcedure.query(async (opts) => {
 		const users = await prisma.user.findMany();
 		return users;
 	}),

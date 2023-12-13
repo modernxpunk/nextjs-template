@@ -4,8 +4,6 @@ import { faker } from "@faker-js/faker";
 const prisma = new PrismaClient();
 
 async function main() {
-	await prisma.user.deleteMany();
-
 	const users = faker.helpers.multiple(
 		() => {
 			return {
