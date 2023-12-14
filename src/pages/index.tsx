@@ -10,12 +10,11 @@ const Home: NextPageWithLayout = () => {
 
 	const { data: users } = trpc.user.getAll.useQuery(undefined);
 
-	const { mutate: createUser, isPending: isPendingCreateUser } =
-		trpc.user.createUser.useMutation({
-			onSuccess() {
-				utils.user.getAll.invalidate();
-			},
-		});
+	const { mutate: createUser } = trpc.user.createUser.useMutation({
+		onSuccess() {
+			utils.user.getAll.invalidate();
+		},
+	});
 
 	const {
 		register,
@@ -31,12 +30,11 @@ const Home: NextPageWithLayout = () => {
 		reset();
 	};
 
-	const { mutate: deleteUserById, isPending: isPendingDeleteUser } =
-		trpc.user.deleteById.useMutation({
-			onSuccess() {
-				utils.user.getAll.invalidate();
-			},
-		});
+	const { mutate: deleteUserById } = trpc.user.deleteById.useMutation({
+		onSuccess() {
+			utils.user.getAll.invalidate();
+		},
+	});
 
 	return (
 		<div className="container">
@@ -61,7 +59,7 @@ const Home: NextPageWithLayout = () => {
 						<p className="text-sm text-red-400">This field is required</p>
 					)}
 				</div>
-				<button disabled={isPendingCreateUser} className="btn" type="submit">
+				<button className="btn" type="submit">
 					Submit
 				</button>
 			</form>
@@ -86,7 +84,6 @@ const Home: NextPageWithLayout = () => {
 										<td>
 											<button
 												className="btn btn-sm btn-error"
-												disabled={isPendingDeleteUser}
 												onClick={() =>
 													deleteUserById({
 														id: user.id,
