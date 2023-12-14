@@ -7,7 +7,7 @@ const SignIn: NextPageWithLayout = () => {
 		<div>
 			<button
 				className="btn"
-				onClick={() => signIn("github", { callbackUrl: "/" })}
+				onClick={() => signIn("discord", { callbackUrl: "/" })}
 			>
 				sign in
 			</button>
