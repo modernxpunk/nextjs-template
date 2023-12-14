@@ -1,5 +1,19 @@
 import { ReactNode } from "react";
-import { fontsVariables } from "@/utils/font";
+import { Montserrat, Roboto } from "next/font/google";
+
+const roboto = Roboto({
+	subsets: ["latin"],
+	variable: "--font-roboto",
+	weight: ["300", "500", "700"],
+});
+
+const monserrat = Montserrat({
+	subsets: ["latin"],
+	variable: "--font-montserrat",
+	weight: ["300", "500", "700"],
+});
+
+const fontsVariables = [roboto.variable, monserrat.variable];
 
 type Props = {
 	children: ReactNode;

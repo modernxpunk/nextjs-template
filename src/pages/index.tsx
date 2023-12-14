@@ -2,32 +2,69 @@ import Layout from "@/components/layout";
 import { NextPageWithLayout } from "@/types/common";
 import { trpc } from "@/utils/trpc";
 import { signOut } from "next-auth/react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { CreateUserSchema, createUserSchema, resolver } from "@/utils/schemas";
 
 const Home: NextPageWithLayout = () => {
 	const utils = trpc.useUtils();
 
 	const { data: users } = trpc.user.getAll.useQuery(undefined);
-	// const { data: user } = trpc.user.getById.useQuery({
-	// 	id: props.id,
-	// });
-	const { mutate: createUser } = trpc.user.editById.useMutation({
-		onSuccess() {
-			utils.user.getAll.invalidate();
-		},
+
+	const { mutate: createUser, isPending: isPendingCreateUser } =
+		trpc.user.createUser.useMutation({
+			onSuccess() {
+				utils.user.getAll.invalidate();
+			},
+		});
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+		reset,
+	} = useForm<CreateUserSchema>({
+		resolver: resolver(createUserSchema),
 	});
-	const { mutate: editUserById } = trpc.user.editById.useMutation({
-		onSuccess() {
-			utils.user.getById.invalidate();
-		},
-	});
-	const { mutate: deleteUserById } = trpc.user.deleteById.useMutation({
-		onSuccess() {
-			utils.user.getById.invalidate();
-		},
-	});
+
+	const onSubmit: SubmitHandler<CreateUserSchema> = async (data) => {
+		createUser({ user: data });
+		reset();
+	};
+
+	const { mutate: deleteUserById, isPending: isPendingDeleteUser } =
+		trpc.user.deleteById.useMutation({
+			onSuccess() {
+				utils.user.getAll.invalidate();
+			},
+		});
 
 	return (
 		<div className="container">
+			<form onSubmit={handleSubmit(onSubmit)} className="flex gap-4 mt-4">
+				<div className="flex-1">
+					<input
+						placeholder="Email"
+						className="flex-1 w-full input input-bordered"
+						{...register("email")}
+					/>
+					{errors.email && (
+						<p className="text-sm text-red-400">This field is required</p>
+					)}
+				</div>
+				<div className="flex-1">
+					<input
+						placeholder="Name"
+						className="flex-1 w-full input input-bordered"
+						{...register("name")}
+					/>
+					{errors.name && (
+						<p className="text-sm text-red-400">This field is required</p>
+					)}
+				</div>
+				<button disabled={isPendingCreateUser} className="btn" type="submit">
+					Submit
+				</button>
+			</form>
 			<div className="overflow-x-auto">
 				<table className="table">
 					<thead>
@@ -35,6 +72,7 @@ const Home: NextPageWithLayout = () => {
 							<th></th>
 							<th>Email</th>
 							<th>Username</th>
+							<th></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -45,6 +83,19 @@ const Home: NextPageWithLayout = () => {
 										<td>{user.id}</td>
 										<td>{user.email}</td>
 										<td>{user.name}</td>
+										<td>
+											<button
+												className="btn btn-sm btn-error"
+												disabled={isPendingDeleteUser}
+												onClick={() =>
+													deleteUserById({
+														id: user.id,
+													})
+												}
+											>
+												delete
+											</button>
+										</td>
 									</tr>
 								);
 							})}
