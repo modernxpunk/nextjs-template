@@ -1,7 +1,5 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/server/prisma";
 import { faker } from "@faker-js/faker";
-
-const prisma = new PrismaClient();
 
 async function main() {
 	const users = faker.helpers.multiple(

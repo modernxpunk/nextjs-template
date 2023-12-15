@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
 import z from "zod";
-
-const prisma = new PrismaClient();
+import prisma from "@/server/prisma";
 
 const userRouter = router({
 	getAll: protectedProcedure.query(async () => {
