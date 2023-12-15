@@ -4,8 +4,12 @@ import { trpc } from "@/utils/trpc";
 import { signOut } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateUserSchema, createUserSchema, resolver } from "@/utils/schemas";
+import { useContext } from "react";
+import { ModalContext } from "./_app";
 
 const Home: NextPageWithLayout = () => {
+	const [state, dispatch] = useContext(ModalContext);
+
 	const utils = trpc.useUtils();
 
 	const { data: users } = trpc.user.getAll.useQuery(undefined);
@@ -105,6 +109,24 @@ const Home: NextPageWithLayout = () => {
 			>
 				sign out
 			</button>
+			<div className="flex gap-2">
+				<button
+					onClick={() => {
+						dispatch({ type: "TOGGLE_BY_ID", payload: "1" });
+					}}
+					className="btn btn-primary"
+				>
+					First modal
+				</button>
+				<button
+					onClick={() => {
+						dispatch({ type: "TOGGLE_BY_ID", payload: "2" });
+					}}
+					className="btn btn-primary"
+				>
+					Second modal
+				</button>
+			</div>
 		</div>
 	);
 };
