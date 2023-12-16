@@ -32,6 +32,7 @@
 		"@trpc/next": "^10.44.1",
 		"@trpc/react-query": "^10.44.1",
 		"@trpc/server": "^10.44.1",
+		"clsx": "^2.0.0",
 		"husky": "^8.0.3",
 		"next": "14.0.2",
 		"next-auth": "^4.24.5",
