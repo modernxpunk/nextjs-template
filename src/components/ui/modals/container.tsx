@@ -1,5 +1,5 @@
 import { ModalContext } from "@/pages/_app";
-import { ReactElement, useContext, useEffect } from "react";
+import { ReactElement, useContext, useLayoutEffect } from "react";
 
 type Props = {
 	id: "1" | "2";
@@ -11,7 +11,7 @@ const ModalContainer = ({ id, children }: Props) => {
 	// @ts-ignore
 	const isOpen = state.find((modal) => modal.id === id).isOpen;
 
-	useEffect(() => {
+	useLayoutEffect(() => {
 		// @ts-ignore
 		document.getElementById(id).showModal();
 	}, []);
