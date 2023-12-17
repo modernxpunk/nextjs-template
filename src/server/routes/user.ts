@@ -9,7 +9,7 @@ const userRouter = router({
 	}),
 
 	getById: publicProcedure
-		.input(z.object({ id: z.number() }))
+		.input(z.object({ id: z.string() }))
 		.query(async (opts) => {
 			const id = opts.input.id;
 			const user = await prisma.user.findUnique({
@@ -29,7 +29,7 @@ const userRouter = router({
 		}),
 
 	editById: publicProcedure
-		.input(z.object({ id: z.number(), data: z.any() }))
+		.input(z.object({ id: z.string(), data: z.any() }))
 		.mutation(async (opts) => {
 			const id = opts.input.id;
 			const editedUser = opts.input.data;
@@ -45,7 +45,7 @@ const userRouter = router({
 		}),
 
 	deleteById: publicProcedure
-		.input(z.object({ id: z.number() }))
+		.input(z.object({ id: z.string() }))
 		.mutation(async (opts) => {
 			const id = opts.input.id;
 			const deletedUser = await prisma.user.delete({ where: { id: id } });

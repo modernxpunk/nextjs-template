@@ -1,32 +1,9 @@
-import { ReactNode } from "react";
-import { Montserrat, Roboto } from "next/font/google";
+import { PropsWithChildren } from "react";
 import Icon from "@/components/ui/icon";
 
-const roboto = Roboto({
-	subsets: ["latin"],
-	variable: "--font-roboto",
-	weight: ["300", "500", "700"],
-});
-
-const monserrat = Montserrat({
-	subsets: ["latin"],
-	variable: "--font-montserrat",
-	weight: ["300", "500", "700"],
-});
-
-const fontsVariables = [roboto.variable, monserrat.variable];
-
-type Props = {
-	children: ReactNode;
-};
-
-const Layout = ({ children }: Props) => {
+const Layout = ({ children }: PropsWithChildren) => {
 	return (
-		<div
-			className={`flex flex-col min-h-screen ${fontsVariables
-				.join(",")
-				.replaceAll(",", " ")} font-sans`}
-		>
+		<div className="flex flex-col min-h-screen">
 			<header className="py-3 bg-base-200">
 				<nav className="container flex items-center justify-between">
 					<div>

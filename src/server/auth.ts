@@ -6,6 +6,8 @@ import {
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
 import { env } from "@/env";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import prisma from "@/server/prisma";
 
 declare module "next-auth" {
 	interface Session extends DefaultSession {
@@ -23,21 +25,60 @@ declare module "next-auth" {
 }
 
 export const authOptions: NextAuthOptions = {
+	adapter: PrismaAdapter(prisma),
 	callbacks: {
-		session: ({ session, token }) => ({
-			...session,
-			user: {
-				...session.user,
-				id: token.sub,
-			},
-		}),
+		session: ({ session, user }) => {
+			return {
+				...session,
+				user: {
+					...session.user,
+					id: user.id,
+				},
+			};
+		},
 	},
 	pages: {
 		signIn: "/sign-in",
+		newUser: "/sign-up",
 	},
 	providers: [
+		// @ts-ignore
+		{
+			id: "sendgrid",
+			type: "email",
+			name: "Email",
+			server: null,
+			options: {},
+			// @ts-ignore
+			async sendVerificationRequest({ identifier: email, url }) {
+				const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
+					body: JSON.stringify({
+						personalizations: [{ to: [{ email }] }],
+						from: { email: "modernxpunk@gmail.com" },
+						subject: "Sign in to Your page",
+						content: [
+							{
+								type: "text/plain",
+								value: `Please click here to authenticate - ${url}`,
+							},
+						],
+					}),
+					headers: {
+						Authorization: `Bearer ${process.env.SENDGRID_API_KEY}`,
+						"Content-Type": "application/json",
+					},
+					method: "POST",
+				});
+
+				if (!response.ok) {
+					const { errors } = await response.json();
+					throw new Error(JSON.stringify(errors));
+				}
+			},
+		},
 		DiscordProvider({
 			clientId: env.DISCORD_CLIENT_ID,
+			allowDangerousEmailAccountLinking: true,
 			clientSecret: env.DISCORD_CLIENT_SECRET,
 		}),
 	],

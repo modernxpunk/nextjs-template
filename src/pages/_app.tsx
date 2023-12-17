@@ -4,6 +4,7 @@ import { trpc } from "@/utils/trpc";
 import "@/styles/global.css";
 import ModalBuilder from "@/components/ui/modals/builder";
 import { createContext, lazy, useReducer } from "react";
+import { Montserrat, Roboto } from "next/font/google";
 
 type State = any;
 type Action = {
@@ -50,6 +51,20 @@ function reducer(state: State, action: Action) {
 
 export const ModalContext = createContext<null | any>(null);
 
+const roboto = Roboto({
+	subsets: ["latin"],
+	variable: "--font-roboto",
+	weight: ["300", "500", "700"],
+});
+
+const monserrat = Montserrat({
+	subsets: ["latin"],
+	variable: "--font-montserrat",
+	weight: ["300", "500", "700"],
+});
+
+const fontsVariables = [roboto.variable, monserrat.variable];
+
 function MyApp({
 	Component,
 	pageProps: { session, ...pageProps },
@@ -60,7 +75,13 @@ function MyApp({
 	return (
 		<ModalContext.Provider value={modalsReducer}>
 			<SessionProvider session={session}>
-				{getLayout(<Component {...pageProps} />)}
+				<div
+					className={`${fontsVariables
+						.join(",")
+						.replaceAll(",", " ")} font-sans`}
+				>
+					{getLayout(<Component {...pageProps} />)}
+				</div>
 				<ModalBuilder />
 			</SessionProvider>
 		</ModalContext.Provider>

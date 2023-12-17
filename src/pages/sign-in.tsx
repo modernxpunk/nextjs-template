@@ -1,23 +1,22 @@
-import Layout from "@/components/layout";
 import { NextPageWithLayout } from "@/types/common";
 import { SignInSchema, resolver, signInSchema } from "@/utils/schemas";
 import { signIn } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import clsx from "clsx";
 import Icon from "@/components/ui/icon";
+import Link from "next/link";
 
 const SignIn: NextPageWithLayout = () => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-		reset,
 	} = useForm<SignInSchema>({
 		resolver: resolver(signInSchema),
 	});
 
 	const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
-		reset();
+		await signIn("sendgrid", { email: data.email, callbackUrl: "/" });
 	};
 
 	return (
@@ -85,12 +84,15 @@ const SignIn: NextPageWithLayout = () => {
 							<span className="label-text link">Forgot your password?</span>
 						</div>
 					</label>
-					<button
-						className="w-full btn btn-primary"
-						// onClick={() => signIn("discord", { callbackUrl: "/" })}
-					>
-						SIGN IN
-					</button>
+					<button className="w-full btn btn-primary">SIGN IN</button>
+					<div className="label">
+						<span className="label-text">
+							You don&apos;t have an account created?{" "}
+							<Link href="/sign-up" className="link">
+								Sign up
+							</Link>
+						</span>
+					</div>
 				</form>
 				<div className="divider">OR</div>
 				<div className="flex flex-col gap-2">
@@ -129,7 +131,12 @@ const SignIn: NextPageWithLayout = () => {
 };
 
 SignIn.getLayout = (page) => {
-	return <Layout>{page}</Layout>;
+	return (
+		<div className="flex items-center min-h-screen">
+			<div className="self-stretch flex-1 bg-primary"></div>
+			<div className="flex-1">{page}</div>
+		</div>
+	);
 };
 
 export default SignIn;
