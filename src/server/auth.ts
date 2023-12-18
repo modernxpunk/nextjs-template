@@ -27,6 +27,14 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter(prisma),
 	callbacks: {
+		async signIn({ user, account, profile, email, credentials }) {
+			const isAllowedToSignIn = true;
+			if (isAllowedToSignIn) {
+				return true;
+			} else {
+				return false;
+			}
+		},
 		session: ({ session, user }) => {
 			return {
 				...session,
@@ -46,9 +54,6 @@ export const authOptions: NextAuthOptions = {
 		{
 			id: "sendgrid",
 			type: "email",
-			name: "Email",
-			server: null,
-			options: {},
 			// @ts-ignore
 			async sendVerificationRequest({ identifier: email, url }) {
 				const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
