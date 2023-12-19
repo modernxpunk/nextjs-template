@@ -6,7 +6,7 @@ import clsx from "clsx";
 import Icon from "@/components/ui/icon";
 import Link from "next/link";
 import Image from "next/image";
-import { getRedirectToProtected, getServerAuthSession } from "@/server/auth";
+import { getRedirectToProtected } from "@/server/auth";
 import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps<{}> =

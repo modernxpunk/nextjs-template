@@ -5,7 +5,7 @@ import { signOut } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateUserSchema, createUserSchema, resolver } from "@/utils/schemas";
 import { useContext } from "react";
-import { ModalContext } from "./_app";
+import { ModalContext } from "@/components/ui/modals/builder";
 import { GetServerSideProps } from "next";
 import { getRedirectToSign } from "@/server/auth";
 
