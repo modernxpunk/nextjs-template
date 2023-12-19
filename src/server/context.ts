@@ -5,7 +5,6 @@ import { getServerAuthSession } from "@/server/auth";
 export async function createContext(opts: trpcNext.CreateNextContextOptions) {
 	const { req, res } = opts;
 	const session = await getServerAuthSession({ req, res });
-	console.log("session", session);
 	return {
 		session,
 	};

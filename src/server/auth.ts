@@ -41,7 +41,6 @@ export const authOptions: NextAuthOptions = {
 		// 	return baseUrl;
 		// },
 		session: ({ session, user }) => {
-			console.log("session", session, user);
 			return {
 				...session,
 				user: {
@@ -122,7 +121,6 @@ export const getRedirectToProtected: GetServerSideProps<{}> = async (
 
 export const getRedirectToSign: GetServerSideProps<{}> = async (context) => {
 	const session = await getServerAuthSession(context);
-	console.log("server session", session);
 	if (!session) {
 		return {
 			redirect: {

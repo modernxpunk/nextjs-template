@@ -12,7 +12,7 @@ import { getRedirectToSign } from "@/server/auth";
 export const getServerSideProps: GetServerSideProps<{}> = getRedirectToSign;
 
 const Home: NextPageWithLayout = () => {
-	const [state, dispatch] = useContext(ModalContext);
+	const [, dispatch] = useContext(ModalContext);
 
 	const utils = trpc.useUtils();
 

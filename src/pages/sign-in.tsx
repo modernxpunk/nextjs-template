@@ -21,9 +21,6 @@ const SignIn: NextPageWithLayout = () => {
 		resolver: resolver(signInSchema),
 	});
 
-	const x = useSession();
-	console.log("X", x);
-
 	const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
 		await signIn("sendgrid", { email: data.email, callbackUrl: "/" });
 	};
