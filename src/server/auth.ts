@@ -1,4 +1,4 @@
-import { type GetServerSidePropsContext } from "next";
+import { GetServerSideProps, type GetServerSidePropsContext } from "next";
 import {
 	getServerSession,
 	type DefaultSession,
@@ -27,15 +27,21 @@ declare module "next-auth" {
 export const authOptions: NextAuthOptions = {
 	adapter: PrismaAdapter(prisma),
 	callbacks: {
-		async signIn({ user, account, profile, email, credentials }) {
-			const isAllowedToSignIn = true;
-			if (isAllowedToSignIn) {
-				return true;
-			} else {
-				return false;
-			}
-		},
+		// async signIn({ user, account, profile, email, credentials }) {
+		// 	const isAllowedToSignIn = true;
+		// 	if (isAllowedToSignIn) {
+		// 		return true;
+		// 	} else {
+		// 		return false;
+		// 	}
+		// },
+		// async redirect({ url, baseUrl }) {
+		// 	if (url.startsWith("/")) return `${baseUrl}${url}`;
+		// 	else if (new URL(url).origin === baseUrl) return url;
+		// 	return baseUrl;
+		// },
 		session: ({ session, user }) => {
+			console.log("session", session, user);
 			return {
 				...session,
 				user: {
@@ -94,4 +100,39 @@ export const getServerAuthSession = (ctx: {
 	res: GetServerSidePropsContext["res"];
 }) => {
 	return getServerSession(ctx.req, ctx.res, authOptions);
+};
+
+export const getRedirectToProtected: GetServerSideProps<{}> = async (
+	context,
+) => {
+	const session = await getServerAuthSession(context);
+	if (session) {
+		return {
+			redirect: {
+				destination: "/",
+				statusCode: 302,
+			},
+		};
+	}
+
+	return {
+		props: {},
+	};
+};
+
+export const getRedirectToSign: GetServerSideProps<{}> = async (context) => {
+	const session = await getServerAuthSession(context);
+	console.log("server session", session);
+	if (!session) {
+		return {
+			redirect: {
+				destination: "/sign-in",
+				statusCode: 302,
+			},
+		};
+	}
+
+	return {
+		props: {},
+	};
 };

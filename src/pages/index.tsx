@@ -6,6 +6,10 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateUserSchema, createUserSchema, resolver } from "@/utils/schemas";
 import { useContext } from "react";
 import { ModalContext } from "./_app";
+import { GetServerSideProps } from "next";
+import { getRedirectToSign } from "@/server/auth";
+
+export const getServerSideProps: GetServerSideProps<{}> = getRedirectToSign;
 
 const Home: NextPageWithLayout = () => {
 	const [state, dispatch] = useContext(ModalContext);

@@ -5,6 +5,11 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import clsx from "clsx";
 import Icon from "@/components/ui/icon";
 import Link from "next/link";
+import { getRedirectToProtected, getServerAuthSession } from "@/server/auth";
+import { GetServerSideProps } from "next";
+
+export const getServerSideProps: GetServerSideProps<{}> =
+	getRedirectToProtected;
 
 const SignUp: NextPageWithLayout = () => {
 	const {
