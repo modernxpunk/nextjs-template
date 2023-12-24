@@ -61,7 +61,7 @@ export const authOptions: NextAuthOptions = {
 			id: "sendgrid",
 			type: "email",
 			// @ts-ignore
-			async sendVerificationRequest({ identifier: email, url }) {
+			async sendVerificationRequest({ identifier: email, url, ...rest }) {
 				const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
 					body: JSON.stringify({
 						personalizations: [{ to: [{ email }] }],

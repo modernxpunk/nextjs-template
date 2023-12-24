@@ -16,6 +16,7 @@ export const env = createEnv({
 		),
 		DISCORD_CLIENT_ID: z.string(),
 		DISCORD_CLIENT_SECRET: z.string(),
+		// SENDGRID_API_KEY: process.env.SENDGRID_API_KEY,
 	},
 	client: {
 		// NEXT_PUBLIC_CLIENTVAR: z.string(),

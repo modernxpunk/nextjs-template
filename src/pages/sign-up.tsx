@@ -21,7 +21,7 @@ const SignUp: NextPageWithLayout = () => {
 	});
 
 	const onSubmit: SubmitHandler<SignUpSchema> = async (data) => {
-		await signIn("credentials", {
+		await signIn("sendgrid", {
 			email: data.email,
 			username: data.username,
 			password: data.password,
