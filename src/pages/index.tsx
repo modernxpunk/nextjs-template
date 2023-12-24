@@ -11,7 +11,7 @@ const Home: NextPageWithLayout = () => {
 
 	const utils = trpc.useUtils();
 
-	const { data: users } = trpc.user.getAll.useQuery({});
+	const { data: users } = trpc.user.getAll.useQuery();
 
 	const { mutate: createUser } = trpc.user.createUser.useMutation({
 		onSuccess() {

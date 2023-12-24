@@ -7,7 +7,7 @@ import z from "zod";
 const userRouter = router({
 	getAll: protectedProcedure
 		.meta({ /* 👉 */ openapi: { method: "GET", path: "/get-all" } })
-		.input(z.object({}))
+		.input(z.undefined())
 		.output(selectUserSchema.array())
 		.query(async () => {
 			const users = await db.query.UserTable.findMany();
