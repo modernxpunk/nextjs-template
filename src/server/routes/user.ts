@@ -5,10 +5,14 @@ import { UserTable, insertUserSchema, selectUserSchema } from "drizzle/schema";
 import z from "zod";
 
 const userRouter = router({
-	getAll: protectedProcedure.query(async () => {
-		const users = await db.query.UserTable.findMany();
-		return users;
-	}),
+	getAll: protectedProcedure
+		.meta({ /* 👉 */ openapi: { method: "GET", path: "/get-all" } })
+		.input(z.object({}))
+		.output(selectUserSchema.array())
+		.query(async () => {
+			const users = await db.query.UserTable.findMany();
+			return users;
+		}),
 
 	getById: publicProcedure
 		.input(selectUserSchema.pick({ id: true }))

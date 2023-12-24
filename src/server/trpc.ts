@@ -1,7 +1,8 @@
 import { initTRPC } from "@trpc/server";
 import { Context } from "./context";
+import { OpenApiMeta } from "trpc-openapi";
 
-export const t = initTRPC.context<Context>().create();
+export const t = initTRPC.context<Context>().meta<OpenApiMeta>().create();
 
 const isAuthed = t.middleware(({ ctx, next }) => {
 	// throw new TRPCError({ code: "UNAUTHORIZED" });

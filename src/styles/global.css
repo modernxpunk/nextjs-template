@@ -7,3 +7,12 @@
 		@apply inline-block select-none fill-current text-inherit w-[1em] h-[1em];
 	}
 }
+
+@media (prefers-color-scheme: dark) {
+	.swagger-ui {
+		filter: invert(88%) hue-rotate(180deg);
+	}
+	.swagger-ui .microlight {
+		filter: invert(100%) hue-rotate(180deg);
+	}
+}
