@@ -1,46 +1,55 @@
 import { protectedProcedure, publicProcedure, router } from "@/server/trpc";
+import { eq } from "drizzle-orm";
+import { db } from "drizzle/db";
+import { UserTable, insertUserSchema, selectUserSchema } from "drizzle/schema";
 import z from "zod";
-
-let users: any = [];
 
 const userRouter = router({
 	getAll: protectedProcedure.query(async () => {
+		const users = await db.query.UserTable.findMany();
 		return users;
 	}),
 
 	getById: publicProcedure
-		.input(z.object({ id: z.string() }))
+		.input(selectUserSchema.pick({ id: true }))
 		.query(async (opts) => {
-			const id = opts.input.id;
-			const user = users.find((user: any) => user.id === id);
+			const user = await db.query.UserTable.findFirst({
+				where: eq(UserTable.id, opts.input.id),
+			});
 			return user;
 		}),
 
-	createUser: publicProcedure
-		.input(z.object({ user: z.any() }))
-		.mutation(async (opts) => {
-			const user = opts.input.user;
-			users.push(user);
-			return user;
-		}),
+	createUser: publicProcedure.input(insertUserSchema).mutation(async (opts) => {
+		const user = await db.insert(UserTable).values(opts.input);
+		return user;
+	}),
 
 	editById: publicProcedure
-		.input(z.object({ id: z.string(), data: z.any() }))
+		.input(
+			z.object({
+				id: selectUserSchema.pick({ id: true }),
+				data: insertUserSchema,
+			}),
+		)
 		.mutation(async (opts) => {
-			const user = opts.input.data;
-			const indexOfEditedUser = users.findIndex(
-				(user: any) => user.id === opts.input.id,
-			);
-			users[indexOfEditedUser] = user;
-			return user;
+			const editedUsers = await db
+				.update(UserTable)
+				.set(opts.input.data)
+				.where(eq(UserTable.id, +opts.input.id))
+				.returning();
+			const editedUser = editedUsers[0];
+			return editedUser;
 		}),
 
 	deleteById: publicProcedure
-		.input(z.object({ id: z.string() }))
+		.input(selectUserSchema.pick({ id: true }))
 		.mutation(async (opts) => {
-			const id = opts.input.id;
-			users = users.filter((user: any) => user.id !== id);
-			return id;
+			const deletedUsers = await db
+				.delete(UserTable)
+				.where(eq(UserTable.id, opts.input.id))
+				.returning();
+			const deletedUser = deletedUsers[0];
+			return deletedUser;
 		}),
 });
 

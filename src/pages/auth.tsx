@@ -6,7 +6,7 @@ import Icon from "@/components/ui/icon";
 import Link from "next/link";
 import Image from "next/image";
 
-const SignIn: NextPageWithLayout = () => {
+const Auth: NextPageWithLayout = () => {
 	const {
 		register,
 		handleSubmit,
@@ -15,7 +15,9 @@ const SignIn: NextPageWithLayout = () => {
 		resolver: resolver(signInSchema),
 	});
 
-	const onSubmit: SubmitHandler<SignInSchema> = async (data) => {};
+	const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
+		console.log("submit", data);
+	};
 
 	return (
 		<div className="w-full max-w-sm p-6 border rounded-lg shadow-lg bg-base-100 border-base-300">
@@ -114,7 +116,7 @@ const SignIn: NextPageWithLayout = () => {
 	);
 };
 
-SignIn.getLayout = (page) => {
+Auth.getLayout = (page) => {
 	return (
 		<div className="flex flex-col items-stretch min-h-screen xl:flex-row">
 			<div className="relative flex flex-col p-4 flex-1 xl:flex-[2]">
@@ -154,4 +156,4 @@ SignIn.getLayout = (page) => {
 	);
 };
 
-export default SignIn;
+export default Auth;

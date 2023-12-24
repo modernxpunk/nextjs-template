@@ -29,7 +29,7 @@ const Home: NextPageWithLayout = () => {
 	});
 
 	const onSubmit: SubmitHandler<CreateUserSchema> = async (data) => {
-		createUser({ user: data });
+		createUser(data);
 		reset();
 	};
 

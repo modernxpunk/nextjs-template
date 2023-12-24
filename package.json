@@ -9,6 +9,8 @@
 		"export": "next export",
 		"lint": "next lint --ignore-path .gitignore --cache",
 		"format": "prettier --ignore-path .gitignore \"src/**/*.{js,ts,jsx,tsx}\" --write --cache",
+		"db:generate": "drizzle-kit generate:pg",
+		"db:push": "drizzle-kit push:pg",
 		"prepare": "husky install"
 	},
 	"lint-staged": {
@@ -27,6 +29,7 @@
 		"@trpc/server": "^10.44.1",
 		"clsx": "^2.0.0",
 		"drizzle-orm": "^0.29.1",
+		"drizzle-zod": "^0.5.1",
 		"husky": "^8.0.3",
 		"next": "14.0.2",
 		"pg": "^8.11.3",
