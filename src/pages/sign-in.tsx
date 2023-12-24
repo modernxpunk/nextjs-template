@@ -1,16 +1,10 @@
 import { NextPageWithLayout } from "@/types/common";
 import { SignInSchema, resolver, signInSchema } from "@/utils/schemas";
-import { signIn, useSession } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import clsx from "clsx";
 import Icon from "@/components/ui/icon";
 import Link from "next/link";
 import Image from "next/image";
-import { getRedirectToProtected } from "@/server/auth";
-import { GetServerSideProps } from "next";
-
-export const getServerSideProps: GetServerSideProps<{}> =
-	getRedirectToProtected;
 
 const SignIn: NextPageWithLayout = () => {
 	const {
@@ -21,9 +15,7 @@ const SignIn: NextPageWithLayout = () => {
 		resolver: resolver(signInSchema),
 	});
 
-	const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
-		await signIn("sendgrid", { email: data.email, callbackUrl: "/" });
-	};
+	const onSubmit: SubmitHandler<SignInSchema> = async (data) => {};
 
 	return (
 		<div className="w-full max-w-sm p-6 border rounded-lg shadow-lg bg-base-100 border-base-300">
@@ -101,31 +93,19 @@ const SignIn: NextPageWithLayout = () => {
 			</form>
 			<div className="divider">OR</div>
 			<div className="flex flex-col gap-2">
-				<button
-					className="btn btn-outline btn-primary"
-					onClick={() => signIn("google", { callbackUrl: "/" })}
-				>
+				<button className="btn btn-outline btn-primary">
 					<Icon name="social/google" />
 					Google
 				</button>
-				<button
-					className="btn btn-outline btn-primary"
-					onClick={() => signIn("facebook", { callbackUrl: "/" })}
-				>
+				<button className="btn btn-outline btn-primary">
 					<Icon name="social/facebook" />
 					Facebook
 				</button>
-				<button
-					className="btn btn-outline btn-primary"
-					onClick={() => signIn("twitch", { callbackUrl: "/" })}
-				>
+				<button className="btn btn-outline btn-primary">
 					<Icon name="social/twitter" />
 					Twitter
 				</button>
-				<button
-					className="btn btn-outline btn-primary"
-					onClick={() => signIn("discord", { callbackUrl: "/" })}
-				>
+				<button className="btn btn-outline btn-primary">
 					<Icon name="social/discord" />
 					Discord
 				</button>

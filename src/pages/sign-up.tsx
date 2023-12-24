@@ -1,15 +1,9 @@
 import { NextPageWithLayout } from "@/types/common";
 import { SignUpSchema, resolver, signUpSchema } from "@/utils/schemas";
-import { signIn } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import clsx from "clsx";
 import Icon from "@/components/ui/icon";
 import Link from "next/link";
-import { getRedirectToProtected } from "@/server/auth";
-import { GetServerSideProps } from "next";
-
-export const getServerSideProps: GetServerSideProps<{}> =
-	getRedirectToProtected;
 
 const SignUp: NextPageWithLayout = () => {
 	const {
@@ -20,16 +14,7 @@ const SignUp: NextPageWithLayout = () => {
 		resolver: resolver(signUpSchema),
 	});
 
-	const onSubmit: SubmitHandler<SignUpSchema> = async (data) => {
-		await signIn("sendgrid", {
-			email: data.email,
-			username: data.username,
-			password: data.password,
-			confirmPassword: data.confirmPassword,
-			signUp: true,
-			callbackUrl: "/",
-		});
-	};
+	const onSubmit: SubmitHandler<SignUpSchema> = async (data) => {};
 
 	return (
 		<div className="flex items-center justify-center flex-1">
@@ -163,31 +148,19 @@ const SignUp: NextPageWithLayout = () => {
 				</form>
 				<div className="divider">OR</div>
 				<div className="flex flex-col gap-2">
-					<button
-						className="btn btn-outline btn-primary"
-						onClick={() => signIn("google", { callbackUrl: "/" })}
-					>
+					<button className="btn btn-outline btn-primary">
 						<Icon name="social/google" />
 						Google
 					</button>
-					<button
-						className="btn btn-outline btn-primary"
-						onClick={() => signIn("facebook", { callbackUrl: "/" })}
-					>
+					<button className="btn btn-outline btn-primary">
 						<Icon name="social/facebook" />
 						Facebook
 					</button>
-					<button
-						className="btn btn-outline btn-primary"
-						onClick={() => signIn("twitch", { callbackUrl: "/" })}
-					>
+					<button className="btn btn-outline btn-primary">
 						<Icon name="social/twitter" />
 						Twitter
 					</button>
-					<button
-						className="btn btn-outline btn-primary"
-						onClick={() => signIn("discord", { callbackUrl: "/" })}
-					>
+					<button className="btn btn-outline btn-primary">
 						<Icon name="social/discord" />
 						Discord
 					</button>

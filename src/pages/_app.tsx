@@ -1,5 +1,4 @@
 import { AppPropsWithLayout } from "@/types/common";
-import { SessionProvider } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 import "@/styles/global.css";
 import ModalBuilder, {
@@ -10,25 +9,18 @@ import ModalBuilder, {
 import { useReducer } from "react";
 import { fontsVariables } from "@/utils/font";
 
-function MyApp({
-	Component,
-	pageProps: { session, ...pageProps },
-}: AppPropsWithLayout) {
+function MyApp({ Component, pageProps }: AppPropsWithLayout) {
 	const getLayout = Component.getLayout ?? ((page) => page);
 	const modalsReducer = useReducer(reducer, initialStateModal);
 
 	return (
 		<ModalContext.Provider value={modalsReducer}>
-			<SessionProvider session={session}>
-				<div
-					className={`${fontsVariables
-						.join(",")
-						.replaceAll(",", " ")} font-sans`}
-				>
-					{getLayout(<Component {...pageProps} />)}
-				</div>
-				<ModalBuilder />
-			</SessionProvider>
+			<div
+				className={`${fontsVariables.join(",").replaceAll(",", " ")} font-sans`}
+			>
+				{getLayout(<Component {...pageProps} />)}
+			</div>
+			<ModalBuilder />
 		</ModalContext.Provider>
 	);
 }

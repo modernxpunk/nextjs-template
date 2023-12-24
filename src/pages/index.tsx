@@ -1,15 +1,10 @@
 import Layout from "@/components/layout";
 import { NextPageWithLayout } from "@/types/common";
 import { trpc } from "@/utils/trpc";
-import { signOut } from "next-auth/react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateUserSchema, createUserSchema, resolver } from "@/utils/schemas";
 import { useContext } from "react";
 import { ModalContext } from "@/components/ui/modals/builder";
-import { GetServerSideProps } from "next";
-import { getRedirectToSign } from "@/server/auth";
-
-export const getServerSideProps: GetServerSideProps<{}> = getRedirectToSign;
 
 const Home: NextPageWithLayout = () => {
 	const [, dispatch] = useContext(ModalContext);
@@ -83,6 +78,7 @@ const Home: NextPageWithLayout = () => {
 					</thead>
 					<tbody>
 						{users &&
+							// @ts-ignore
 							users.map((user) => {
 								return (
 									<tr key={user.id}>
@@ -107,12 +103,7 @@ const Home: NextPageWithLayout = () => {
 					</tbody>
 				</table>
 			</div>
-			<button
-				className="btn"
-				onClick={() => signOut({ callbackUrl: "/sign-in" })}
-			>
-				sign out
-			</button>
+			<button className="btn">sign out</button>
 			<div className="flex gap-2">
 				<button
 					onClick={() => {
