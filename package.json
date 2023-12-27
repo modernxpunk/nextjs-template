@@ -11,7 +11,8 @@
 		"format": "prettier --ignore-path .gitignore \"src/**/*.{js,ts,jsx,tsx}\" --write --cache",
 		"db:generate": "drizzle-kit generate:pg",
 		"db:push": "drizzle-kit push:pg",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"db:seed": "ts-node --compiler-options '{\"module\":\"CommonJS\"}' drizzle/seed.ts"
 	},
 	"lint-staged": {
 		"./src/**/*.{ts,js,jsx,tsx}": [
@@ -38,6 +39,7 @@
 		"react": "18.2.0",
 		"react-dom": "18.2.0",
 		"react-hook-form": "^7.49.2",
+		"react-intersection-observer": "^9.5.3",
 		"superjson": "^2.2.1",
 		"swagger-ui-react": "^5.10.5",
 		"trpc-openapi": "^1.2.0",
@@ -51,7 +53,9 @@
 		"@types/react-dom": "18.2.15",
 		"autoprefixer": "^10.4.16",
 		"daisyui": "^4.4.19",
+		"dotenv": "^16.3.1",
 		"drizzle-kit": "^0.20.7",
+		"esbuild-register": "^3.5.0",
 		"eslint": "8.53.0",
 		"eslint-config-next": "14.0.2",
 		"eslint-config-prettier": "^9.0.0",

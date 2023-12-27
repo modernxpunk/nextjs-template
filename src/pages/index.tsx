@@ -5,6 +5,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { CreateUserSchema, createUserSchema, resolver } from "@/utils/schemas";
 import { useContext } from "react";
 import { ModalContext } from "@/components/ui/modals/builder";
+import { InView } from "react-intersection-observer";
 
 const Home: NextPageWithLayout = () => {
 	const [, dispatch] = useContext(ModalContext);
@@ -12,6 +13,22 @@ const Home: NextPageWithLayout = () => {
 	const utils = trpc.useUtils();
 
 	const { data: users } = trpc.user.getAll.useQuery();
+	const { data: posts, fetchNextPage } =
+		trpc.post.infinitePosts.useInfiniteQuery(
+			{
+				limit: 10,
+			},
+			{
+				getNextPageParam: (lastPage) => lastPage.nextCursor,
+				initialCursor: 1,
+			},
+		);
+
+	// @ts-ignore
+	const allPagesPosts = [];
+	posts?.pages.forEach((page) => {
+		allPagesPosts.push(...page.postsItems);
+	});
 
 	const { mutate: createUser } = trpc.user.createUser.useMutation({
 		onSuccess() {
@@ -66,6 +83,25 @@ const Home: NextPageWithLayout = () => {
 					Submit
 				</button>
 			</form>
+			<button className="btn">sign out</button>
+			<div className="flex gap-2">
+				<button
+					onClick={() => {
+						dispatch({ type: "TOGGLE_BY_ID", payload: "1" });
+					}}
+					className="btn btn-primary"
+				>
+					First modal
+				</button>
+				<button
+					onClick={() => {
+						dispatch({ type: "TOGGLE_BY_ID", payload: "2" });
+					}}
+					className="btn btn-primary"
+				>
+					Second modal
+				</button>
+			</div>
 			<div className="overflow-x-auto">
 				<table className="table">
 					<thead>
@@ -103,24 +139,48 @@ const Home: NextPageWithLayout = () => {
 					</tbody>
 				</table>
 			</div>
-			<button className="btn">sign out</button>
-			<div className="flex gap-2">
-				<button
-					onClick={() => {
-						dispatch({ type: "TOGGLE_BY_ID", payload: "1" });
+
+			<div className="overflow-x-auto">
+				<table className="table">
+					<thead>
+						<tr>
+							<th>post id</th>
+							<th>userId</th>
+							{/* <th></th> */}
+						</tr>
+					</thead>
+					<tbody>
+						{posts?.pageParams &&
+							// @ts-ignore
+							allPagesPosts.map((post) => {
+								return (
+									<tr key={post.id}>
+										<td>{post.id}</td>
+										<td>{post.userId}</td>
+										{/* <td> */}
+										{/* <button
+												className="btn btn-sm btn-error"
+												// onClick={() =>
+												// deleteUserById({
+												// 	id: user.id,
+												// })
+												// }
+											>
+												delete
+											</button> */}
+										{/* </td> */}
+									</tr>
+								);
+							})}
+					</tbody>
+				</table>
+				<InView
+					onChange={(inView) => {
+						if (inView) {
+							fetchNextPage();
+						}
 					}}
-					className="btn btn-primary"
-				>
-					First modal
-				</button>
-				<button
-					onClick={() => {
-						dispatch({ type: "TOGGLE_BY_ID", payload: "2" });
-					}}
-					className="btn btn-primary"
-				>
-					Second modal
-				</button>
+				/>
 			</div>
 		</div>
 	);
