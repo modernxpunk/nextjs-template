@@ -14,6 +14,7 @@ const Auth: NextPageWithLayout = () => {
 
 	const {
 		register,
+		setError,
 		handleSubmit,
 		formState: { errors },
 	} = useForm<SignInSchema>({
@@ -26,8 +27,7 @@ const Auth: NextPageWithLayout = () => {
 			password: formData.password,
 		});
 		if (error) {
-			// setError(error?.message)
-			console.log(error?.message);
+			setError("root", { message: error.message });
 		} else {
 			router.push("/");
 		}
@@ -46,14 +46,11 @@ const Auth: NextPageWithLayout = () => {
 				<label className="w-full form-control">
 					<div className="label">
 						<span className="label-text">Email</span>
-						<span
-							className={clsx(
-								"text-red-500 label-text h-4",
-								!errors.email && "invisible",
-							)}
-						>
-							{errors.email?.message || ""}
-						</span>
+						{errors.email && (
+							<span className="text-red-500 label-text animate-appear">
+								{errors.email?.message || ""}
+							</span>
+						)}
 					</div>
 					<div className="w-full join">
 						<button type="button" className="btn join-item">
@@ -72,14 +69,11 @@ const Auth: NextPageWithLayout = () => {
 				<label className="w-full form-control">
 					<div className="label">
 						<span className="label-text">Password</span>
-						<span
-							className={clsx(
-								"text-red-500 label-text h-4",
-								!errors.password && "invisible",
-							)}
-						>
-							{errors.password?.message || ""}
-						</span>
+						{errors.password && (
+							<span className="text-red-500 label-text animate-appear">
+								{errors.password?.message || ""}
+							</span>
+						)}
 					</div>
 					<div className="w-full join">
 						<button type="button" className="btn join-item">
@@ -98,14 +92,21 @@ const Auth: NextPageWithLayout = () => {
 						<span className="label-text link">Forgot your password?</span>
 					</div>
 				</label>
-				<button className="w-full btn btn-primary">SIGN IN</button>
-				<div className="label">
-					<span className="label-text">
-						You don&apos;t have an account created?{" "}
-						<Link href="/sign-up" className="link">
-							Sign up
-						</Link>
-					</span>
+				<div>
+					<button className="w-full btn btn-primary">SIGN IN</button>
+					{errors.root && (
+						<p className="text-right label-text text-error animate-appear">
+							{errors.root.message}
+						</p>
+					)}
+					<div className="label">
+						<span className="label-text">
+							You don&apos;t have an account created?{" "}
+							<Link href="/sign-up" className="link">
+								Sign up
+							</Link>
+						</span>
+					</div>
 				</div>
 			</form>
 			<div className="divider">OR</div>

@@ -14,7 +14,12 @@ const Layout = ({ children }: PropsWithChildren) => {
 							<input
 								type="checkbox"
 								className="theme-controller"
-								value="light"
+								value={
+									typeof window !== "undefined" &&
+									!window.matchMedia("(prefers-color-scheme: dark)").matches
+										? "dark"
+										: "light"
+								}
 							/>
 							<Icon className="text-2xl swap-on" name="common/sun" />
 							<Icon className="text-2xl swap-off" name="common/moon" />
