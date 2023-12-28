@@ -5,8 +5,13 @@ import clsx from "clsx";
 import Icon from "@/components/ui/icon";
 import Link from "next/link";
 import Image from "next/image";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/router";
 
 const Auth: NextPageWithLayout = () => {
+	const router = useRouter();
+	const supabase = createClientComponentClient();
+
 	const {
 		register,
 		handleSubmit,
@@ -15,8 +20,17 @@ const Auth: NextPageWithLayout = () => {
 		resolver: resolver(signInSchema),
 	});
 
-	const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
-		console.log("submit", data);
+	const onSubmit: SubmitHandler<SignInSchema> = async (formData) => {
+		const { error } = await supabase.auth.signInWithPassword({
+			email: formData.email,
+			password: formData.password,
+		});
+		if (error) {
+			// setError(error?.message)
+			console.log(error?.message);
+		} else {
+			router.push("/");
+		}
 	};
 
 	return (
@@ -72,6 +86,7 @@ const Auth: NextPageWithLayout = () => {
 							<Icon name="common/lock" />
 						</button>
 						<input
+							type="password"
 							className={clsx(
 								"input w-full join-item input-bordered",
 								errors.password && "input-error",

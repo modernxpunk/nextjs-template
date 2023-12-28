@@ -6,8 +6,13 @@ import { CreateUserSchema, createUserSchema, resolver } from "@/utils/schemas";
 import { useContext } from "react";
 import { ModalContext } from "@/components/ui/modals/builder";
 import { InView } from "react-intersection-observer";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
 
 const Home: NextPageWithLayout = () => {
+	const router = useRouter();
+	const supabase = createClientComponentClient();
+
 	const [, dispatch] = useContext(ModalContext);
 
 	const utils = trpc.useUtils();
@@ -56,6 +61,11 @@ const Home: NextPageWithLayout = () => {
 		},
 	});
 
+	const handleSignOut = async () => {
+		await supabase.auth.signOut();
+		router.refresh();
+	};
+
 	return (
 		<div className="container">
 			<form onSubmit={handleSubmit(onSubmit)} className="flex gap-4 mt-4">
@@ -83,7 +93,9 @@ const Home: NextPageWithLayout = () => {
 					Submit
 				</button>
 			</form>
-			<button className="btn">sign out</button>
+			<button className="btn" onClick={handleSignOut}>
+				sign out
+			</button>
 			<div className="flex gap-2">
 				<button
 					onClick={() => {
