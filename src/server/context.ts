@@ -1,12 +1,26 @@
+import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
+import { SupabaseClient } from "@supabase/supabase-js";
 import * as trpcNext from "@trpc/server/adapters/next";
 
-export async function createContext({
-	req,
-	res,
-}: trpcNext.CreateNextContextOptions) {
-	const user = { id: "123", name: "asd", email: "asd@gmail.com" };
+interface CreateInnerContextOptions
+	extends Partial<trpcNext.CreateNextContextOptions> {
+	supabase: SupabaseClient | null;
+}
+
+export async function createContextInner(opts?: CreateInnerContextOptions) {
 	return {
-		user,
+		supabase: (opts?.supabase as SupabaseClient) ?? null,
 	};
 }
+
+export async function createContext(opts: trpcNext.CreateNextContextOptions) {
+	const supabase = createPagesServerClient(opts);
+	const contextInner = await createContextInner({ supabase });
+	return {
+		...contextInner,
+		req: opts.req,
+		res: opts.res,
+	};
+}
+
 export type Context = Awaited<ReturnType<typeof createContext>>;

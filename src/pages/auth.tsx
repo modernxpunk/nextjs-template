@@ -7,6 +7,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/router";
+import { Provider } from "@supabase/supabase-js";
 
 const Auth: NextPageWithLayout = () => {
 	const router = useRouter();
@@ -32,6 +33,26 @@ const Auth: NextPageWithLayout = () => {
 			router.push("/");
 		}
 	};
+
+	const onSubmitWithSocial = async (provider: Provider) => {
+		const { data, error } = await supabase.auth.signInWithOAuth({
+			provider,
+		});
+		// await router.reload();
+	};
+
+	// const handleSignUp = async () => {
+	// 	await supabase.auth.signUp({
+	// 		email: "asd@gmail.com",
+	// 		password: "123123",
+	// 		options: {
+	// 			emailRedirectTo: `${location.origin}/auth/callback`,
+	// 			data: {
+	// 				sdf: 123,
+	// 			},
+	// 		},
+	// 	});
+	// };
 
 	return (
 		<div className="w-full max-w-sm p-6 border rounded-lg shadow-lg bg-base-100 border-base-300">
@@ -111,19 +132,31 @@ const Auth: NextPageWithLayout = () => {
 			</form>
 			<div className="divider">OR</div>
 			<div className="flex flex-col gap-2">
-				<button className="btn btn-outline btn-primary">
+				<button
+					className="btn btn-outline btn-primary"
+					onClick={() => onSubmitWithSocial("google")}
+				>
 					<Icon name="social/google" />
 					Google
 				</button>
-				<button className="btn btn-outline btn-primary">
+				<button
+					className="btn btn-outline btn-primary"
+					onClick={() => onSubmitWithSocial("facebook")}
+				>
 					<Icon name="social/facebook" />
 					Facebook
 				</button>
-				<button className="btn btn-outline btn-primary">
+				<button
+					className="btn btn-outline btn-primary"
+					onClick={() => onSubmitWithSocial("twitter")}
+				>
 					<Icon name="social/twitter" />
 					Twitter
 				</button>
-				<button className="btn btn-outline btn-primary">
+				<button
+					className="btn btn-outline btn-primary"
+					onClick={() => onSubmitWithSocial("discord")}
+				>
 					<Icon name="social/discord" />
 					Discord
 				</button>
