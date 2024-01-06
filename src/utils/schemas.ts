@@ -24,6 +24,12 @@ const signUpSchema = z
 		message: "Password don't match",
 	});
 
+const forgotPasswordSchema = z.object({
+	email: z.string().min(1, { message: "Email is required" }).email({
+		message: "Must be a valid email",
+	}),
+});
+
 const createUserSchema = z.object({
 	name: z.string().min(1, { message: "Name is required" }),
 	email: z.string().min(1, { message: "Email is required" }).email({
@@ -32,6 +38,7 @@ const createUserSchema = z.object({
 });
 
 type SignInSchema = z.infer<typeof signInSchema>;
+type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
 type SignUpSchema = z.infer<typeof signUpSchema>;
 type CreateUserSchema = z.infer<typeof createUserSchema>;
 
@@ -39,7 +46,12 @@ const resolver = zodResolver;
 export { resolver };
 
 // Schemas
-export { signInSchema, signUpSchema, createUserSchema };
+export { signInSchema, signUpSchema, createUserSchema, forgotPasswordSchema };
 
 // Types
-export type { SignInSchema, SignUpSchema, CreateUserSchema };
+export type {
+	SignInSchema,
+	SignUpSchema,
+	CreateUserSchema,
+	ForgotPasswordSchema,
+};
