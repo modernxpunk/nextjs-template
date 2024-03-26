@@ -4,7 +4,22 @@ import { NextPageWithLayout } from "@/types/common";
 const Home: NextPageWithLayout = () => {
 	return (
 		<div className="container">
-			<button className="btn">hello</button>
+			<button
+				className="btn"
+				onClick={() =>
+					(document.getElementById("1") as HTMLDialogElement)?.showModal()
+				}
+			>
+				open modal 1
+			</button>
+			<button
+				className="btn"
+				onClick={() =>
+					(document.getElementById("2") as HTMLDialogElement)?.showModal()
+				}
+			>
+				open modal 2
+			</button>
 		</div>
 	);
 };

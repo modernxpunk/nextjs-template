@@ -1,6 +1,7 @@
 import { cx } from "class-variance-authority";
 import { PropsWithChildren } from "react";
 import { fontsVariables } from "@/utils/font";
+import ModalBuilder from "@/components/modal/builder";
 
 const Layout = ({ children }: PropsWithChildren) => {
 	return (
@@ -16,6 +17,7 @@ const Layout = ({ children }: PropsWithChildren) => {
 			</header>
 			<main className="flex-1">{children}</main>
 			<footer></footer>
+			<ModalBuilder />
 		</div>
 	);
 };
