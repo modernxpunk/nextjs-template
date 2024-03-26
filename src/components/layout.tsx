@@ -1,12 +1,8 @@
 import { cx } from "class-variance-authority";
-import { ReactNode } from "react";
+import { PropsWithChildren } from "react";
 import { fontsVariables } from "@/utils/font";
 
-type Props = {
-	children: ReactNode;
-};
-
-const Layout = ({ children }: Props) => {
+const Layout = ({ children }: PropsWithChildren) => {
 	return (
 		<div
 			className={cx(
