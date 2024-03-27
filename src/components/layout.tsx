@@ -25,10 +25,17 @@ const Layout = ({ children }: PropsWithChildren) => {
 							<li>
 								<a>Link</a>
 							</li>
+							<li className="self-center">
+								<input
+									type="checkbox"
+									value="dark"
+									className="toggle theme-controller"
+								/>
+							</li>
 							<li>
 								<details>
 									<summary>Parent</summary>
-									<ul className="rounded-t-none z-[1] !mt-4 bg-base-300 w-52">
+									<ul className="rounded-t-none z-[1] right-0 !mt-4 bg-base-300 w-52">
 										<li>
 											<a>Link 1</a>
 										</li>

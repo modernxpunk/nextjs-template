@@ -11,5 +11,5 @@ export const modals = [
 export const resolver = zodResolver;
 
 export const schemaAddCat = z.object({
-	name: z.string().min(3).max(255),
+	name: z.string().min(10).max(255),
 });
