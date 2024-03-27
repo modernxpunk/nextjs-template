@@ -79,10 +79,6 @@ module.exports = {
 			center: true,
 			padding: {
 				DEFAULT: "1rem",
-				sm: "2rem",
-				lg: "4rem",
-				xl: "5rem",
-				"2xl": "6rem",
 			},
 		},
 		keyframes: {
@@ -103,21 +99,24 @@ module.exports = {
 		extend: {},
 	},
 	daisyui: {
-		themes: [
-			{
-				mytheme: {
-					primary: "#6c00ff",
-					secondary: "#988d00",
-					accent: "#009681",
-					neutral: "#262210",
-					"base-100": "#2b2b2b",
-					info: "#0091ff",
-					success: "#00eb7a",
-					warning: "#ab6e00",
-					error: "#ff817e",
-				},
-			},
-		],
+		themes: ["light"],
 	},
+	// daisyui: {
+	// 	themes: [
+	// 		{
+	// 			mytheme: {
+	// 				primary: "#6c00ff",
+	// 				secondary: "#988d00",
+	// 				accent: "#009681",
+	// 				neutral: "#262210",
+	// 				"base-100": "#2b2b2b",
+	// 				info: "#0091ff",
+	// 				success: "#00eb7a",
+	// 				warning: "#ab6e00",
+	// 				error: "#ff817e",
+	// 			},
+	// 		},
+	// 	],
+	// },
 	plugins: [require("daisyui")],
 };
