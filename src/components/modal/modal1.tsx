@@ -1,6 +1,6 @@
 import AddCatForm from "@/components/forms/add-cat";
 
-const Modal1 = (props: { id: string }) => {
+const Modal1 = () => {
 	return (
 		<div>
 			<h3 className="text-lg font-bold">Lorem</h3>

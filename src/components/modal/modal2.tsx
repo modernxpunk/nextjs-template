@@ -1,4 +1,4 @@
-const Modal2 = (props: { id: string }) => {
+const Modal2 = () => {
 	return (
 		<div>
 			<h3 className="text-lg font-bold">2</h3>

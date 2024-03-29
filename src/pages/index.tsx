@@ -1,25 +1,25 @@
 import Layout from "@/components/layout";
+import { Button } from "@/components/ui/button";
 import { NextPageWithLayout } from "@/types/common";
 
 const Home: NextPageWithLayout = () => {
 	return (
 		<div className="container">
-			<button
-				className="btn"
+			<Button
 				onClick={() =>
 					(document.getElementById("1") as HTMLDialogElement)?.showModal()
 				}
 			>
 				open modal 1
-			</button>
-			<button
-				className="btn"
+			</Button>
+			<Button
+				full
 				onClick={() =>
 					(document.getElementById("2") as HTMLDialogElement)?.showModal()
 				}
 			>
 				open modal 2
-			</button>
+			</Button>
 		</div>
 	);
 };
