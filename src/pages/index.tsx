@@ -1,8 +1,11 @@
 import Layout from "@/components/layout";
 import { Button } from "@/components/ui/button";
 import { NextPageWithLayout } from "@/types/common";
+import { useRef } from "react";
 
 const Home: NextPageWithLayout = () => {
+	const refButton = useRef<HTMLButtonElement | null>(null);
+
 	return (
 		<div className="container">
 			<Button
@@ -13,6 +16,7 @@ const Home: NextPageWithLayout = () => {
 				open modal 1
 			</Button>
 			<Button
+				ref={refButton}
 				full
 				onClick={() =>
 					(document.getElementById("2") as HTMLDialogElement)?.showModal()

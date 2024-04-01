@@ -1,4 +1,4 @@
-import { cx } from "class-variance-authority";
+import { cn } from "@/lib/utils";
 import { SVGProps } from "react";
 
 interface SpritesMap {
@@ -16,7 +16,7 @@ interface IconProps extends Omit<SVGProps<SVGSVGElement>, "name"> {
 const Icon = ({ name, className, ...props }: IconProps) => {
 	const [spriteName, iconName] = name.split("/");
 	return (
-		<svg className={cx("icon", className)} focusable="false" {...props}>
+		<svg className={cn("icon", className)} focusable="false" {...props}>
 			<use xlinkHref={`/images/sprites/${spriteName}.svg#${iconName}`} />
 		</svg>
 	);

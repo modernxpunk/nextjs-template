@@ -10,6 +10,9 @@ export const modals = [
 
 export const resolver = zodResolver;
 
+const catsEnum = z.enum(["Cat1", "Cat2", "Cat3"]);
+
 export const schemaAddCat = z.object({
 	name: z.string().min(10).max(255),
+	cat: catsEnum,
 });
