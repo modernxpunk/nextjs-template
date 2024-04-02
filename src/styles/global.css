@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+	.icon {
+		@apply inline-block select-none fill-current text-inherit w-[1em] h-[1em];
+	}
+}
