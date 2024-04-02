@@ -7,14 +7,16 @@
 		"build": "next build",
 		"start": "next start",
 		"export": "next export",
+		"type-check": "tsc --project tsconfig.json --pretty --noEmit",
 		"lint": "next lint --ignore-path .gitignore --cache",
 		"format": "prettier --ignore-path .gitignore \"src/**/*.{js,ts,jsx,tsx}\" --write --cache",
 		"prepare": "husky install"
 	},
 	"lint-staged": {
 		"./src/**/*.{ts,js,jsx,tsx}": [
-			"eslint --fix --ignore-path .gitignore",
-			"prettier --write --ignore-path .gitignore"
+			"npm run lint --fix",
+			"npm run type-check",
+			"npm run format"
 		]
 	},
 	"dependencies": {
@@ -40,7 +42,6 @@
 		"eslint-config-next": "14.0.2",
 		"eslint-config-prettier": "^9.0.0",
 		"eslint-plugin-prettier": "^5.0.1",
-		"eslint-plugin-storybook": "^0.6.15",
 		"lint-staged": "^15.0.2",
 		"postcss": "^8.4.31",
 		"prettier": "^3.0.3",
