@@ -3,7 +3,12 @@
 const { fontFamily } = require("tailwindcss/defaultTheme");
 
 module.exports = {
-	content: ["./src/**/*.{js,ts,jsx,tsx,stories}"],
+	content: [
+		"./app/**/*.{js,ts,jsx,tsx,mdx}",
+		"./pages/**/*.{js,ts,jsx,tsx,mdx}",
+		"./components/**/*.{js,ts,jsx,tsx,mdx}",
+		"./src/**/*.{js,ts,jsx,tsx,mdx}",
+	],
 	theme: {
 		spacing: {
 			px: "1px",
@@ -97,9 +102,6 @@ module.exports = {
 	},
 	variants: {
 		extend: {},
-	},
-	daisyui: {
-		themes: ["light", "dark"],
 	},
 	daisyui: {
 		themes: [

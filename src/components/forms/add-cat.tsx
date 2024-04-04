@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/lib/utils";
 import { AddCat } from "@/types/form";
 import { resolver, schemaAddCat } from "@/utils/config";
