@@ -13,7 +13,7 @@
 		"prepare": "husky install"
 	},
 	"lint-staged": {
-		".app/**/*.{ts,js,jsx,tsx}": [
+		"./src/**/*.{ts,js,jsx,tsx}": [
 			"npm run lint",
 			"npm run type-check",
 			"npm run format"
