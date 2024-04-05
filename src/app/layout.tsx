@@ -1,10 +1,10 @@
-import "./globals.css";
 import ModalBuilder from "@/components/modal/builder";
 import { cn } from "@/lib/utils";
 import { fontsVariables } from "@/utils/font";
-import { Locale, i18n } from "@/utils/i18n";
+import { type Locale, i18n } from "@/utils/i18n";
 import Link from "next/link";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+import "./globals.css";
 
 export async function generateStaticParams() {
 	return i18n.locales.map((locale) => ({ lang: locale }));

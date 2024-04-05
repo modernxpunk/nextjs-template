@@ -1,11 +1,11 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { AddCat } from "@/types/form";
-import { resolver, schemaAddCat } from "@/utils/config";
-import { FormHTMLAttributes, useRef } from "react";
-import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import type { AddCat } from "@/types/form";
+import { resolver, schemaAddCat } from "@/utils/config";
+import { type FormHTMLAttributes, useRef } from "react";
+import { useForm } from "react-hook-form";
 
 const AddCatForm = (props: FormHTMLAttributes<HTMLFormElement>) => {
 	const {

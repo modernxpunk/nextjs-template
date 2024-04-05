@@ -1,5 +1,5 @@
-import "server-only";
 import type { Locale } from "@/utils/i18n";
+import "server-only";
 
 const dictionaries = {
 	en: () =>
