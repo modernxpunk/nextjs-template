@@ -5,6 +5,7 @@ import { type Locale, i18n } from "@/utils/i18n";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import "./globals.css";
+import LocaleSwitcher from "@/components/locale-switch";
 
 export async function generateStaticParams() {
 	return i18n.locales.map((locale) => ({ lang: locale }));
@@ -34,6 +35,11 @@ export default function RootLayout({
 									<ul className="hidden px-1 lg:flex menu menu-horizontal">
 										<li>
 											<a>Link</a>
+										</li>
+										<li>
+											<a>
+												<LocaleSwitcher />
+											</a>
 										</li>
 										<li className="self-center">
 											<input
