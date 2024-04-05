@@ -2,12 +2,23 @@ import "./globals.css";
 import ModalBuilder from "@/components/modal/builder";
 import { cn } from "@/lib/utils";
 import { fontsVariables } from "@/utils/font";
+import { Locale, i18n } from "@/utils/i18n";
 import Link from "next/link";
 import { ReactNode } from "react";
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export async function generateStaticParams() {
+	return i18n.locales.map((locale) => ({ lang: locale }));
+}
+
+export default function RootLayout({
+	children,
+	params,
+}: {
+	children: ReactNode;
+	params: { lang: Locale };
+}) {
 	return (
-		<html lang="en">
+		<html lang={params.lang}>
 			<body>
 				<div className={cn("drawer", fontsVariables.join(" "), "font-sans")}>
 					<input id="my-drawer" type="checkbox" className="drawer-toggle" />
