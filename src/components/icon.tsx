@@ -2,7 +2,7 @@ import { cn } from "@/lib/utils";
 import type { SVGProps } from "react";
 
 interface SpritesMap {
-	common: "";
+	common: "chevron-down" | "translate";
 }
 
 type SpriteKey = {
@@ -17,7 +17,7 @@ const Icon = ({ name, className, ...props }: IconProps) => {
 	const [spriteName, iconName] = name.split("/");
 	return (
 		<svg className={cn("icon", className)} focusable="false" {...props}>
-			<use xlinkHref={`/images/sprites/${spriteName}.svg#${iconName}`} />
+			<use xlinkHref={`/sprites/${spriteName}.svg#${iconName}`} />
 		</svg>
 	);
 };
