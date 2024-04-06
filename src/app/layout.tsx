@@ -1,25 +1,14 @@
 import ModalBuilder from "@/components/modal/builder";
 import { cn } from "@/lib/utils";
 import { fontsVariables } from "@/utils/font";
-import { type Locale, i18n } from "@/utils/i18n";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
 import "./globals.css";
-import LocaleSwitcher from "@/components/locale-switch";
+import LocaleSwitcher from "@/locales/locale-switch";
 
-export async function generateStaticParams() {
-	return i18n.locales.map((locale) => ({ lang: locale }));
-}
-
-export default function RootLayout({
-	children,
-	params,
-}: {
-	children: ReactNode;
-	params: { lang: Locale };
-}) {
+export default function RootLayout({ children }: { children: ReactNode }) {
 	return (
-		<html lang={params.lang}>
+		<html>
 			<body>
 				<div className={cn("drawer", fontsVariables.join(" "), "font-sans")}>
 					<input id="my-drawer" type="checkbox" className="drawer-toggle" />
@@ -32,14 +21,14 @@ export default function RootLayout({
 									</Link>
 								</div>
 								<nav className="navbar-end">
-									<ul className="hidden px-1 lg:flex menu menu-horizontal">
+									<ul className="hidden px-1 breaks- lg:flex menu menu-horizontal">
 										<li>
 											<a>Link</a>
 										</li>
 										<li>
-											<a>
+											<Suspense>
 												<LocaleSwitcher />
-											</a>
+											</Suspense>
 										</li>
 										<li className="self-center">
 											<input
