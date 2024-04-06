@@ -1,4 +1,3 @@
-// app/[locale]/client/layout.tsx
 import { I18nProviderClient } from "@/locales/client";
 import { ReactElement } from "react";
 

@@ -3,5 +3,5 @@ import { createI18nServer } from "next-international/server";
 
 export const { getI18n, getScopedI18n, getStaticParams } = createI18nServer({
 	en: () => import("./directories/en"),
-	ru: () => import("./directories/ru"),
+	ua: () => import("./directories/ua"),
 });

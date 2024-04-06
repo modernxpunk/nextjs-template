@@ -9,5 +9,5 @@ export const {
 	I18nProviderClient,
 } = createI18nClient({
 	en: () => import("./directories/en"),
-	ru: () => import("./directories/ru"),
+	ua: () => import("./directories/ua"),
 });
