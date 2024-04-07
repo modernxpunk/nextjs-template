@@ -1,12 +1,17 @@
 import { cn } from "@/lib/utils";
 import type { SVGProps } from "react";
 
+// Most of icons are from Material Deisgn Icons
+// https://pictogrammers.com/library/mdi/
+
 interface SpritesMap {
 	common:
+		| "logo"
 		| "chevron-down"
 		| "translate"
 		| "moon-waning-crescent"
 		| "white-balance-sunny";
+	socials: "facebook" | "discord" | "github" | "twitter";
 }
 
 type SpriteKey = {
