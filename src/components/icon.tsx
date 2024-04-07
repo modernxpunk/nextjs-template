@@ -10,7 +10,8 @@ interface SpritesMap {
 		| "chevron-down"
 		| "translate"
 		| "moon-waning-crescent"
-		| "white-balance-sunny";
+		| "white-balance-sunny"
+		| "menu";
 	socials: "facebook" | "discord" | "github" | "twitter";
 }
 

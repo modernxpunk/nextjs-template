@@ -17,7 +17,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 				<ThemeProvider>
 					<SubLayout>
 						<div
-							className={cn("drawer", fontsVariables.join(" "), "font-sans")}
+							className={cn(
+								"drawer drawer-end",
+								fontsVariables.join(" "),
+								"font-sans",
+							)}
 						>
 							<input id="my-drawer" type="checkbox" className="drawer-toggle" />
 							<div className="flex flex-col min-h-screen drawer-content">
@@ -26,15 +30,27 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 										<Link href="/" className="btn btn-ghost btn-primary">
 											<Icon className="text-3xl" name="common/logo" />
 										</Link>
-										<nav className="flex">
+										<nav className="items-center hidden gap-2 lg:flex">
+											<Link className="btn btn-ghost" href="asd">
+												asdf
+											</Link>
+											<Link className="btn btn-ghost" href="asd">
+												asdf
+											</Link>
 											<DropdownTheme />
 											<LocaleSwitcher />
 										</nav>
+										<label
+											htmlFor="my-drawer"
+											className="flex drawer-button btn btn-circle btn-ghost lg:hidden"
+										>
+											<Icon className="text-3xl" name="common/menu" />
+										</label>
 									</header>
 								</div>
 								<main className="flex-1 my-2">{children}</main>
 								<footer className="bg-base-200">
-									<div className="container items-center p-4 footer bg-neutral text-neutral-content">
+									<div className="container flex items-center justify-between p-4">
 										<aside className="flex items-center gap-2">
 											<Icon className="text-3xl" name="common/logo" />
 											<p>Copyright © 2024 - All right reserved</p>
