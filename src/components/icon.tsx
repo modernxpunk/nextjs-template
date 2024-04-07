@@ -2,7 +2,11 @@ import { cn } from "@/lib/utils";
 import type { SVGProps } from "react";
 
 interface SpritesMap {
-	common: "chevron-down" | "translate";
+	common:
+		| "chevron-down"
+		| "translate"
+		| "moon-waning-crescent"
+		| "white-balance-sunny";
 }
 
 type SpriteKey = {
