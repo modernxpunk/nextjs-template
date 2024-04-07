@@ -12,7 +12,7 @@ const LocaleSwitcher = () => {
 
 	return (
 		<details ref={detailsRef} className="dropdown dropdown-end">
-			<summary className="btn">
+			<summary className="btn btn-ghost">
 				<Icon className="text-lg" name="common/translate" />
 				<Icon name="common/chevron-down" />
 			</summary>
