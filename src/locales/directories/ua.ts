@@ -6,4 +6,5 @@ export default {
 		ua: "Українська",
 		en: "Англійська",
 	},
+	hello: "Привіт, Світ!",
 } as const;
