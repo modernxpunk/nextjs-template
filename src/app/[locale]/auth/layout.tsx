@@ -1,28 +1,44 @@
 import { type ReactNode } from "react";
 import "@/globals.css";
-import { I18nProviderClient } from "@/locales/client";
 import { ThemeProvider } from "next-themes";
 import { cn } from "@/lib/utils";
 import { fontsVariables } from "@/utils/font";
+import Image from "next/image";
+import { NextIntlClientProvider, useMessages } from "next-intl";
 
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({
+	children,
+	params: { locale },
+}: {
+	children: ReactNode;
+	params: { locale: string };
+}) {
+	const messages = useMessages();
 	return (
-		<html suppressHydrationWarning>
+		<html lang={locale}>
 			<body className={cn(fontsVariables.join(" "), "font-sans")}>
-				<ThemeProvider>
-					<I18nProviderClient locale="en">
+				<NextIntlClientProvider locale={locale} messages={messages}>
+					<ThemeProvider>
 						<div className="flex min-h-screen p-6 bg-base-300">
-							<div className="flex flex-1 rounded-2xl bg-base-100">
-								<div className="flex-1 rounded-l-[inherit] bg-base-200"></div>
-								<div className="flex items-center justify-center flex-1">
+							<div className="flex flex-col flex-1 lg:flex-row rounded-2xl bg-base-100">
+								<div className="flex-1 rounded-l-[inherit] relative">
+									<Image
+										className="object-cover rounded-[inherit]"
+										fill
+										src="https://picsum.photos/900/1300"
+										alt="background"
+									/>
+									<div className="absolute inset-0 bg-opacity-80 bg-base-200" />
+								</div>
+								<div className="flex items-center justify-center flex-1 p-4">
 									<div className="w-full max-w-sm p-4 rounded-lg bg-base-200">
 										{children}
 									</div>
 								</div>
 							</div>
 						</div>
-					</I18nProviderClient>
-				</ThemeProvider>
+					</ThemeProvider>
+				</NextIntlClientProvider>
 			</body>
 		</html>
 	);
