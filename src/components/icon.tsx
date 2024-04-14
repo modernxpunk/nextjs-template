@@ -11,7 +11,9 @@ interface SpritesMap {
 		| "translate"
 		| "moon-waning-crescent"
 		| "white-balance-sunny"
-		| "menu";
+		| "menu"
+		| "email"
+		| "lock";
 	socials: "facebook" | "discord" | "github" | "twitter";
 }
 
