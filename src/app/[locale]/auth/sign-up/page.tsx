@@ -1,8 +1,10 @@
 "use client";
 
 import Icon from "@/components/icon";
+import { signUp } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { resolver } from "@/utils/config";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -25,9 +27,9 @@ const Page = () => {
 
 	const router = useRouter();
 
-	const onSubmit = ({ email, password }: SignUpForm) => {
+	const onSubmit = async ({ email, password }: SignUpForm) => {
 		try {
-			// await signUp(email, password);
+			await signUp(email, password);
 			router.push("/");
 		} catch (err) {
 			//
@@ -86,7 +88,7 @@ const Page = () => {
 						)}
 					>
 						<Icon
-							className={errors.password ? "text-error" : "text-inherit"}
+							className={cn(errors.password ? "text-error" : "text-inherit")}
 							name="common/lock"
 						/>
 						<input
@@ -95,6 +97,11 @@ const Page = () => {
 							className="grow"
 							{...register("password")}
 						/>
+					</label>
+					<label className="justify-end label">
+						<Link href="/auth/forgot-password" className="label-text-alt">
+							Forgot password?
+						</Link>
 					</label>
 				</div>
 				<button
