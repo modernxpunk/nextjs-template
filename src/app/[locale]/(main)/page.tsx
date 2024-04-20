@@ -1,3 +1,4 @@
+import { formatDate, humanize } from "@/lib/date";
 import { getTranslations } from "next-intl/server";
 
 const Home = async () => {
@@ -7,27 +8,9 @@ const Home = async () => {
 		<div className="container flex flex-col gap-10">
 			<div className="flex-1">
 				<p className="text-2xl">Typography</p>
+				<p>{humanize("1", "minutes")}</p>
+				<p>{formatDate("MM-DD-YYYY")}</p>
 				<div className="flex flex-col gap-3">
-					<div>
-						<p className="text-xs opacity-60">text-9xl</p>
-						<p className="text-9xl">{t("title")}</p>
-					</div>
-					<div>
-						<p className="text-xs opacity-60">text-8xl</p>
-						<p className="text-8xl">{t("title")}</p>
-					</div>
-					<div>
-						<p className="text-xs opacity-60">text-7xl</p>
-						<p className="text-7xl">{t("title")}</p>
-					</div>
-					<div>
-						<p className="text-xs opacity-60">text-6xl</p>
-						<p className="text-6xl">{t("title")}</p>
-					</div>
-					<div>
-						<p className="text-xs opacity-60">text-5xl</p>
-						<p className="text-5xl">{t("title")}</p>
-					</div>
 					<div>
 						<p className="text-xs opacity-60">text-4xl</p>
 						<p className="text-4xl">{t("title")}</p>

@@ -24,7 +24,7 @@ const LocaleSwitcher = () => {
 						{"english"}
 					</button>
 				</Link>
-				<Link href="/ua" prefetch={false}>
+				<Link href="/uk" prefetch={false}>
 					<button
 						className="w-full btn"
 						onClick={() =>

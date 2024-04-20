@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { fontsVariables } from "@/utils/font";
 import Image from "next/image";
 import { NextIntlClientProvider, useMessages } from "next-intl";
+import dayjs from "dayjs";
 
 export default function RootLayout({
 	children,
@@ -14,6 +15,7 @@ export default function RootLayout({
 	params: { locale: string };
 }) {
 	const messages = useMessages();
+	dayjs.locale(locale);
 	return (
 		<html lang={locale}>
 			<body className={cn(fontsVariables.join(" "), "font-sans")}>

@@ -1,34 +1,33 @@
 "use client";
 
 import Icon from "@/components/icon";
-import { signIn } from "@/lib/auth";
+import { forgotPassword } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { resolver } from "@/utils/config";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-const schemaSignIn = z.object({
+const schemaForgotPassword = z.object({
 	email: z.string().email(),
-	password: z.string().min(8),
 });
 
-type SignInForm = z.infer<typeof schemaSignIn>;
+type ForgotPasswordForm = z.infer<typeof schemaForgotPassword>;
 
 const Page = () => {
 	const {
 		register,
 		handleSubmit,
 		formState: { errors, isSubmitting },
-	} = useForm<SignInForm>({
-		resolver: resolver(schemaSignIn),
+	} = useForm<ForgotPasswordForm>({
+		resolver: resolver(schemaForgotPassword),
 	});
 
 	const router = useRouter();
 
-	const onSubmit = async ({ email, password }: SignInForm) => {
+	const onSubmit = async ({ email }: ForgotPasswordForm) => {
 		try {
-			await signIn(email, password);
+			await forgotPassword(email);
 			router.push("/");
 		} catch (err) {
 			//
@@ -39,7 +38,7 @@ const Page = () => {
 
 	return (
 		<div onSubmit={handleSubmit(onSubmit)}>
-			<h1>Sign in</h1>
+			<h1>Forgot password</h1>
 			<form className="gap-4 form-control">
 				<div>
 					<label className="label">
@@ -69,40 +68,11 @@ const Page = () => {
 						/>
 					</label>
 				</div>
-				<div>
-					<label className="label">
-						<span className="label-text">Password</span>
-						{errors.password && (
-							<span className="label-text-alt text-error">
-								{errors.password.message}
-							</span>
-						)}
-					</label>
-					<label
-						className={cn(
-							"flex items-center gap-2 input input-bordered",
-							errors.password &&
-								"input-error bg-error bg-opacity-10 text-error",
-							isSubmitting && "input-disabled",
-						)}
-					>
-						<Icon
-							className={errors.password ? "text-error" : "text-inherit"}
-							name="common/lock"
-						/>
-						<input
-							disabled={isSubmitting}
-							type="password"
-							className="grow"
-							{...register("password")}
-						/>
-					</label>
-				</div>
 				<button
 					disabled={isSubmitting}
 					className={cn("btn btn-primary", errors.root && "btn-error")}
 				>
-					sign in
+					submit
 				</button>
 			</form>
 		</div>

@@ -8,6 +8,7 @@ import DropdownTheme from "@/components/dropdown-theme";
 import { ThemeProvider } from "next-themes";
 import Icon from "@/components/icon";
 import { cn } from "@/lib/utils";
+import dayjs from "dayjs";
 
 export default function RootLayout({
 	children,
@@ -16,6 +17,7 @@ export default function RootLayout({
 	children: ReactNode;
 	params: { locale: string };
 }) {
+	dayjs.locale(locale);
 	return (
 		<html lang={locale}>
 			<body className={cn(fontsVariables.join(" "), "font-sans")}>
