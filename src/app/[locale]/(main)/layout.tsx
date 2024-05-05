@@ -1,9 +1,9 @@
 import ModalBuilder from "@/components/modal/builder";
-import { fontsVariables } from "@/utils/font";
+import { fontsVariables } from "@/lib/font";
 import Link from "next/link";
 import { type ReactNode } from "react";
 import "@/globals.css";
-import LocaleSwitcher from "@/lib/locale-switch";
+import LocaleSwitcher from "@/components/locale-switch";
 import DropdownTheme from "@/components/dropdown-theme";
 import { ThemeProvider } from "next-themes";
 import Icon from "@/components/icon";

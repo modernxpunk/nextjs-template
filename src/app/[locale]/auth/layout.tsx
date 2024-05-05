@@ -2,7 +2,7 @@ import { type ReactNode } from "react";
 import "@/globals.css";
 import { ThemeProvider } from "next-themes";
 import { cn } from "@/lib/utils";
-import { fontsVariables } from "@/utils/font";
+import { fontsVariables } from "@/lib/font";
 import Image from "next/image";
 import { NextIntlClientProvider, useMessages } from "next-intl";
 import dayjs from "dayjs";
