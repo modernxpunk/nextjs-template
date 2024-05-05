@@ -4,9 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Icon from "@/components/icon";
 import { forgotPassword } from "@/lib/auth";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useRouter } from "@/lib/i18n/config";
 
 const schemaForgotPassword = z.object({
 	email: z.string().email(),

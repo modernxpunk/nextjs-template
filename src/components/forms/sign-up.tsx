@@ -5,7 +5,7 @@ import Icon from "@/components/icon";
 import { signUp } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/i18n/config";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 

@@ -5,6 +5,8 @@ import Example from "./example";
 const Home = async () => {
 	const t = await getTranslations("Index");
 
+	console.log("asdfasdfasdf", t("title"));
+
 	return (
 		<div className="container flex flex-col gap-10">
 			<div className="flex-1">

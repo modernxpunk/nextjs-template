@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Icon from "@/components/icon";
 import { signIn } from "@/lib/auth";
 import { cn } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/lib/i18n/config";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 

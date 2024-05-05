@@ -20,7 +20,7 @@ export default function RootLayout({
 	dayjs.locale(locale);
 	return (
 		<html lang={locale}>
-			<body className={cn(fontsVariables.join(" "), "font-sans")}>
+			<body className={cn(fontsVariables, "font-sans")}>
 				<ThemeProvider>
 					<div className="drawer drawer-end">
 						<input id="my-drawer" type="checkbox" className="drawer-toggle" />

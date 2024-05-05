@@ -1,6 +1,6 @@
 import ModalContainer from "@/components/modal/container";
-import Modal1 from "@/components/modal/modal1";
-import Modal2 from "@/components/modal/modal2";
+import Modal1 from "@/components/modal/content/modal1";
+import Modal2 from "@/components/modal/content/modal2";
 
 const modals = [
 	{ id: "add_cat", Modal: Modal1 },

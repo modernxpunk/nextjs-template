@@ -18,7 +18,7 @@ export default function RootLayout({
 	dayjs.locale(locale);
 	return (
 		<html lang={locale}>
-			<body className={cn(fontsVariables.join(" "), "font-sans")}>
+			<body className={cn(fontsVariables, "font-sans")}>
 				<NextIntlClientProvider locale={locale} messages={messages}>
 					<ThemeProvider>
 						<div className="flex min-h-screen p-6 bg-base-300">
