@@ -1,5 +1,6 @@
 import { formatDate, humanize } from "@/lib/date";
 import { getTranslations } from "next-intl/server";
+import Example from "./example";
 
 const Home = async () => {
 	const t = await getTranslations("Index");
@@ -8,8 +9,6 @@ const Home = async () => {
 		<div className="container flex flex-col gap-10">
 			<div className="flex-1">
 				<p className="text-2xl">Typography</p>
-				<p>{humanize("1", "minutes")}</p>
-				<p>{formatDate("MM-DD-YYYY")}</p>
 				<div className="flex flex-col gap-3">
 					<div>
 						<p className="text-xs opacity-60">text-4xl</p>
@@ -102,7 +101,12 @@ const Home = async () => {
 					</div>
 				</div>
 			</div>
-			{/* <Button>{t("products.cart")}</Button> */}
+			<Example />
+			<div>
+				<p className="text-2xl">Date</p>
+				<p>{humanize(48, "hours")}</p>
+				<p>{formatDate(new Date(), "L LT")}</p>
+			</div>
 		</div>
 	);
 };

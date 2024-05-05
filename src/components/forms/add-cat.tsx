@@ -2,10 +2,17 @@
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import type { AddCat } from "@/types/form";
-import { resolver, schemaAddCat } from "@/utils/config";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { type FormHTMLAttributes, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const schemaAddCat = z.object({
+	name: z.string().min(10).max(255),
+	cat: z.enum(["Cat1", "Cat2", "Cat3"]),
+});
+
+export type AddCat = z.infer<typeof schemaAddCat>;
 
 const AddCatForm = (props: FormHTMLAttributes<HTMLFormElement>) => {
 	const {
@@ -14,7 +21,7 @@ const AddCatForm = (props: FormHTMLAttributes<HTMLFormElement>) => {
 		formState: { errors, isSubmitting },
 		reset,
 	} = useForm<AddCat>({
-		resolver: resolver(schemaAddCat),
+		resolver: zodResolver(schemaAddCat),
 	});
 
 	const formRef = useRef<HTMLFormElement>(null);
