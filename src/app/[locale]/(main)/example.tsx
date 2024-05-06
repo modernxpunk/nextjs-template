@@ -9,7 +9,7 @@ const Example = () => {
 					className="btn btn-primary"
 					onClick={() => {
 						const element = document.getElementById(
-							"add_cat",
+							"add-cat",
 						) as HTMLDialogElement;
 						if (element) {
 							element.showModal();

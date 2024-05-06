@@ -1,11 +1,19 @@
 import { formatDate, humanize } from "@/lib/date";
 import { getTranslations } from "next-intl/server";
 import Example from "./example";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+	title: "Hello World",
+	description: "Hello world",
+	openGraph: {
+		title: "Hello World",
+		description: "Hello World",
+	},
+};
 
 const Home = async () => {
 	const t = await getTranslations("Index");
-
-	console.log("asdfasdfasdf", t("title"));
 
 	return (
 		<div className="container flex flex-col gap-10">
