@@ -1,0 +1,74 @@
+"use client";
+
+import { zodResolver } from "@hookform/resolvers/zod";
+import Icon from "@/components/icon";
+import { cn } from "@/lib/utils";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+
+const schema{{pascalCase name}} = z.object({
+	example: z.string().email(),
+});
+
+type {{pascalCase name}}Schema = z.infer<typeof schema{{pascalCase name}}>;
+
+const {{pascalCase name}}Form = () => {
+	const {
+		register,
+		handleSubmit,
+		formState: { errors, isSubmitting },
+	} = useForm<{{pascalCase name}}Schema>({
+		resolver: zodResolver(schema{{pascalCase name}}),
+	});
+
+	const onSubmit = async ({ example }: {{pascalCase name}}Schema) => {
+		try {
+			//
+		} catch (err) {
+			//
+		} finally {
+			//
+		}
+	};
+
+	return (
+		<form className="gap-4 form-control" onSubmit={handleSubmit(onSubmit)}>
+			<div>
+				<label className="label">
+					<span className="label-text">example</span>
+					{errors.example && (
+						<span className="label-text-alt text-error">
+							{errors.example.message}
+						</span>
+					)}
+				</label>
+				<label
+					className={cn(
+						"flex items-center gap-2 input input-bordered",
+						errors.example && "input-error bg-error bg-opacity-10 text-error",
+						isSubmitting && "input-disabled",
+					)}
+				>
+					<Icon
+						className={errors.example ? "text-error" : "text-inherit"}
+						name="common/email"
+					/>
+					<input
+						disabled={isSubmitting}
+						type="text"
+						className="grow"
+						{...register("example")}
+					/>
+				</label>
+			</div>
+			<button
+				disabled={isSubmitting}
+				className={cn("btn btn-primary", errors.root && "btn-error")}
+			>
+				submit
+			</button>
+		</form>
+	);
+};
+
+export default {{pascalCase name}}Form;
