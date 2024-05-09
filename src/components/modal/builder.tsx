@@ -1,12 +1,13 @@
 import ModalContainer from "@/components/modal/container";
+
+// New import
 import Modal1 from "@/components/modal/content/modal1";
 import Modal2 from "@/components/modal/content/modal2";
-// New import
 
 const modals = [
+	// New modal
 	{ id: "add_cat", Modal: Modal1 },
 	{ id: "example", Modal: Modal2 },
-	// New modal
 ];
 
 const ModalBuilder = () => {
