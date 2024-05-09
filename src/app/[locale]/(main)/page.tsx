@@ -2,6 +2,7 @@ import { formatDate, humanize } from "@/lib/date";
 import { getTranslations } from "next-intl/server";
 import Example from "./example";
 import { Metadata } from "next";
+import { trpcServer } from "@/app/trpc/server-client";
 
 export const metadata: Metadata = {
 	title: "Hello World",
@@ -14,6 +15,9 @@ export const metadata: Metadata = {
 
 const Home = async () => {
 	const t = await getTranslations("Index");
+
+	const greetings = await trpcServer.greetings();
+	console.log(greetings);
 
 	return (
 		<div className="container flex flex-col gap-10">

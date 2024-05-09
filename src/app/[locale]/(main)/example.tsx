@@ -1,6 +1,10 @@
 "use client";
 
+import { trpcClient } from "@/app/trpc/client";
+
 const Example = () => {
+	const greetengs = trpcClient.greetings.useQuery(undefined);
+	console.log("greetengs", greetengs.data);
 	return (
 		<div>
 			<p className="text-2xl">Modals</p>
