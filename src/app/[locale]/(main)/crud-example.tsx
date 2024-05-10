@@ -21,6 +21,8 @@ const CRUD = () => {
 			},
 		});
 
+	const { data } = trpcClient.post.x.useQuery();
+
 	const { mutateAsync: updatePostById } =
 		trpcClient.post.updateById.useMutation({
 			onSuccess: () => {

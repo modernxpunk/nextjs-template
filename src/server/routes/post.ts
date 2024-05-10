@@ -1,5 +1,7 @@
 import { publicProcedure, router } from "@/server/trpc";
 import { z } from "zod";
+import { db } from "@/server/.drizzle/connection";
+import { users } from "@/server/.drizzle/schema";
 
 const posts = [
 	{
@@ -70,6 +72,16 @@ const postRouter = router({
 			posts.splice(index, 1);
 			return deletedPost;
 		}),
+	x: publicProcedure.query(async () => {
+		try {
+			const allUsers = await db.select().from(users);
+			console.log("allUsers", allUsers);
+			return allUsers;
+		} catch (err) {
+			console.log("err", err);
+			return [];
+		}
+	}),
 });
 
 export default postRouter;
