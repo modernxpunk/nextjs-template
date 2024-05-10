@@ -13,7 +13,10 @@ interface SpritesMap {
 		| "white-balance-sunny"
 		| "menu"
 		| "email"
-		| "lock";
+		| "lock"
+		| "delete"
+		| "pencil"
+		| "close";
 	socials: "facebook" | "discord" | "github" | "twitter";
 }
 
