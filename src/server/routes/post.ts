@@ -1,27 +1,26 @@
 import { publicProcedure, router } from "@/server/trpc";
 import { z } from "zod";
 import { db } from "@/server/.drizzle/connection";
-import { users } from "@/server/.drizzle/schema";
-
-const posts = [
-	{
-		id: "1",
-		title: "Hello, World!",
-	},
-];
+import { postsTable } from "@/server/.drizzle/schema";
+import { eq } from "drizzle-orm";
 
 const postRouter = router({
 	getAll: publicProcedure.query(async () => {
+		const posts = await db.select().from(postsTable);
 		return posts;
 	}),
 	getById: publicProcedure
 		.input(
 			z.object({
-				id: z.string(),
+				id: z.number(),
 			}),
 		)
 		.query(async (opts) => {
 			const id = opts.input.id;
+			const posts = await db
+				.select()
+				.from(postsTable)
+				.where(eq(postsTable.id, id));
 			return posts.find((post) => post.id === id);
 		}),
 	create: publicProcedure
@@ -32,16 +31,13 @@ const postRouter = router({
 		)
 		.mutation(async (opts) => {
 			const newPost = opts.input;
-			posts.push({
-				id: String(posts.length + 1),
-				...newPost,
-			});
+			await db.insert(postsTable).values({ title: newPost.title });
 			return newPost;
 		}),
 	updateById: publicProcedure
 		.input(
 			z.object({
-				id: z.string(),
+				id: z.number(),
 				updatedPost: z.object({
 					title: z.string(),
 				}),
@@ -49,39 +45,20 @@ const postRouter = router({
 		)
 		.mutation(async (opts) => {
 			const { id, updatedPost } = opts.input;
-			const post = posts.find((post) => post.id === id);
-			if (!post) {
-				throw new Error("Post not found");
-			}
-			Object.assign(post, updatedPost);
-			return post;
+			await db.update(postsTable).set(updatedPost).where(eq(postsTable.id, id));
+			return updatedPost;
 		}),
 	deleteById: publicProcedure
 		.input(
 			z.object({
-				id: z.string(),
+				id: z.number(),
 			}),
 		)
 		.mutation(async (opts) => {
 			const id = opts.input.id;
-			const index = posts.findIndex((post) => post.id === id);
-			if (index === -1) {
-				throw new Error("Post not found");
-			}
-			const deletedPost = posts[index];
-			posts.splice(index, 1);
-			return deletedPost;
+			await db.delete(postsTable).where(eq(postsTable.id, id));
+			return id;
 		}),
-	x: publicProcedure.query(async () => {
-		try {
-			const allUsers = await db.select().from(users);
-			console.log("allUsers", allUsers);
-			return allUsers;
-		} catch (err) {
-			console.log("err", err);
-			return [];
-		}
-	}),
 });
 
 export default postRouter;

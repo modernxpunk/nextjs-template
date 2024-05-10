@@ -21,8 +21,6 @@ const CRUD = () => {
 			},
 		});
 
-	const { data } = trpcClient.post.x.useQuery();
-
 	const { mutateAsync: updatePostById } =
 		trpcClient.post.updateById.useMutation({
 			onSuccess: () => {
@@ -38,14 +36,14 @@ const CRUD = () => {
 		await createPost({ title });
 	};
 
-	const deletePost = async (id: string) => {
+	const deletePost = async (id: number) => {
 		await deletePostById({ id });
 	};
 
-	const [isUpdating, setIsUpdating] = useState<null | string>(null);
+	const [isUpdating, setIsUpdating] = useState<null | number>(null);
 	const updatePostSubmit = async (
 		e: KeyboardEvent<HTMLInputElement>,
-		id: string,
+		id: number,
 		title: string,
 	) => {
 		if (e.key === "Enter") {
@@ -77,7 +75,7 @@ const CRUD = () => {
 									onKeyDown={(e) =>
 										updatePostSubmit(e, post.id, e.currentTarget.value)
 									}
-									defaultValue={post.title}
+									defaultValue={String(post.title)}
 								/>
 							) : (
 								post.title
