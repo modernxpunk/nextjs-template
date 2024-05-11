@@ -7,26 +7,43 @@ import { FormEvent, KeyboardEvent, useState } from "react";
 const CRUD = () => {
 	const utils = trpcClient.useContext();
 
-	const { data: posts } = trpcClient.post.getAll.useQuery();
+	const [page, setPage] = useState(1);
+	const { data, fetchNextPage, fetchPreviousPage } =
+		trpcClient.post.getAll.useInfiniteQuery(
+			{ page },
+			{
+				getNextPageParam: (lastPage) => lastPage.nextPage ?? null,
+			},
+		);
+	const posts = data?.pages[0]?.posts || [];
+
+	const handlePrevPage = async () => {
+		await fetchPreviousPage();
+		setPage((prev) => prev - 1);
+	};
+	const handleNextPage = async () => {
+		await fetchNextPage();
+		setPage((prev) => prev + 1);
+	};
+	// const { data: posts } = trpcClient.post.getAll.useQuery({});
+
 	const { mutateAsync: createPost } = trpcClient.post.create.useMutation({
 		onSuccess: () => {
 			utils.post.getAll.invalidate();
 		},
 	});
 
-	const { mutateAsync: deletePostById } =
-		trpcClient.post.deleteById.useMutation({
-			onSuccess: () => {
-				utils.post.getAll.invalidate();
-			},
-		});
+	const { mutateAsync: deletePostById } = trpcClient.post.delete.useMutation({
+		onSuccess: () => {
+			utils.post.getAll.invalidate();
+		},
+	});
 
-	const { mutateAsync: updatePostById } =
-		trpcClient.post.updateById.useMutation({
-			onSuccess: () => {
-				utils.post.getAll.invalidate();
-			},
-		});
+	const { mutateAsync: updatePostById } = trpcClient.post.update.useMutation({
+		onSuccess: () => {
+			utils.post.getAll.invalidate();
+		},
+	});
 
 	const createPostForm = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -99,6 +116,15 @@ const CRUD = () => {
 						</button>
 					);
 				})}
+			</div>
+			<div className="flex gap-2">
+				<button className="btn btn-primary">{page}</button>
+				<button onClick={handlePrevPage} className="btn btn-primary">
+					prev page
+				</button>
+				<button onClick={handleNextPage} className="btn btn-primary">
+					next page
+				</button>
 			</div>
 		</div>
 	);

@@ -6,7 +6,7 @@ import { trpcClient } from "@/app/trpc/client";
 import { configTrpc } from "@/utils/trpc";
 
 export default function Provider({ children }: { children: React.ReactNode }) {
-	const [queryClient] = useState(() => new QueryClient({}));
+	const [queryClient] = useState(() => new QueryClient());
 	const [trpc] = useState(() => trpcClient.createClient(configTrpc));
 
 	return (

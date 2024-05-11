@@ -5,7 +5,6 @@ import { client, db } from "./connection";
 const main = async () => {
 	// @ts-ignore
 	await migrate(db, { migrationsFolder: "src/server/.drizzle/migration" });
-
 	await client.end();
 };
 
