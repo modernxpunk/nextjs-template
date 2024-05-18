@@ -1,6 +1,5 @@
 import { publicProcedure, router } from "@/server/trpc";
 import { z } from "zod";
-import { db } from "@/server/.drizzle/connection";
 import { postsTable } from "@/server/.drizzle/schema";
 import { asc, eq } from "drizzle-orm";
 
@@ -14,11 +13,12 @@ const postRouter = router({
 				direction: z.enum(["asc", "desc"]).optional().default("asc"),
 			}),
 		)
-		.query(async (opts) => {
-			const { page, direction, cursor } = opts.input;
-			const limit = opts.input.limit ?? 10;
+		.query(async ({ input, ctx }) => {
+			console.log("HERE ROUTE");
+			const { page, direction, cursor } = input;
+			const limit = input.limit ?? 10;
 
-			const posts = await db
+			const posts = await ctx.db
 				.select()
 				.from(postsTable)
 				.orderBy(asc(postsTable.id))
@@ -36,9 +36,9 @@ const postRouter = router({
 				id: z.number(),
 			}),
 		)
-		.query(async (opts) => {
-			const { id } = opts.input;
-			const post = await db
+		.query(async ({ input, ctx }) => {
+			const { id } = input;
+			const post = await ctx.db
 				.select()
 				.from(postsTable)
 				.where(eq(postsTable.id, id));
@@ -50,9 +50,9 @@ const postRouter = router({
 				title: z.string(),
 			}),
 		)
-		.mutation(async (opts) => {
-			const newPost = opts.input;
-			await db.insert(postsTable).values({ title: newPost.title });
+		.mutation(async ({ input, ctx }) => {
+			const newPost = input;
+			await ctx.db.insert(postsTable).values({ title: newPost.title });
 			return newPost;
 		}),
 	update: publicProcedure
@@ -64,9 +64,12 @@ const postRouter = router({
 				}),
 			}),
 		)
-		.mutation(async (opts) => {
-			const { id, updatedPost } = opts.input;
-			await db.update(postsTable).set(updatedPost).where(eq(postsTable.id, id));
+		.mutation(async ({ input, ctx }) => {
+			const { id, updatedPost } = input;
+			await ctx.db
+				.update(postsTable)
+				.set(updatedPost)
+				.where(eq(postsTable.id, id));
 			return updatedPost;
 		}),
 	delete: publicProcedure
@@ -75,9 +78,9 @@ const postRouter = router({
 				id: z.number(),
 			}),
 		)
-		.mutation(async (opts) => {
-			const { id } = opts.input;
-			await db.delete(postsTable).where(eq(postsTable.id, id));
+		.mutation(async ({ input, ctx }) => {
+			const { id } = input;
+			await ctx.db.delete(postsTable).where(eq(postsTable.id, id));
 			return id;
 		}),
 });

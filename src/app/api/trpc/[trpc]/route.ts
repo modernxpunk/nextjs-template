@@ -1,3 +1,4 @@
+import { createContext } from "@/server/context";
 import { appRouter } from "@/server/routes/_app";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 import { NextRequest } from "next/server";
@@ -15,7 +16,7 @@ const handler = (req: NextRequest) => {
 						);
 					}
 				: undefined,
-		createContext: async () => {},
+		createContext,
 	});
 };
 

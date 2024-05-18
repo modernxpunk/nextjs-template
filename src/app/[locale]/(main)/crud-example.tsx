@@ -8,30 +8,22 @@ const CRUD = () => {
 	const utils = trpcClient.useContext();
 
 	const [page, setPage] = useState(1);
-	const {
-		data,
-		fetchNextPage,
-		fetchPreviousPage,
-		hasNextPage,
-		hasPreviousPage,
-	} = trpcClient.post.getAll.useInfiniteQuery(
-		{ page },
-		{
-			getNextPageParam: (lastPage) => lastPage.nextPage ?? null,
-			getPreviousPageParam: (firstPage) => firstPage.previousPage ?? null,
-			refetchOnWindowFocus: false,
-			retry: 0,
-		},
-	);
+	const { data, hasNextPage, hasPreviousPage } =
+		trpcClient.post.getAll.useInfiniteQuery(
+			{ page },
+			{
+				getNextPageParam: (lastPage) => lastPage.nextPage ?? null,
+				getPreviousPageParam: (firstPage) => firstPage.previousPage ?? null,
+				refetchOnWindowFocus: false,
+			},
+		);
 
 	const posts = data?.pages[0]?.posts || [];
 
-	const handlePrevPage = async () => {
-		await fetchPreviousPage();
+	const handlePrevPage = () => {
 		setPage(page - 1);
 	};
-	const handleNextPage = async () => {
-		await fetchNextPage();
+	const handleNextPage = () => {
 		setPage(page + 1);
 	};
 
