@@ -7,5 +7,5 @@ const connectionString = process.env.DATABASE_URL as string;
 export const client = postgres(connectionString);
 export const db = drizzle(client, {
 	schema,
-	logger: process.env.NODE_ENV === "development",
+	// logger: process.env.NODE_ENV === "development",
 });

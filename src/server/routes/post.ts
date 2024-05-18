@@ -8,14 +8,14 @@ const postRouter = router({
 	getAll: publicProcedure
 		.input(
 			z.object({
-				limit: z.number().optional().default(10),
+				limit: z.number().min(1).max(50).optional().default(10),
 				page: z.number().optional().default(1),
-				cursor: z.string().nullish(),
+				cursor: z.any().nullish(),
 				direction: z.enum(["asc", "desc"]).optional().default("asc"),
 			}),
 		)
 		.query(async (opts) => {
-			const { page, direction } = opts.input;
+			const { page, direction, cursor } = opts.input;
 			const limit = opts.input.limit ?? 10;
 
 			const posts = await db
@@ -25,7 +25,10 @@ const postRouter = router({
 				.limit(limit)
 				.offset((page - 1) * limit);
 
-			return { posts, nextPage: 2 };
+			const nextPage = posts.length !== limit ? null : page + 1;
+			const previousPage = page === 1 ? null : page - 1;
+
+			return { posts, nextPage, previousPage };
 		}),
 	get: publicProcedure
 		.input(

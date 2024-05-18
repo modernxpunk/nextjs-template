@@ -8,24 +8,32 @@ const CRUD = () => {
 	const utils = trpcClient.useContext();
 
 	const [page, setPage] = useState(1);
-	const { data, fetchNextPage, fetchPreviousPage } =
-		trpcClient.post.getAll.useInfiniteQuery(
-			{ page },
-			{
-				getNextPageParam: (lastPage) => lastPage.nextPage ?? null,
-			},
-		);
+	const {
+		data,
+		fetchNextPage,
+		fetchPreviousPage,
+		hasNextPage,
+		hasPreviousPage,
+	} = trpcClient.post.getAll.useInfiniteQuery(
+		{ page },
+		{
+			getNextPageParam: (lastPage) => lastPage.nextPage ?? null,
+			getPreviousPageParam: (firstPage) => firstPage.previousPage ?? null,
+			refetchOnWindowFocus: false,
+			retry: 0,
+		},
+	);
+
 	const posts = data?.pages[0]?.posts || [];
 
 	const handlePrevPage = async () => {
 		await fetchPreviousPage();
-		setPage((prev) => prev - 1);
+		setPage(page - 1);
 	};
 	const handleNextPage = async () => {
 		await fetchNextPage();
-		setPage((prev) => prev + 1);
+		setPage(page + 1);
 	};
-	// const { data: posts } = trpcClient.post.getAll.useQuery({});
 
 	const { mutateAsync: createPost } = trpcClient.post.create.useMutation({
 		onSuccess: () => {
@@ -118,11 +126,18 @@ const CRUD = () => {
 				})}
 			</div>
 			<div className="flex gap-2">
-				<button className="btn btn-primary">{page}</button>
-				<button onClick={handlePrevPage} className="btn btn-primary">
+				<button
+					onClick={handlePrevPage}
+					disabled={!hasPreviousPage}
+					className="btn btn-primary"
+				>
 					prev page
 				</button>
-				<button onClick={handleNextPage} className="btn btn-primary">
+				<button
+					onClick={handleNextPage}
+					disabled={!hasNextPage}
+					className="btn btn-primary"
+				>
 					next page
 				</button>
 			</div>
