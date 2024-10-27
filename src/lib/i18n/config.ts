@@ -1,32 +1,26 @@
-import { notFound } from "next/navigation";
-import { getRequestConfig } from "next-intl/server";
-import {
-	Pathnames,
-	createLocalizedPathnamesNavigation,
-} from "next-intl/navigation";
+import { Locale } from "@/types";
+import "server-only";
 
-const locales = ["en", "uk"] as const;
+export const i18n = {
+	defaultLocale: "en",
+	locales: ["en", "uk"],
+} as const;
 
-export const configLocale = {
-	locales: locales,
-	pathnames: {
-		"/": "/",
-	} satisfies Pathnames<typeof locales>,
-	localePrefix: undefined,
+// type Dictionaries = {
+// 	[key in (typeof availableLanguages)[number]]: () => Promise<typeof en>;
+// };
+
+// const dictionaries: Dictionaries = availableLanguages.reduce((acc, lang) => {
+// 	acc[lang] = () =>
+// 		import(`../dictionaries/${lang}.json`).then((module) => module.default);
+// 	return acc;
+// }, {} as Dictionaries);
+
+// TODO: generate object from availableLanguages but not importing one of dictionaries to create type
+const dictionaries = {
+	en: () => import("./dictionaries/en.json").then((module) => module.default),
+	uk: () => import("./dictionaries/uk.json").then((module) => module.default),
 };
 
-export default getRequestConfig(async ({ locale }) => {
-	if (!configLocale.locales.includes(locale as any)) notFound();
-	return {
-		messages: (
-			await (locale === "en"
-				? import("./dictionary/en.json")
-				: import(`./dictionary/${locale}.json`))
-		).default,
-	};
-});
-
-export type AppPathnames = keyof typeof configLocale.pathnames;
-
-export const { Link, redirect, usePathname, useRouter } =
-	createLocalizedPathnamesNavigation(configLocale);
+export const getDictionary = async (locale: Locale) =>
+	await dictionaries[locale]?.();

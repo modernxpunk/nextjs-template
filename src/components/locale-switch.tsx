@@ -14,7 +14,7 @@ const LocaleSwitcher = () => {
 				<Icon className="text-xl" name="common/chevron-down" />
 			</summary>
 			<div className="p-2 shadow menu mt-4 dropdown-content z-[1] bg-base-200 rounded-box w-52">
-				<Link href="/en" prefetch={false}>
+				<Link href="en" prefetch={false}>
 					<button
 						className="w-full btn"
 						onClick={() =>
@@ -24,7 +24,7 @@ const LocaleSwitcher = () => {
 						{"english"}
 					</button>
 				</Link>
-				<Link href="/uk" prefetch={false}>
+				<Link href="uk" prefetch={false}>
 					<button
 						className="w-full btn"
 						onClick={() =>

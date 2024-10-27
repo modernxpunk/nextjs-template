@@ -1,25 +1,31 @@
+import DropdownTheme from "@/components/dropdown-theme";
+import Icon from "@/components/icon";
+import LocaleSwitcher from "@/components/locale-switch";
 import ModalBuilder from "@/components/modal/builder";
+import "@/globals.css";
 import { fontsVariables } from "@/lib/font";
+import { i18n } from "@/lib/i18n/config";
+import { cn } from "@/lib/utils";
+import { Locale } from "@/types";
+import dayjs from "dayjs";
+import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import { type ReactNode } from "react";
-import "@/globals.css";
-import LocaleSwitcher from "@/components/locale-switch";
-import DropdownTheme from "@/components/dropdown-theme";
-import { ThemeProvider } from "next-themes";
-import Icon from "@/components/icon";
-import { cn } from "@/lib/utils";
-import dayjs from "dayjs";
+
+export async function generateStaticParams() {
+	return i18n.locales.map((lang) => ({ lang }));
+}
 
 export default function RootLayout({
 	children,
-	params: { locale },
+	params: { lang },
 }: {
 	children: ReactNode;
-	params: { locale: string };
+	params: { lang: Locale };
 }) {
-	dayjs.locale(locale);
+	dayjs.locale(lang);
 	return (
-		<html lang={locale}>
+		<html lang={lang}>
 			<body className={cn(fontsVariables, "font-sans")}>
 				<ThemeProvider>
 					<div className="drawer drawer-end">
