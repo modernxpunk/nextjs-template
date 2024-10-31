@@ -2,6 +2,7 @@ import { formatDate, humanize } from "@/lib/date";
 import { getDictionary } from "@/lib/i18n/config";
 import { PageWithLang } from "@/types";
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
 	title: "Hello World",
@@ -21,6 +22,9 @@ const Page: PageWithLang = async ({ params: { lang } }) => {
 				<p className="text-2xl">Date</p>
 				<p>{dict.greetings}</p>
 				<p>{humanize(48, "hours")}</p>
+				<Link scroll={false} href="/movies">
+					movies
+				</Link>
 				<p>{formatDate(new Date(), "L LT")}</p>
 			</div>
 		</div>

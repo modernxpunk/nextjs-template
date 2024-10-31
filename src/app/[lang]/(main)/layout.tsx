@@ -1,28 +1,19 @@
 import DropdownTheme from "@/components/dropdown-theme";
 import Icon from "@/components/icon";
 import LocaleSwitcher from "@/components/locale-switch";
-import ModalBuilder from "@/components/modal/builder";
 import "@/globals.css";
 import { fontsVariables } from "@/lib/font";
 import { i18n } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
-import { Locale } from "@/types";
 import dayjs from "dayjs";
 import { ThemeProvider } from "next-themes";
 import Link from "next/link";
-import { type ReactNode } from "react";
 
 export async function generateStaticParams() {
 	return i18n.locales.map((lang) => ({ lang }));
 }
 
-export default function RootLayout({
-	children,
-	params: { lang },
-}: {
-	children: ReactNode;
-	params: { lang: Locale };
-}) {
+export default function RootLayout({ children, params: { lang }, modal }: any) {
 	dayjs.locale(lang);
 	return (
 		<html lang={lang}>
@@ -39,12 +30,6 @@ export default function RootLayout({
 									<nav className="items-center hidden gap-2 lg:flex">
 										<DropdownTheme />
 										<LocaleSwitcher />
-										<Link className="btn btn-ghost" href="/auth/sign-in">
-											login
-										</Link>
-										<Link className="btn btn-primary" href="/auth/sign-up">
-											sign up
-										</Link>
 									</nav>
 									<label
 										htmlFor="my-drawer"
@@ -85,7 +70,6 @@ export default function RootLayout({
 									</nav>
 								</div>
 							</footer>
-							<ModalBuilder />
 						</div>
 						<div className="drawer-side">
 							<label
@@ -105,6 +89,7 @@ export default function RootLayout({
 						</div>
 					</div>
 				</ThemeProvider>
+				{modal}
 			</body>
 		</html>
 	);
