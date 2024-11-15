@@ -1,5 +1,5 @@
-import { i18n } from "@/lib/i18n/config";
-import { NextPage } from "next";
+import type { i18n } from "@/lib/i18n/config";
+import type { NextPage } from "next";
 
 export type AvailableLanguages = (typeof i18n.locales)[number];
 

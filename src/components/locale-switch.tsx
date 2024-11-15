@@ -17,9 +17,11 @@ const LocaleSwitcher = () => {
 				<Link href="en" prefetch={false}>
 					<button
 						className="w-full btn"
-						onClick={() =>
-							detailsRef.current && (detailsRef.current.open = false)
-						}
+						onClick={() => {
+							if (detailsRef.current) {
+								detailsRef.current.open = false;
+							}
+						}}
 					>
 						{"english"}
 					</button>
@@ -27,9 +29,11 @@ const LocaleSwitcher = () => {
 				<Link href="uk" prefetch={false}>
 					<button
 						className="w-full btn"
-						onClick={() =>
-							detailsRef.current && (detailsRef.current.open = false)
-						}
+						onClick={() => {
+							if (detailsRef.current) {
+								detailsRef.current.open = false;
+							}
+						}}
 					>
 						{"ukrainian"}
 					</button>

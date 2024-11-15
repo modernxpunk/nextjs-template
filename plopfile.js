@@ -1,4 +1,4 @@
-module.exports = function (plop) {
+module.exports = (plop) => {
 	plop.setGenerator("form", {
 		description: "Generate a form",
 		prompts: [

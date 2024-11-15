@@ -10,10 +10,8 @@ export const contentType = "image/png";
 
 export default async function Image() {
 	return new ImageResponse(
-		(
-			<div className="flex items-center justify-center w-full h-full text-4xl bg-white">
-				About Acme
-			</div>
-		),
+		<div className="flex items-center justify-center w-full h-full text-4xl bg-white">
+			About Acme
+		</div>,
 	);
 }

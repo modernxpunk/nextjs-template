@@ -1,7 +1,7 @@
 import { formatDate, humanize } from "@/lib/date";
 import { getDictionary } from "@/lib/i18n/config";
-import { PageWithLang } from "@/types";
-import { Metadata } from "next";
+import type { PageWithLang } from "@/types";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {

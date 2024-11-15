@@ -1,5 +1,9 @@
-const Layout = ({ children, modal }: any) => {
-	console.log("hello layout");
+import type { PropsWithChildren, ReactNode } from "react";
+
+const Layout = ({
+	children,
+	modal,
+}: PropsWithChildren<{ modal: ReactNode }>) => {
 	return (
 		<div>
 			{children}

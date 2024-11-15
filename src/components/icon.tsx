@@ -29,6 +29,7 @@ const Icon = ({ name, className, ...props }: IconProps) => {
 	const [spriteName, iconName] = name.split("/");
 	return (
 		<svg className={cn("icon", className)} focusable="false" {...props}>
+			<title>{iconName}</title>
 			<use xlinkHref={`/sprites/${spriteName}.svg#${iconName}`} />
 		</svg>
 	);

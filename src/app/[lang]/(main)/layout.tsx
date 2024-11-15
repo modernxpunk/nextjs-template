@@ -13,7 +13,17 @@ export async function generateStaticParams() {
 	return i18n.locales.map((lang) => ({ lang }));
 }
 
-export default function RootLayout({ children, params: { lang }, modal }: any) {
+interface RootLayoutProps {
+	children: React.ReactNode;
+	params: { lang: string };
+	modal?: React.ReactNode;
+}
+
+export default function RootLayout({
+	children,
+	params: { lang },
+	modal,
+}: RootLayoutProps) {
 	dayjs.locale(lang);
 	return (
 		<html lang={lang}>
@@ -47,22 +57,38 @@ export default function RootLayout({ children, params: { lang }, modal }: any) {
 										<p>Copyright © 2024 - All right reserved</p>
 									</aside>
 									<nav className="flex justify-self-center">
-										<a href="https://discord.com" target="_blank">
+										<a
+											href="https://discord.com"
+											target="_blank"
+											rel="noreferrer"
+										>
 											<button className="text-2xl btn btn-circle btn-ghost">
 												<Icon name="socials/discord" />
 											</button>
 										</a>
-										<a href="https://facebook.com" target="_blank">
+										<a
+											href="https://facebook.com"
+											target="_blank"
+											rel="noreferrer"
+										>
 											<button className="text-2xl btn btn-circle btn-ghost">
 												<Icon name="socials/facebook" />
 											</button>
 										</a>
-										<a href="https://github.com" target="_blank">
+										<a
+											href="https://github.com"
+											target="_blank"
+											rel="noreferrer"
+										>
 											<button className="text-2xl btn btn-circle btn-ghost">
 												<Icon name="socials/github" />
 											</button>
 										</a>
-										<a href="https://twitter.com" target="_blank">
+										<a
+											href="https://twitter.com"
+											target="_blank"
+											rel="noreferrer"
+										>
 											<button className="text-2xl btn btn-circle btn-ghost">
 												<Icon name="socials/twitter" />
 											</button>
@@ -76,14 +102,14 @@ export default function RootLayout({ children, params: { lang }, modal }: any) {
 								htmlFor="my-drawer"
 								aria-label="close sidebar"
 								className="drawer-overlay"
-							></label>
+							/>
 							<ul className="min-h-full p-4 menu w-80 bg-base-200 text-base-content">
 								{/* Sidebar content here */}
 								<li>
-									<a>Sidebar Item 1</a>
+									<a href="#">Sidebar Item 1</a>
 								</li>
 								<li>
-									<a>Sidebar Item 2</a>
+									<a href="#">Sidebar Item 2</a>
 								</li>
 							</ul>
 						</div>

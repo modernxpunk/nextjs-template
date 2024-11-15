@@ -1,11 +1,14 @@
 import { i18n } from "@/lib/i18n/config";
 import Negotiator from "negotiator";
-import { NextRequest, NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 
 // TODO: delete negotiator
 function getLocale(request: NextRequest) {
 	const negotiatorHeaders: Record<string, string> = {};
-	request.headers.forEach((value, key) => (negotiatorHeaders[key] = value));
+	request.headers.forEach((value, key) => {
+		negotiatorHeaders[key] = value;
+	});
 
 	const negotiator = new Negotiator({ headers: negotiatorHeaders });
 	const preferredLang =
