@@ -6,7 +6,7 @@ const buildEslintCommand = (filenames) =>
 		.join(" --file ")}`;
 
 const prettierCommand = (filenames) =>
-	`prettier --ignore-path .gitignore --write ${filenames.join(" ")}`;
+	`biome format --write ${filenames.join(" ")}`;
 
 const typescriptCommand = (filenames) =>
 	`bash -c tsc --pretty --noEmit --project tsconfig.json ${filenames.join(" ")}`;
