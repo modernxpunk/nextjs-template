@@ -1,0 +1,16 @@
+name: PR
+
+on:
+  pull_request:
+
+jobs:
+  build:
+    name: Next.js Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v1
+      - name: Install Dependencies
+        run: bun install
+      - name: Build
+        run: bun run build
