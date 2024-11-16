@@ -12,6 +12,7 @@ const buttonStyles = cva("btn", {
 		size: {
 			sm: "btn-sm",
 			md: "btn-md",
+			lg: "btn-lg",
 		},
 		full: {
 			true: "w-full",

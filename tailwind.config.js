@@ -3,7 +3,12 @@
 const { fontFamily } = require("tailwindcss/defaultTheme");
 
 module.exports = {
-	content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
+	// add storybook to purge
+	content: [
+		"./src/**/*.{js,ts,jsx,tsx,mdx}",
+		"./stories/**/*.{js,ts,jsx,tsx,mdx}",
+		"./.storybook/**/*.{js,ts,jsx,tsx,mdx}",
+	],
 	theme: {
 		spacing: {
 			px: "1px",
