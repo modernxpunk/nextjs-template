@@ -1,14 +1,17 @@
 /** @type {import('tailwindcss').Config} */
 
 const { fontFamily } = require("tailwindcss/defaultTheme");
+const { typewindTransforms } = require("typewind/transform");
 
 module.exports = {
-	// add storybook to purge
-	content: [
-		"./src/**/*.{js,ts,jsx,tsx,mdx}",
-		"./stories/**/*.{js,ts,jsx,tsx,mdx}",
-		"./.storybook/**/*.{js,ts,jsx,tsx,mdx}",
-	],
+	content: {
+		files: [
+			"./src/**/*.{js,ts,jsx,tsx,mdx}",
+			"./stories/**/*.{js,ts,jsx,tsx,mdx}",
+			"./.storybook/**/*.{js,ts,jsx,tsx,mdx}",
+		],
+		transform: typewindTransforms,
+	},
 	theme: {
 		spacing: {
 			px: "1px",
