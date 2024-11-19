@@ -10,5 +10,17 @@
 				"useValidAnchor": "off"
 			}
 		}
-	}
+	},
+	"overrides": [
+		{
+			"include": [".storybook/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noDefaultExport": "off"
+					}
+				}
+			}
+		}
+	]
 }

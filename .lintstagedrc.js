@@ -5,7 +5,7 @@ const buildEslintCommand = (filenames) =>
 		.map((f) => path.relative(process.cwd(), f))
 		.join(" --file ")}`;
 
-const prettierCommand = (filenames) =>
+const biomeCommand = (filenames) =>
 	`biome format --write ${filenames.join(" ")}`;
 
 const typescriptCommand = (filenames) =>
@@ -14,7 +14,7 @@ const typescriptCommand = (filenames) =>
 module.exports = {
 	"./src/**/*.{js,jsx,ts,tsx}": [
 		buildEslintCommand,
-		prettierCommand,
+		biomeCommand,
 		typescriptCommand,
 	],
 };
