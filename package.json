@@ -26,6 +26,10 @@
 			"npm run format"
 		]
 	},
+	"typewind": {
+		"showPixelEquivalents": true,
+		"rootFontSize": 16
+	},
 	"dependencies": {
 		"@biomejs/biome": "^1.9.4",
 		"@hookform/resolvers": "^3.3.4",
