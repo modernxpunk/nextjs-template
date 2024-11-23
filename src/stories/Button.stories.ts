@@ -10,8 +10,23 @@ const meta = {
 	},
 	tags: ["autodocs"],
 	argTypes: {
-		intent: { control: "text" },
-		size: { control: "text" },
+		intent: {
+			control: {
+				type: "select",
+			},
+			options: ["primary", "secondary"],
+		},
+		size: {
+			control: {
+				type: "select",
+			},
+			options: ["sm", "md", "lg"],
+		},
+		full: {
+			control: {
+				type: "boolean",
+			},
+		},
 	},
 	args: { onClick: fn() },
 } satisfies Meta<typeof Button>;
