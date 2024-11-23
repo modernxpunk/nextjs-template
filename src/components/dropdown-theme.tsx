@@ -2,7 +2,6 @@
 
 import Icon from "@/components/icon";
 import { useTheme } from "next-themes";
-import { tw } from "typewind";
 
 const DropdownTheme = () => {
 	const { resolvedTheme, setTheme } = useTheme();
@@ -12,7 +11,7 @@ const DropdownTheme = () => {
 	};
 
 	return (
-		<label className={tw.swap.btn.btn_circle.btn_ghost.swap_rotate}>
+		<label className="swap btn btn-circle btn-ghost swap-rotate">
 			<input
 				type="checkbox"
 				className="theme-controller"
@@ -20,11 +19,8 @@ const DropdownTheme = () => {
 				value={resolvedTheme}
 				checked={resolvedTheme === "dark"}
 			/>
-			<Icon className={tw.text_2xl.swap_on} name="common/white-balance-sunny" />
-			<Icon
-				className={tw.text_2xl.swap_off}
-				name="common/white-balance-sunny"
-			/>
+			<Icon className="text-2xl swap-on" name="common/white-balance-sunny" />
+			<Icon className="text-2xl swap-off" name="common/white-balance-sunny" />
 		</label>
 	);
 };

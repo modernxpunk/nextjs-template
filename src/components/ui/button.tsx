@@ -2,21 +2,20 @@ import { cn } from "@/lib/utils";
 import { type VariantProps, cva } from "class-variance-authority";
 import type React from "react";
 import { forwardRef } from "react";
-import { tw } from "typewind";
 
-const buttonStyles = cva(tw.btn, {
+const buttonStyles = cva("btn", {
 	variants: {
 		intent: {
-			primary: tw.btn_primary,
-			secondary: tw.btn_secondary,
+			primary: "btn-primary",
+			secondary: "btn-secondary",
 		},
 		size: {
-			sm: tw.btn_sm,
-			md: tw.btn_md,
-			lg: tw.btn_lg,
+			sm: "btn-sm",
+			md: "btn-md",
+			lg: "btn-lg",
 		},
 		full: {
-			true: tw.w_full,
+			true: "w-full",
 		},
 	},
 	compoundVariants: [{ intent: "primary", size: "md", class: "uppercase" }],

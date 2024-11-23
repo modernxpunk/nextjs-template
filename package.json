@@ -11,8 +11,8 @@
 		"start": "next start",
 		"export": "next export",
 		"type-check": "tsc --project tsconfig.json --pretty --noEmit",
-		"lint": "biome check .",
-		"format": "prettier --ignore-path .gitignore \"src/**/*.{js,ts,jsx,tsx}\" --write --cache",
+		"lint": "biome lint",
+		"format": "biome format",
 		"prepare": "husky install",
 		"plop": "plop",
 		"generate": "orval",
@@ -21,14 +21,10 @@
 	},
 	"lint-staged": {
 		"./src/**/*.{ts,js,jsx,tsx}": [
-			"npm run lint",
-			"npm run type-check",
-			"npm run format"
+			"bun run lint",
+			"bun run type-check",
+			"bun run format"
 		]
-	},
-	"typewind": {
-		"showPixelEquivalents": true,
-		"rootFontSize": 16
 	},
 	"dependencies": {
 		"@biomejs/biome": "^1.9.4",
@@ -44,7 +40,6 @@
 		"react-dom": "18.2.0",
 		"react-hook-form": "^7.51.2",
 		"tailwind-merge": "^2.2.2",
-		"typewind": "^0.2.0",
 		"zod": "^3.22.4"
 	},
 	"devDependencies": {

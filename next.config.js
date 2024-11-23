@@ -6,9 +6,6 @@ const nextConfig = {
 	eslint: {
 		ignoreDuringBuilds: true,
 	},
-	experimental: {
-		swcPlugins: [["typewind/swc", {}]],
-	},
 };
 
 module.exports = nextConfig;
