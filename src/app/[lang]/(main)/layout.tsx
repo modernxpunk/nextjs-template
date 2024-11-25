@@ -104,7 +104,6 @@ export default function RootLayout({
 								className="drawer-overlay"
 							/>
 							<ul className="min-h-full p-4 menu w-80 bg-base-200 text-base-content">
-								{/* Sidebar content here */}
 								<li>
 									<a href="#">Sidebar Item 1</a>
 								</li>
