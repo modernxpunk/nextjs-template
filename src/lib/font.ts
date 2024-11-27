@@ -1,15 +1,9 @@
-import { Montserrat, Roboto } from "next/font/google";
+import { Roboto } from "next/font/google";
 
-const roboto = Roboto({
+const inter = Roboto({
 	subsets: ["latin"],
-	variable: "--font-roboto",
-	weight: ["300", "500", "700"],
+	variable: "--font-inter",
+	weight: ["300", "400", "500", "700", "900"],
 });
 
-const monserrat = Montserrat({
-	subsets: ["latin"],
-	variable: "--font-montserrat",
-	weight: ["300", "500", "700"],
-});
-
-export const fontsVariables = [roboto.variable, monserrat.variable];
+export const fontsVariables = [inter.variable];

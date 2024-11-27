@@ -70,7 +70,7 @@ module.exports = {
 			black: "900",
 		},
 		screens: {
-			sm: "640px",
+			sm: "600px",
 			md: "768px",
 			lg: "1024px",
 			xl: "1280px",
@@ -84,16 +84,21 @@ module.exports = {
 		},
 		keyframes: {
 			appearence: {
-				"0%": { transform: "scale(0.8)", opacity: 0 },
-				"100%": { transform: "scale(1)", opacity: 1 },
+				"0%": { transform: "scale(0.5)", opacity: 0.8 },
+				"50%": { transform: "scale(1.1)", opacity: 1 },
+				"100%": { transform: "scale(1)" },
+			},
+			ripple: {
+				"0%": { width: "0px", height: "0px", opacity: 0.5 },
+				"100%": { width: "1000px", height: "1000px", opacity: 0 },
 			},
 		},
 		animation: {
-			appear: "appearence 0.2s linear",
+			appear: "appearence 0.4s ease-out",
+			ripple: "ripple 0.7s",
 		},
 		fontFamily: {
-			sans: ["var(--font-roboto)", ...fontFamily.sans],
-			title: ["var(--font-montserrat)", ...fontFamily.serif],
+			sans: ["var(--font-inter)", ...fontFamily.sans],
 		},
 	},
 	variants: {
@@ -103,9 +108,9 @@ module.exports = {
 		themes: [
 			{
 				light: {
-					primary: "#570df8",
+					primary: "#3390eb",
 					"primary-focus": "#4506cb",
-					"primary-content": "#ffffff",
+					"primary-content": "#3291e6",
 
 					secondary: "#f000b8",
 					"secondary-focus": "#bd0091",
@@ -143,9 +148,9 @@ module.exports = {
 			},
 			{
 				dark: {
-					primary: "#ffb3d9",
+					primary: "#8774e1",
 					"primary-focus": "#ff80bf",
-					"primary-content": "#1b1c22",
+					"primary-content": "#8774e1",
 
 					secondary: "#b9ffb3",
 					"secondary-focus": "#8aff80",
@@ -159,10 +164,10 @@ module.exports = {
 					"neutral-focus": "#1b1c22",
 					"neutral-content": "#d5ccff",
 
-					"base-100": "#302f3d",
+					"base-100": "#212121",
 					"base-200": "#22212c",
 					"base-300": "#1b1c22",
-					"base-content": "#d5ccff",
+					"base-content": "#fff",
 
 					info: "#1c92f2",
 					success: "#009485",

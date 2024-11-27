@@ -1,17 +1,73 @@
-import DropdownTheme from "@/components/dropdown-theme";
-import Icon from "@/components/icon";
-import LocaleSwitcher from "@/components/locale-switch";
 import "@/globals.css";
 import { fontsVariables } from "@/lib/font";
 import { i18n } from "@/lib/i18n/config";
 import { cn } from "@/lib/utils";
 import dayjs from "dayjs";
+import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import Link from "next/link";
 
 export async function generateStaticParams() {
 	return i18n.locales.map((lang) => ({ lang }));
 }
+
+export const metadata: Metadata = {
+	title: "Telegram Web",
+	description:
+		"Telegram is a cloud-based mobile and desktop messaging app with a focus on security and speed.",
+	applicationName: "Telegram Web",
+	viewport: {
+		width: "device-width",
+		initialScale: 1,
+		maximumScale: 1,
+		userScalable: false,
+		viewportFit: "cover",
+	},
+	themeColor: "#ffffff",
+	appleWebApp: {
+		capable: true,
+		title: "Telegram Web",
+		statusBarStyle: "default",
+	},
+	other: {
+		google: "notranslate",
+		"mobile-web-app-capable": "yes",
+		"msapplication-TileColor": "#2b5797",
+		"msapplication-config": "/browserconfig.xml",
+	},
+	openGraph: {
+		type: "website",
+		url: "https://web.telegram.org/",
+		title: "Telegram Web",
+		description:
+			"Telegram is a cloud-based mobile and desktop messaging app with a focus on security and speed.",
+		images: [
+			{
+				url: "/app-192x192.png",
+			},
+		],
+	},
+	twitter: {
+		card: "summary_large_image",
+		title: "Telegram Web",
+		description:
+			"Telegram is a cloud-based mobile and desktop messaging app with a focus on security and speed.",
+		images: ["/app-192x192.png"],
+	},
+	icons: {
+		icon: [
+			{ url: "/favicon.svg", type: "image/svg+xml" },
+			{ url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+			{ url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+			{ url: "/app-192x192.png", sizes: "192x192", type: "image/png" },
+		],
+		apple: [{ url: "/apple-touch-icon-180x180.png", sizes: "180x180" }],
+		other: [
+			{ rel: "alternate icon", url: "/favicon.ico" },
+			{ rel: "manifest", url: "/manifest.json" },
+			{ rel: "canonical", url: "https://web.telegram.org/" },
+		],
+	},
+};
 
 interface RootLayoutProps {
 	children: React.ReactNode;
@@ -19,101 +75,13 @@ interface RootLayoutProps {
 	modal?: React.ReactNode;
 }
 
-export default function RootLayout({
-	children,
-	params: { lang },
-	modal,
-}: RootLayoutProps) {
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export default function RootLayout({ children, params: { lang }, modal }: any) {
 	dayjs.locale(lang);
 	return (
 		<html lang={lang}>
 			<body className={cn(fontsVariables, "font-sans")}>
-				<ThemeProvider>
-					<div className="drawer drawer-end">
-						<input id="my-drawer" type="checkbox" className="drawer-toggle" />
-						<div className="flex flex-col min-h-screen drawer-content">
-							<div className="bg-base-200 navbar">
-								<header className="container flex justify-between">
-									<Link href="/" className="btn btn-ghost btn-primary">
-										<Icon className="text-3xl" name="common/logo" />
-									</Link>
-									<nav className="items-center hidden gap-2 lg:flex">
-										<DropdownTheme />
-										<LocaleSwitcher />
-									</nav>
-									<label
-										htmlFor="my-drawer"
-										className="flex drawer-button btn btn-circle btn-ghost lg:hidden"
-									>
-										<Icon className="text-3xl" name="common/menu" />
-									</label>
-								</header>
-							</div>
-							<main className="flex-1 my-2">{children}</main>
-							<footer className="bg-base-200">
-								<div className="container flex items-center justify-between p-4">
-									<aside className="flex items-center gap-2">
-										<Icon className="text-3xl" name="common/logo" />
-										<p>Copyright © 2024 - All right reserved</p>
-									</aside>
-									<nav className="flex justify-self-center">
-										<a
-											href="https://discord.com"
-											target="_blank"
-											rel="noreferrer"
-										>
-											<button className="text-2xl btn btn-circle btn-ghost">
-												<Icon name="socials/discord" />
-											</button>
-										</a>
-										<a
-											href="https://facebook.com"
-											target="_blank"
-											rel="noreferrer"
-										>
-											<button className="text-2xl btn btn-circle btn-ghost">
-												<Icon name="socials/facebook" />
-											</button>
-										</a>
-										<a
-											href="https://github.com"
-											target="_blank"
-											rel="noreferrer"
-										>
-											<button className="text-2xl btn btn-circle btn-ghost">
-												<Icon name="socials/github" />
-											</button>
-										</a>
-										<a
-											href="https://twitter.com"
-											target="_blank"
-											rel="noreferrer"
-										>
-											<button className="text-2xl btn btn-circle btn-ghost">
-												<Icon name="socials/twitter" />
-											</button>
-										</a>
-									</nav>
-								</div>
-							</footer>
-						</div>
-						<div className="drawer-side">
-							<label
-								htmlFor="my-drawer"
-								aria-label="close sidebar"
-								className="drawer-overlay"
-							/>
-							<ul className="min-h-full p-4 menu w-80 bg-base-200 text-base-content">
-								<li>
-									<a href="#">Sidebar Item 1</a>
-								</li>
-								<li>
-									<a href="#">Sidebar Item 2</a>
-								</li>
-							</ul>
-						</div>
-					</div>
-				</ThemeProvider>
+				<ThemeProvider>{children}</ThemeProvider>
 				{modal}
 			</body>
 		</html>

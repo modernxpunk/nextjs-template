@@ -5,16 +5,7 @@ import type { SVGProps } from "react";
 // https://pictogrammers.com/library/mdi/
 
 interface SpritesMap {
-	common:
-		| "logo"
-		| "chevron-down"
-		| "translate"
-		| "moon-waning-crescent"
-		| "white-balance-sunny"
-		| "menu"
-		| "email"
-		| "lock";
-	socials: "facebook" | "discord" | "github" | "twitter";
+	common: "logo-light" | "logo-dark";
 }
 
 type SpriteKey = {
