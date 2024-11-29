@@ -88,6 +88,10 @@ module.exports = {
 				"50%": { transform: "scale(1.1)", opacity: 1 },
 				"100%": { transform: "scale(1)" },
 			},
+			transparency: {
+				"0%": { opacity: 0 },
+				"100%": { opacity: 1 },
+			},
 			ripple: {
 				"0%": { width: "0px", height: "0px", opacity: 0.5 },
 				"100%": { width: "1000px", height: "1000px", opacity: 0 },
@@ -96,6 +100,7 @@ module.exports = {
 		animation: {
 			appear: "appearence 0.4s ease-out",
 			ripple: "ripple 0.7s",
+			transparency: "transparency 0.4s",
 		},
 		fontFamily: {
 			sans: ["var(--font-inter)", ...fontFamily.sans],
