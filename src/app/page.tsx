@@ -246,8 +246,6 @@ const Page = () => {
 		})();
 	}, [code]);
 
-	console.log("phoneInput", phoneInput);
-
 	const isErroredPhoneNumber = !isValidPhoneNumber && isSubmitting;
 
 	return (
