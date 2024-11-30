@@ -5,7 +5,7 @@ import type { SVGProps } from "react";
 // https://pictogrammers.com/library/mdi/
 
 interface SpritesMap {
-	common: "logo-light" | "logo-dark";
+	common: "logo-light" | "logo-dark" | "pencil-outline";
 }
 
 type SpriteKey = {

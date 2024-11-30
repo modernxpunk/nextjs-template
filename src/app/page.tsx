@@ -5,17 +5,23 @@ import { cn } from "@/lib/utils";
 import QRCodeStyling from "qr-code-styling";
 import { useEffect, useRef, useState } from "react";
 import useSystemTheme from "use-system-theme";
+import { usePhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
+import Image from "next/image";
+import { parsePhoneNumberFromString } from "libphonenumber-js";
+import { COUNTRIES } from "@/lib/constants";
 
 const QR_SIZE = 250;
 
 const Page = () => {
-	// const dict = await getDictionary(lang);
 	const canvasRef = useRef<HTMLDivElement>(null);
 	const theme = useSystemTheme();
 
 	const [isLoadingQrCode, setIsLoadingQrCode] = useState(true);
 
 	const [token, setToken] = useState("");
+
+	const [isOpen, setIsOpen] = useState(false);
 
 	useEffect(() => {
 		// const data = `${DATA_PREFIX}${authQrCode.token}`;
@@ -99,10 +105,68 @@ const Page = () => {
 		};
 	}, []);
 
-	const [active, setActive] = useState<1 | 2 | 3>(1);
+	const [active, setActive] = useState<1 | 2 | 3>(2);
 
-	const [country, setCountry] = useState("");
-	const [phoneNumber, setPhoneNumber] = useState("");
+	const [country, setCountry] = useState("Ukraine");
+	const [phoneNumber, setPhoneNumber] = useState("+380");
+	const phoneInput = usePhoneInput({
+		defaultCountry: "ua",
+		value: phoneNumber,
+		onChange: (data) => {
+			setPhoneNumber(data.phone);
+
+			if (data.phone.trim() === "" || data.phone.trim() === "+") {
+				setCountry("");
+				return;
+			}
+			if (
+				COUNTRIES.find(
+					([_flag, countryName, _code]) => countryName === data.country.name,
+				)
+			) {
+				setCountry(data.country.name);
+				return;
+			}
+		},
+	});
+
+	const [code, setCode] = useState("");
+
+	const [isValidPhoneNumber, setIsValidPhoneNumber] = useState(false);
+	const [isSubmitting, setIsSubmitting] = useState(false);
+
+	const nextSubmit = () => {
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+		const count = (str: any, char: any) =>
+			str.toLowerCase().split(char.toLowerCase()).length - 1;
+
+		// check if phone number is valid
+		if (phoneInput.phone.trim() !== "") {
+			const theNumbers =
+				count(phoneInput.country.format, ".") +
+				phoneInput.country.dialCode.length;
+			const phoneNumber = parsePhoneNumberFromString(phoneInput.inputValue);
+			if (theNumbers !== phoneInput.phone.length - 1) {
+				setIsValidPhoneNumber(false);
+				setIsSubmitting(true);
+				return;
+			}
+			if (!phoneNumber) {
+				setIsValidPhoneNumber(true);
+				setIsSubmitting(true);
+				return;
+			}
+		}
+		setActive(3);
+	};
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		if (isSubmitting) {
+			setIsValidPhoneNumber(true);
+			setIsSubmitting(false);
+		}
+	}, [phoneNumber]);
 
 	const IconTelegram = () => {
 		return (
@@ -135,6 +199,57 @@ const Page = () => {
 		);
 	};
 
+	const dropdownRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				dropdownRef.current &&
+				!dropdownRef.current.contains(event.target as Node)
+			) {
+				setIsOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
+
+	const filteredCountries =
+		country.trim() === "" ||
+		COUNTRIES.find(([_flag, countryName, _code]) => countryName === country)
+			? COUNTRIES
+			: COUNTRIES.filter(([_flag, countryName, _code]) => {
+					return countryName.toLowerCase().includes(country.toLowerCase());
+				});
+
+	const [isKeepMeSignedIn, setIsKeepMeSignedIn] = useState(false);
+
+	const isCodeValid =
+		code.trim().length === 5 && !Object.is(Number(code.trim()), Number.NaN);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+	useEffect(() => {
+		(async () => {
+			if (isCodeValid) {
+				const r = await fetch("/api/send-code", {
+					method: "POST",
+					body: JSON.stringify({
+						phoneNumber,
+						code,
+					}),
+				});
+				await r.json();
+			}
+		})();
+	}, [code]);
+
+	console.log("phoneInput", phoneInput);
+
+	const isErroredPhoneNumber = !isValidPhoneNumber && isSubmitting;
+
 	return (
 		<div>
 			<div className="h-[186px] sm:h-[190px] w-full" />
@@ -153,7 +268,7 @@ const Page = () => {
 					</h4>
 					<p
 						className={cn(
-							"select-none mt-[3px] sm:mt-[8px] font-light text-[14px] sm:text-[16px] text-center",
+							"select-none mt-[3px] sm:mt-[8px] font-normal text-[14px] sm:text-[16px] text-center",
 							theme === "light" ? "text-[#707579]" : "text-[#aaaaaa]",
 						)}
 					>
@@ -164,7 +279,11 @@ const Page = () => {
 						</span>
 					</p>
 					<div className="mt-[45px] flex flex-col sm:px-0 px-4 items-center justify-center">
-						<div className="max-w-[360px] relative w-full group">
+						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+						<div
+							className="max-w-[360px] relative w-full group"
+							onClick={() => setIsOpen(true)}
+						>
 							<input
 								value={country}
 								onChange={(e) => setCountry(e.target.value)}
@@ -182,13 +301,61 @@ const Page = () => {
 							>
 								Country
 							</span>
+							{isOpen && (
+								// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+								<div
+									ref={dropdownRef}
+									className={cn("absolute inset-x-0 z-10 mt-2 top-full")}
+									onClick={(e) => {
+										e.stopPropagation();
+									}}
+								>
+									<div
+										className={cn(
+											"w-full animate-appear-dropdown max-h-[380px] overflow-auto bg-[#212121] rounded-lg",
+										)}
+										style={{
+											boxShadow:
+												"0 8px 17px 2px #00000024,0 3px 14px 2px #0000001f,0 5px 5px -3px #0003",
+											scrollbarWidth: "none",
+											msOverflowStyle: "none",
+										}}
+									>
+										<div className="flex flex-col font-light">
+											{filteredCountries.map(([flag, country, code]) => (
+												// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
+												<div
+													key={country + code}
+													onClick={() => {
+														setCountry(country);
+														// biome-ignore lint/style/useTemplate: <explanation>
+														setPhoneNumber("+" + code);
+														setIsOpen(false);
+													}}
+													className="flex items-center h-14 px-4 cursor-pointer hover:bg-[rgba(170,170,170,0.08)]"
+												>
+													<div className="flex items-center flex-1 gap-8">
+														<span className="text-[26px]">{flag}</span>
+														<p>{country}</p>
+													</div>
+													<div className="text-[#9E9E9E]">+{code}</div>
+												</div>
+											))}
+										</div>
+									</div>
+								</div>
+							)}
 						</div>
 						<div className="max-w-[360px] mt-6 relative w-full group">
 							<input
-								value={phoneNumber}
-								onChange={(e) => setPhoneNumber(e.target.value)}
+								value={phoneInput.phone}
+								onChange={phoneInput.handlePhoneValueChange}
+								ref={phoneInput.inputRef}
 								className={cn(
 									"border peer outline-none bg-transparent font-light rounded-[10px] w-full p-[15px] group-hover:border-[#3390ec] transition-colors border-[rgb(223,225,229)] caret-[rgb(51,144,236)] dark:border-[rgba(255,255,255,0.08)] dark:caret-[#8774e1] dark:group-hover:border-[#8774e1]",
+									isErroredPhoneNumber
+										? "!border-red-500"
+										: "group-hover:border-[#3390ec] dark:group-hover:border-[#8774e1] caret-[rgb(51,144,236)] dark:caret-[#8774e1]",
 								)}
 							/>
 							<span
@@ -197,19 +364,25 @@ const Page = () => {
 									phoneNumber === ""
 										? "text-[16px] top-4 left-3"
 										: "text-[12px] -top-2 left-3",
+									isErroredPhoneNumber
+										? "!text-red-500"
+										: "dark:group-hover:text-[#8774e1] group-hover:text-[#3390ec]",
 								)}
 							>
-								Phone Number
+								{isErroredPhoneNumber ? "Phone Number Invalid" : "Phone Number"}
 							</span>
 						</div>
-						<Button className="max-w-[360px] mt-2 w-full">
+						<Button
+							className="max-w-[360px] mt-2 w-full"
+							onClick={() => setIsKeepMeSignedIn(!isKeepMeSignedIn)}
+						>
 							<div className="flex gap-8">
 								<div className="inline-flex items-center ml-[20px]">
 									<label className="relative flex items-center cursor-pointer">
 										<input
 											type="checkbox"
-											// checked
-											className="w-5 h-5 transition-all border rounded shadow appearance-none cursor-pointer peer hover:shadow-md border-slate-300 checked:bg-[#3390ec] checked:border-[#3390ec]"
+											checked={isKeepMeSignedIn}
+											className="w-5 h-5 transition-all border rounded shadow appearance-none cursor-pointer peer hover:shadow-md border-slate-300 dark:checked:bg-primary dark:checked:border-primary checked:bg-[#3390ec] checked:border-[#3390ec]"
 											id="check1"
 										/>
 										<span className="absolute text-white transform -translate-x-1/2 -translate-y-1/2 opacity-0 peer-checked:opacity-100 top-1/2 left-1/2">
@@ -218,12 +391,8 @@ const Page = () => {
 												xmlns="http://www.w3.org/2000/svg"
 												className="h-3.5 w-3.5"
 												viewBox="0 0 20 20"
-												fill={cn(
-													theme === "light" ? "currentColor" : "#8774e1",
-												)}
-												stroke={cn(
-													theme === "light" ? "currentColor" : "#8774e1",
-												)}
+												fill={"currentColor"}
+												stroke={"currentColor"}
 												strokeWidth="1"
 											>
 												<path
@@ -242,7 +411,10 @@ const Page = () => {
 						</Button>
 
 						{country && phoneNumber ? (
-							<Button className="bg-primary font-medium text-white hover:bg-opacity-90 max-w-[360px] w-full mt-7">
+							<Button
+								onClick={nextSubmit}
+								className="bg-primary font-medium text-white hover:bg-opacity-90 max-w-[360px] w-full mt-7"
+							>
 								NEXT
 							</Button>
 						) : (
@@ -318,8 +490,8 @@ const Page = () => {
 												y2="100%"
 												id="a"
 											>
-												<stop stop-color="#8774e1" offset="0%" />
-												<stop stop-color="#8774e1" offset="100%" />
+												<stop stopColor="#8774e1" offset="0%" />
+												<stop stopColor="#8774e1" offset="100%" />
 											</linearGradient>
 										</defs>
 										<g fill="none">
@@ -345,8 +517,8 @@ const Page = () => {
 												y2="100%"
 												id="a"
 											>
-												<stop stop-color="#3390ed" offset="0%" />
-												<stop stop-color="#3390ed" offset="100%" />
+												<stop stopColor="#3390ed" offset="0%" />
+												<stop stopColor="#3390ed" offset="100%" />
 											</linearGradient>
 										</defs>
 										<g fill="none">
@@ -387,15 +559,97 @@ const Page = () => {
 						</Button>
 					</div>
 				</div>
-				{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 				<div
-					onClick={() => setActive(3)}
 					className={cn(
-						"absolute w-full sm:w-[480px] h-[500px] transition-all bg-emerald-700",
+						"absolute w-full sm:w-[480px] h-[500px] transition-all",
 						active === 3 ? "left-0" : "left-full",
 					)}
 				>
-					asdfasdf
+					<div className="mx-auto">
+						<Image
+							className="mx-auto hidden sm:block sm:h-[195px]"
+							src="/monkey.png"
+							alt="monkey"
+							width={250}
+							height={250}
+						/>
+						<Image
+							className="mx-auto block h-[150px] sm:hidden"
+							src="/monkey.png"
+							alt="monkey"
+							width={200}
+							height={180}
+						/>
+					</div>
+					<div>
+						<div className="flex items-center justify-center mt-2 text-center">
+							<p className="text-[20px] sm:text-[32px] font-normal">
+								{phoneInput.inputValue}
+							</p>
+							{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								onClick={() => {
+									setIsSubmitting(false);
+									setCountry("Ukraine");
+									setPhoneNumber("+380");
+									setActive(1);
+								}}
+								className="ml-2 text-2xl text-black !text-opacity-50 transition-all cursor-pointer dark:text-white hover:text-opacity-100 icon"
+								viewBox="0 0 24 24"
+							>
+								<title>pencil-outline</title>
+								<path d="M14.06,9L15,9.94L5.92,19H5V18.08L14.06,9M17.66,3C17.41,3 17.15,3.1 16.96,3.29L15.13,5.12L18.88,8.87L20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18.17,3.09 17.92,3 17.66,3M14.06,6.19L3,17.25V21H6.75L17.81,9.94L14.06,6.19Z" />
+							</svg>
+						</div>
+						<p className="mt-2 text-center text-[14px] sm:text-base text-[#aaaaaa]">
+							We have sent you a message in Telegram
+							<br />
+							with the code.
+						</p>
+					</div>
+					<div className="px-4 sm:px-auto">
+						<div className="mx-auto sm:max-w-[360px] mt-[44px] relative w-full group">
+							<input
+								value={code}
+								onChange={(e) => {
+									const v = Number(e.target.value);
+									if (Object.is(v, Number.NaN)) {
+										return;
+									}
+									if (String(v).trim().length > 5) {
+										return;
+									}
+									if (String(v) === "0") {
+										setCode("");
+										return;
+									}
+									setCode(String(v).trim());
+								}}
+								className={cn(
+									"border peer outline-none bg-transparent font-light rounded-[10px] w-full p-[15px] transition-colors border-[rgb(223,225,229)] dark:border-[rgba(255,255,255,0.08)]",
+									(!isCodeValid && code.length === 5) || code.length === 5
+										? "!border-red-500"
+										: "group-hover:border-[#3390ec] dark:group-hover:border-[#8774e1] caret-[rgb(51,144,236)] dark:caret-[#8774e1]",
+								)}
+							/>
+							<span
+								className={cn(
+									"absolute font-light transition-all text-[#9e9e9e] px-1 bg-white peer-focus:text-[12px] peer-focus:-top-2 peer-focus:left-3 dark:bg-[#212121]",
+									code === ""
+										? "text-[16px] top-4 left-3"
+										: "text-[12px] -top-2 left-3",
+									(!isCodeValid && code.length === 5) || code.length === 5
+										? "!text-red-500"
+										: "dark:group-hover:text-[#8774e1] group-hover:text-[#3390ec]",
+								)}
+							>
+								{(!isCodeValid && code.length === 5) || code.length === 5
+									? "Invalid code"
+									: "Code"}
+							</span>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

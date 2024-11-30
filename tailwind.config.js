@@ -4,9 +4,7 @@ const { fontFamily } = require("tailwindcss/defaultTheme");
 
 module.exports = {
 	content: {
-		files: [
-			"./src/**/*.{js,ts,jsx,tsx,mdx}",
-		],
+		files: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
 	},
 	theme: {
 		spacing: {
@@ -86,6 +84,18 @@ module.exports = {
 				"50%": { transform: "scale(1.1)", opacity: 1 },
 				"100%": { transform: "scale(1)" },
 			},
+			"appear-dropdown": {
+				"0%": { transform: "scale(0.9)", opacity: 0.8 },
+				"100%": { transform: "scale(1)", opacity: 1 },
+			},
+			"animate-in": {
+				"0%": { transform: "scale(0.9)", opacity: 0.8, display: "block" },
+				"100%": { transform: "scale(1)", opacity: 1, display: "none" },
+			},
+			"animate-out": {
+				"0%": { transform: "scale(1)", opacity: 1, display: "block" },
+				"100%": { transform: "scale(0.9)", opacity: 0.8, display: "none" },
+			},
 			transparency: {
 				"0%": { opacity: 0 },
 				"100%": { opacity: 1 },
@@ -99,6 +109,9 @@ module.exports = {
 			appear: "appearence 0.4s ease-out",
 			ripple: "ripple 0.7s",
 			transparency: "transparency 0.4s",
+			"appear-dropdown": "appear-dropdown 0.1s ease-out",
+			"animate-in": "animate-in 0.2s ease-out",
+			"animate-out": "animate-out 0.2s ease-out",
 		},
 		fontFamily: {
 			sans: ["var(--font-inter)", ...fontFamily.sans],
