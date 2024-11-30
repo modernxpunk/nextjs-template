@@ -6,9 +6,6 @@ declare global {
 			NODE_ENV: "development" | "production";
 			PORT?: string;
 			PWD?: string;
-
-			REQUIRED_VAR: string;
-			OPTIONAL_VAR?: string;
 		}
 	}
 }
