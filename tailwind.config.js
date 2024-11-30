@@ -114,7 +114,7 @@ module.exports = {
 			"animate-out": "animate-out 0.2s ease-out",
 		},
 		fontFamily: {
-			sans: ["var(--font-inter)", ...fontFamily.sans],
+			sans: ["var(--font-roboto)", ...fontFamily.sans],
 		},
 	},
 	variants: {

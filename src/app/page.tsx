@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, count } from "@/lib/utils";
 import QRCodeStyling from "qr-code-styling";
 import { useEffect, useRef, useState } from "react";
 import useSystemTheme from "use-system-theme";
@@ -14,23 +14,56 @@ import { COUNTRIES } from "@/lib/constants";
 const QR_SIZE = 250;
 
 const Page = () => {
-	const canvasRef = useRef<HTMLDivElement>(null);
 	const theme = useSystemTheme();
-
-	const [isLoadingQrCode, setIsLoadingQrCode] = useState(true);
-
+	const [code, setCode] = useState("");
 	const [token, setToken] = useState("");
-
 	const [isOpen, setIsOpen] = useState(false);
+	const canvasRef = useRef<HTMLDivElement>(null);
+	const dropdownRef = useRef<HTMLDivElement>(null);
+	const timer = useRef<NodeJS.Timeout | null>(null);
+	const [country, setCountry] = useState("Ukraine");
+	const [active, setActive] = useState<1 | 2 | 3>(2);
+	const [phoneNumber, setPhoneNumber] = useState("+380");
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isLoadingQrCode, setIsLoadingQrCode] = useState(true);
+	const [isKeepMeSignedIn, setIsKeepMeSignedIn] = useState(false);
+	const [isValidPhoneNumber, setIsValidPhoneNumber] = useState(false);
+	const isCodeValid =
+		code.trim().length === 5 && !Object.is(Number(code.trim()), Number.NaN);
+	const isErroredPhoneNumber = !isValidPhoneNumber && isSubmitting;
+
+	const filteredCountries =
+		country.trim() === "" ||
+		COUNTRIES.find(([_flag, countryName, _code]) => countryName === country)
+			? COUNTRIES
+			: COUNTRIES.filter(([_flag, countryName, _code]) => {
+					return (countryName?.toLowerCase?.() || "").includes(
+						country?.toLowerCase?.() || "",
+					);
+				});
+
+	const phoneInput = usePhoneInput({
+		defaultCountry: "ua",
+		value: phoneNumber,
+		onChange: (data) => {
+			setPhoneNumber(data.phone);
+			if (data.phone.trim() === "" || data.phone.trim() === "+") {
+				setCountry("");
+				return;
+			}
+			if (
+				COUNTRIES.find(
+					([_flag, countryName, _code]) => countryName === data.country.name,
+				)
+			) {
+				setCountry(data.country.name);
+				return;
+			}
+		},
+	});
 
 	useEffect(() => {
-		// const data = `${DATA_PREFIX}${authQrCode.token}`;
-
-		if (isLoadingQrCode) {
-			return;
-		}
-
-		if (token === "") {
+		if (isLoadingQrCode || token === "") {
 			return;
 		}
 
@@ -75,28 +108,18 @@ const Page = () => {
 
 	useEffect(() => {
 		setTimeout(() => {
-			const DATA_PREFIX = "tg://login?token=";
-			const authQrCode = {
-				token: "dfaafsdfasdfasdfasdfasdf",
-			};
-			const data = `${DATA_PREFIX}${authQrCode.token}`;
+			const data = `${"tg://login?token="}${"dfaafsdfasdfasdfasdfasdf"}`;
 			setToken(data);
 			setIsLoadingQrCode(false);
 		}, 1000);
 	}, []);
 
-	const timer = useRef<NodeJS.Timeout | null>(null);
-
 	useEffect(() => {
 		let i = 0;
 		timer.current = setInterval(() => {
-			const DATA_PREFIX = "tg://login?token=";
-
-			const authQrCode = {
-				token: String(`sdgpasdjpgasdpofaposkdfa${i++}`),
-			};
-			const data = `${DATA_PREFIX}${authQrCode.token}`;
-			setToken(data);
+			setToken(
+				`${"tg://login?token="}${String(`sdgpasdjpgasdpofaposkdfa${i++}`)}`,
+			);
 		}, 30_000);
 		return () => {
 			if (timer.current !== null) {
@@ -105,101 +128,30 @@ const Page = () => {
 		};
 	}, []);
 
-	const [active, setActive] = useState<1 | 2 | 3>(2);
-
-	const [country, setCountry] = useState("Ukraine");
-	const [phoneNumber, setPhoneNumber] = useState("+380");
-	const phoneInput = usePhoneInput({
-		defaultCountry: "ua",
-		value: phoneNumber,
-		onChange: (data) => {
-			setPhoneNumber(data.phone);
-
-			if (data.phone.trim() === "" || data.phone.trim() === "+") {
-				setCountry("");
-				return;
-			}
-			if (
-				COUNTRIES.find(
-					([_flag, countryName, _code]) => countryName === data.country.name,
-				)
-			) {
-				setCountry(data.country.name);
-				return;
-			}
-		},
-	});
-
-	const [code, setCode] = useState("");
-
-	const [isValidPhoneNumber, setIsValidPhoneNumber] = useState(false);
-	const [isSubmitting, setIsSubmitting] = useState(false);
-
 	const nextSubmit = () => {
-		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-		const count = (str: any, char: any) =>
-			str.toLowerCase().split(char.toLowerCase()).length - 1;
-
-		// check if phone number is valid
+		console.log(1);
 		if (phoneInput.phone.trim() !== "") {
+			console.log(2, phoneInput.country.dialCode.length);
 			const theNumbers =
 				count(phoneInput.country.format, ".") +
-				phoneInput.country.dialCode.length;
-			const phoneNumber = parsePhoneNumberFromString(phoneInput.inputValue);
+				(phoneInput?.country?.dialCode?.length || 0);
+			const phoneNumber = parsePhoneNumberFromString(phoneInput.phone);
 			if (theNumbers !== phoneInput.phone.length - 1) {
+				console.log(3);
 				setIsValidPhoneNumber(false);
 				setIsSubmitting(true);
 				return;
 			}
 			if (!phoneNumber) {
+				console.log(4);
 				setIsValidPhoneNumber(true);
 				setIsSubmitting(true);
 				return;
 			}
 		}
+		console.log(5);
 		setActive(3);
 	};
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		if (isSubmitting) {
-			setIsValidPhoneNumber(true);
-			setIsSubmitting(false);
-		}
-	}, [phoneNumber]);
-
-	const IconTelegram = () => {
-		return (
-			// biome-ignore lint/a11y/noSvgWithoutTitle: <explanation>
-			<svg
-				className="text-[120px] sm:text-[160px] icon"
-				xmlns="http://www.w3.org/2000/svg"
-				viewBox="0 0 120 120"
-			>
-				<defs>
-					<linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="a">
-						<stop
-							stopColor={theme !== "dark" ? "#3390ed" : "#8774e1"}
-							offset="0%"
-						/>
-						<stop
-							stopColor={theme !== "dark" ? "#3390ed" : "#8774e1"}
-							offset="110%"
-						/>
-					</linearGradient>
-				</defs>
-				<g fill="none">
-					<circle fill="url(#a)" cx="60" cy="60" r="60" />
-					<path
-						d="M23.775 58.77a3278.85 3278.85 0 0 1 39.27-16.223c18.698-7.454 21.3-8.542 23.828-8.58a4.995 4.995 0 0 1 2.977 1.103c1.058.9 1.38 1.47 1.47 1.972.083.503.075 2.07-.015 2.963-1.013 10.207-4.86 33.78-7.088 45.225-.945 4.837-2.805 6.457-4.605 6.615-3.907.345-6.877-2.475-10.664-4.86-5.925-3.728-7.905-5.1-13.65-8.737-6.653-4.2-3.916-5.663-.128-9.436.99-.982 17.415-15.974 17.662-17.34.21-1.2.286-1.357-.254-1.897-.548-.54-1.2-.473-1.62-.383-.6.128-9.645 5.85-27.15 17.176-2.685 1.777-5.115 2.64-7.298 2.595-2.4-.053-7.027-1.305-10.462-2.378-4.223-1.32-7.575-2.01-7.275-4.245.15-1.163 1.814-2.355 5.002-3.57Z"
-						fill={theme !== "dark" ? "#FFF" : "#212121"}
-					/>
-				</g>
-			</svg>
-		);
-	};
-
-	const dropdownRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
@@ -217,19 +169,6 @@ const Page = () => {
 		};
 	}, []);
 
-	const filteredCountries =
-		country.trim() === "" ||
-		COUNTRIES.find(([_flag, countryName, _code]) => countryName === country)
-			? COUNTRIES
-			: COUNTRIES.filter(([_flag, countryName, _code]) => {
-					return countryName.toLowerCase().includes(country.toLowerCase());
-				});
-
-	const [isKeepMeSignedIn, setIsKeepMeSignedIn] = useState(false);
-
-	const isCodeValid =
-		code.trim().length === 5 && !Object.is(Number(code.trim()), Number.NaN);
-
 	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		(async () => {
@@ -241,12 +180,41 @@ const Page = () => {
 						code,
 					}),
 				});
-				await r.json();
+				if (r.ok) {
+					await r.json();
+				}
 			}
 		})();
 	}, [code]);
 
-	const isErroredPhoneNumber = !isValidPhoneNumber && isSubmitting;
+	const IconTelegram = () => (
+		<svg
+			className="text-[120px] sm:text-[160px] icon"
+			xmlns="http://www.w3.org/2000/svg"
+			viewBox="0 0 120 120"
+		>
+			<title>Telegram Icon</title>
+			<defs>
+				<linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="a">
+					<stop
+						stopColor={theme !== "dark" ? "#3390ed" : "#8774e1"}
+						offset="0%"
+					/>
+					<stop
+						stopColor={theme !== "dark" ? "#3390ed" : "#8774e1"}
+						offset="110%"
+					/>
+				</linearGradient>
+			</defs>
+			<g fill="none">
+				<circle fill="url(#a)" cx="60" cy="60" r="60" />
+				<path
+					d="M23.775 58.77a3278.85 3278.85 0 0 1 39.27-16.223c18.698-7.454 21.3-8.542 23.828-8.58a4.995 4.995 0 0 1 2.977 1.103c1.058.9 1.38 1.47 1.47 1.972.083.503.075 2.07-.015 2.963-1.013 10.207-4.86 33.78-7.088 45.225-.945 4.837-2.805 6.457-4.605 6.615-3.907.345-6.877-2.475-10.664-4.86-5.925-3.728-7.905-5.1-13.65-8.737-6.653-4.2-3.916-5.663-.128-9.436.99-.982 17.415-15.974 17.662-17.34.21-1.2.286-1.357-.254-1.897-.548-.54-1.2-.473-1.62-.383-.6.128-9.645 5.85-27.15 17.176-2.685 1.777-5.115 2.64-7.298 2.595-2.4-.053-7.027-1.305-10.462-2.378-4.223-1.32-7.575-2.01-7.275-4.245.15-1.163 1.814-2.355 5.002-3.57Z"
+					fill={theme !== "dark" ? "#FFF" : "#212121"}
+				/>
+			</g>
+		</svg>
+	);
 
 	return (
 		<div>
@@ -277,10 +245,14 @@ const Page = () => {
 						</span>
 					</p>
 					<div className="mt-[45px] flex flex-col sm:px-0 px-4 items-center justify-center">
-						{/* biome-ignore lint/a11y/useKeyWithClickEvents: <explanation> */}
 						<div
 							className="max-w-[360px] relative w-full group"
 							onClick={() => setIsOpen(true)}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" || e.key === " ") {
+									setIsOpen(true);
+								}
+							}}
 						>
 							<input
 								value={country}
@@ -300,17 +272,21 @@ const Page = () => {
 								Country
 							</span>
 							{isOpen && (
-								// biome-ignore lint/a11y/useKeyWithClickEvents: <explanation>
 								<div
 									ref={dropdownRef}
 									className={cn("absolute inset-x-0 z-10 mt-2 top-full")}
 									onClick={(e) => {
 										e.stopPropagation();
 									}}
+									onKeyDown={(e) => {
+										if (e.key === "Enter") {
+											e.stopPropagation();
+										}
+									}}
 								>
 									<div
 										className={cn(
-											"w-full animate-appear-dropdown max-h-[380px] overflow-auto bg-[#212121] rounded-lg",
+											"w-full animate-appear-dropdown max-h-[380px] overflow-auto bg-white dark:bg-[#212121] rounded-lg",
 										)}
 										style={{
 											boxShadow:
@@ -326,8 +302,7 @@ const Page = () => {
 													key={country + code}
 													onClick={() => {
 														setCountry(country);
-														// biome-ignore lint/style/useTemplate: <explanation>
-														setPhoneNumber("+" + code);
+														setPhoneNumber(`+${code}`);
 														setIsOpen(false);
 													}}
 													className="flex items-center h-14 px-4 cursor-pointer hover:bg-[rgba(170,170,170,0.08)]"
@@ -592,6 +567,9 @@ const Page = () => {
 									setCountry("Ukraine");
 									setPhoneNumber("+380");
 									setActive(1);
+									setTimeout(() => {
+										setCode("");
+									}, 500);
 								}}
 								className="ml-2 text-2xl text-black !text-opacity-50 transition-all cursor-pointer dark:text-white hover:text-opacity-100 icon"
 								viewBox="0 0 24 24"

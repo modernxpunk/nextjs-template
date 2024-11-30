@@ -1,23 +1,15 @@
 import "@/globals.css";
 import { fontsVariables } from "@/lib/font";
 import { cn } from "@/lib/utils";
-import dayjs from "dayjs";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
+import type { PropsWithChildren } from "react";
 
 export const metadata: Metadata = {
 	title: "Telegram Web",
 	description:
 		"Telegram is a cloud-based mobile and desktop messaging app with a focus on security and speed.",
 	applicationName: "Telegram Web",
-	// viewport: {
-	// 	width: "device-width",
-	// 	initialScale: 1,
-	// 	maximumScale: 1,
-	// 	userScalable: false,
-	// 	viewportFit: "cover",
-	// },
-	// themeColor: "#ffffff",
 	appleWebApp: {
 		capable: true,
 		title: "Telegram Web",
@@ -64,14 +56,11 @@ export const metadata: Metadata = {
 	},
 };
 
-// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-export default function RootLayout({ children, params: { lang }, modal }: any) {
-	dayjs.locale(lang);
+export default function RootLayout({ children }: PropsWithChildren) {
 	return (
-		<html lang={lang}>
+		<html lang="en">
 			<body className={cn(fontsVariables, "font-sans")}>
 				<ThemeProvider>{children}</ThemeProvider>
-				{modal}
 			</body>
 		</html>
 	);
