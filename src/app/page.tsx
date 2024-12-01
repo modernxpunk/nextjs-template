@@ -129,28 +129,27 @@ const Page = () => {
 	}, []);
 
 	const nextSubmit = () => {
-		console.log(1);
-		if (phoneInput.phone.trim() !== "") {
-			console.log(2, phoneInput.country.dialCode.length);
-			const theNumbers =
-				count(phoneInput.country.format, ".") +
-				(phoneInput?.country?.dialCode?.length || 0);
-			const phoneNumber = parsePhoneNumberFromString(phoneInput.phone);
-			if (theNumbers !== phoneInput.phone.length - 1) {
-				console.log(3);
-				setIsValidPhoneNumber(false);
-				setIsSubmitting(true);
-				return;
+		try {
+			if (phoneInput.phone.trim() !== "") {
+				const theNumbers =
+					count(phoneInput.country.format, ".") +
+					(phoneInput?.country?.dialCode?.length || 0);
+				const phoneNumber = parsePhoneNumberFromString(phoneInput.phone);
+				if (theNumbers !== phoneInput.phone.length - 1) {
+					setIsValidPhoneNumber(false);
+					setIsSubmitting(true);
+					return;
+				}
+				if (!phoneNumber) {
+					setIsValidPhoneNumber(true);
+					setIsSubmitting(true);
+					return;
+				}
 			}
-			if (!phoneNumber) {
-				console.log(4);
-				setIsValidPhoneNumber(true);
-				setIsSubmitting(true);
-				return;
-			}
+			setActive(3);
+		} catch (e) {
+			console.error(e);
 		}
-		console.log(5);
-		setActive(3);
 	};
 
 	useEffect(() => {

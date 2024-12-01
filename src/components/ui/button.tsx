@@ -25,7 +25,7 @@ export interface ButtonProps
 		VariantProps<typeof buttonStyles> {}
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-	({ className, ...props }, ref) => {
+	({ className, onClick, ...props }, ref) => {
 		const theme = useSystemTheme();
 
 		const [coords, setCoords] = useState({ x: -1, y: -1 });
@@ -48,9 +48,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				x: e.clientX - rect.left,
 				y: e.clientY - rect.top,
 			});
-			if (props?.onClick) {
-				props.onClick?.(e);
-			}
+			onClick?.(e);
 		};
 
 		return (
