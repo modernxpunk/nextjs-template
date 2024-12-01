@@ -1,70 +1,71 @@
 {
-	"name": "template",
-	"version": "0.1.0",
-	"private": true,
-	"engines": {
-		"node": ">=18.0.0"
-	},
-	"scripts": {
-		"dev": "next dev --turbo",
-		"build": "next build",
-		"start": "next start",
-		"export": "next export",
-		"type-check": "tsc --project tsconfig.json --pretty --noEmit",
-		"lint": "biome lint",
-		"format": "biome format",
-		"prepare": "husky install",
-		"plop": "plop",
-		"generate": "orval",
-		"storybook": "storybook dev -p 6006",
-		"build-storybook": "storybook build"
-	},
-	"lint-staged": {
-		"./src/**/*.{ts,js,jsx,tsx}": [
-			"bun run lint",
-			"bun run type-check",
-			"bun run format"
-		]
-	},
-	"dependencies": {
-		"@biomejs/biome": "^1.9.4",
-		"@hookform/resolvers": "^3.3.4",
-		"@storybook/addon-themes": "^8.4.5",
-		"axios": "^1.7.7",
-		"clsx": "^2.1.0",
-		"dayjs": "^1.11.10",
-		"husky": "^9.0.11",
-		"negotiator": "^1.0.0",
-		"next": "14.1.4",
-		"next-themes": "^0.3.0",
-		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"react-hook-form": "^7.51.2",
-		"tailwind-merge": "^2.2.2",
-		"zod": "^3.22.4"
-	},
-	"devDependencies": {
-		"@chromatic-com/storybook": "^3.2.2",
-		"@storybook/addon-essentials": "^8.4.5",
-		"@storybook/addon-interactions": "^8.4.5",
-		"@storybook/addon-onboarding": "^8.4.5",
-		"@storybook/blocks": "^8.4.5",
-		"@storybook/nextjs": "^8.4.5",
-		"@storybook/react": "^8.4.5",
-		"@storybook/test": "^8.4.5",
-		"@types/negotiator": "^0.6.3",
-		"@types/node": "20.12.4",
-		"@types/react": "18.2.74",
-		"@types/react-dom": "18.2.24",
-		"autoprefixer": "^10.4.19",
-		"class-variance-authority": "^0.7.0",
-		"daisyui": "^4.10.0",
-		"lint-staged": "^15.2.2",
-		"orval": "^7.2.0",
-		"plop": "^4.0.1",
-		"postcss": "^8.4.38",
-		"storybook": "^8.4.5",
-		"tailwindcss": "^3.4.3",
-		"typescript": "5.4.4"
-	}
+  "name": "template",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export",
+    "type-check": "tsc --project tsconfig.json --pretty --noEmit",
+    "lint": "biome lint",
+    "format": "biome format",
+    "prepare": "husky install",
+    "plop": "plop",
+    "generate": "orval",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "lint-staged": {
+    "./src/**/*.{ts,js,jsx,tsx}": [
+      "bun run lint",
+      "bun run type-check",
+      "bun run format"
+    ]
+  },
+  "dependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "@hookform/resolvers": "^3.3.4",
+    "@storybook/addon-themes": "^8.4.5",
+    "axios": "^1.7.7",
+    "clsx": "^2.1.0",
+    "dayjs": "^1.11.10",
+    "husky": "^9.0.11",
+    "negotiator": "^1.0.0",
+    "next": "14.1.4",
+    "next-intl": "^3.25.3",
+    "next-themes": "^0.3.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.51.2",
+    "tailwind-merge": "^2.2.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^3.2.2",
+    "@storybook/addon-essentials": "^8.4.5",
+    "@storybook/addon-interactions": "^8.4.5",
+    "@storybook/addon-onboarding": "^8.4.5",
+    "@storybook/blocks": "^8.4.5",
+    "@storybook/nextjs": "^8.4.5",
+    "@storybook/react": "^8.4.5",
+    "@storybook/test": "^8.4.5",
+    "@types/negotiator": "^0.6.3",
+    "@types/node": "20.12.4",
+    "@types/react": "18.2.74",
+    "@types/react-dom": "18.2.24",
+    "autoprefixer": "^10.4.19",
+    "class-variance-authority": "^0.7.0",
+    "daisyui": "^4.10.0",
+    "lint-staged": "^15.2.2",
+    "orval": "^7.2.0",
+    "plop": "^4.0.1",
+    "postcss": "^8.4.38",
+    "storybook": "^8.4.5",
+    "tailwindcss": "^3.4.3",
+    "typescript": "5.4.4"
+  }
 }
