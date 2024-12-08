@@ -9,6 +9,8 @@ import Link from "next/link";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import type { PropsWithChildren } from "react";
+import { getLangDir } from "rtl-detect";
+import { formats } from "@/i18n/config";
 
 export const metadata = {
 	metadataBase: new URL("https://acme.com"),
@@ -17,11 +19,12 @@ export const metadata = {
 export default async function RootLayout({ children }: PropsWithChildren) {
 	const locale = await getLocale();
 	const messages = await getMessages();
+	const dir = getLangDir(locale);
 	dayjs.locale(locale);
 	return (
-		<html lang={locale}>
+		<html lang={locale} dir={dir}>
 			<body className={cn(fontsVariables, "font-sans")}>
-				<NextIntlClientProvider messages={messages}>
+				<NextIntlClientProvider formats={formats} messages={messages}>
 					<ThemeProvider>
 						<div className="drawer drawer-end">
 							<input id="my-drawer" type="checkbox" className="drawer-toggle" />
