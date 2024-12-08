@@ -3,7 +3,6 @@ import Icon from "@/components/icon";
 import "@/globals.css";
 import { fontsVariables } from "@/lib/font";
 import { cn } from "@/lib/utils";
-import dayjs from "dayjs";
 import { ThemeProvider } from "next-themes";
 import Link from "next/link";
 import { NextIntlClientProvider } from "next-intl";
@@ -20,20 +19,19 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	const locale = await getLocale();
 	const messages = await getMessages();
 	const dir = getLangDir(locale);
-	dayjs.locale(locale);
 	return (
 		<html lang={locale} dir={dir}>
 			<body className={cn(fontsVariables, "font-sans")}>
 				<NextIntlClientProvider formats={formats} messages={messages}>
-					<ThemeProvider>
+					<ThemeProvider themes={["light", "dark"]}>
 						<div className="drawer drawer-end">
 							<input id="my-drawer" type="checkbox" className="drawer-toggle" />
 							<div className="flex flex-col min-h-screen drawer-content">
 								<div className="bg-base-200 navbar">
 									<header className="container flex justify-between">
-										<Link href="/" className="btn btn-ghost btn-primary">
+										{/* <Link href="/" className="btn btn-ghost btn-primary">
 											<Icon className="text-3xl" name="common/logo" />
-										</Link>
+										</Link> */}
 										<nav className="items-center hidden gap-2 lg:flex">
 											<DropdownTheme />
 										</nav>
