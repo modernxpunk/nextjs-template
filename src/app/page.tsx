@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useFormatter } from "next-intl";
 import { getLangDir } from "rtl-detect";
 import { useTimeZone } from "next-intl";
+import { Input } from "@/components/ui/input";
 
 const Page = () => {
 	const t = useTranslations("home");
@@ -101,11 +102,13 @@ const Page = () => {
 					<p>{format.list(items, { type: "disjunction" })}</p>
 					<p>{format.list(usersItems)}</p>
 				</div>
-				<div></div>
 				<Link scroll={false} href="/movies">
 					movies
 				</Link>
 				<p>{formatDate(new Date(), "L LT")}</p>
+			</div>
+			<div>
+				<Input placeholder="adsfasfd" />
 			</div>
 		</div>
 	);
