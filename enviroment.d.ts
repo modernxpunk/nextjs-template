@@ -9,6 +9,8 @@ declare global {
 
 			REQUIRED_VAR: string;
 			OPTIONAL_VAR?: string;
+
+			DATABASE_URL: string;
 		}
 	}
 }

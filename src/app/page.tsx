@@ -7,6 +7,7 @@ import { useFormatter } from "next-intl";
 import { getLangDir } from "rtl-detect";
 import { useTimeZone } from "next-intl";
 import { Input } from "@/components/ui/input";
+import { useUsers } from "@/components/hooks/get-users";
 
 const Page = () => {
 	const t = useTranslations("home");
@@ -36,6 +37,9 @@ const Page = () => {
 
 	const timeZone = useTimeZone();
 
+	const { data } = useUsers();
+
+	console.log("users", data);
 	return (
 		<div className="container flex flex-col gap-10">
 			<p>{dir}</p>
