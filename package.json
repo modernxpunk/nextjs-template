@@ -15,7 +15,6 @@
 		"format": "biome format",
 		"prepare": "husky install",
 		"plop": "plop",
-		"generate": "orval",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build"
 	},
@@ -72,7 +71,6 @@
 		"daisyui": "^4.12.14",
 		"drizzle-kit": "^0.30.2",
 		"lint-staged": "^15.2.10",
-		"orval": "^7.3.0",
 		"plop": "^4.0.1",
 		"postcss": "^8.4.49",
 		"storybook": "^8.4.7",
