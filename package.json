@@ -13,8 +13,7 @@
 		"type-check": "tsc --project tsconfig.json --pretty --noEmit",
 		"lint": "biome lint",
 		"format": "biome format",
-		"prepare": "husky install",
-		"plop": "plop"
+		"prepare": "husky install"
 	},
 	"lint-staged": {
 		"./src/**/*.{ts,js,jsx,tsx}": [
@@ -53,7 +52,6 @@
 		"class-variance-authority": "^0.7.1",
 		"daisyui": "^4.12.14",
 		"lint-staged": "^15.2.10",
-		"plop": "^4.0.1",
 		"postcss": "^8.4.49",
 		"tailwindcss": "^3.4.16",
 		"typescript": "5.7.2"
