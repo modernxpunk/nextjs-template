@@ -1,14 +1,10 @@
 const createNextIntlPlugin = require("next-intl/plugin");
-const withNextIntl = createNextIntlPlugin();
+
+const withNextIntl = createNextIntlPlugin(
+	"./src/lib/i18n/request.ts"
+);
 
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-	reactStrictMode: true,
-	swcMinify: true,
-	output: "standalone",
-	eslint: {
-		ignoreDuringBuilds: true,
-	},
-};
+const nextConfig = {};
 
 module.exports = withNextIntl(nextConfig);

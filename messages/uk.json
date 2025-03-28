@@ -1,7 +1,0 @@
-{
-	"home": {
-		"greetings": "привіт світ",
-		"price": "цей продукт коштує {price, number, currency}",
-		"ordered": "Заказано о {orderDate, date, short}"
-	}
-}

@@ -4,12 +4,11 @@ import "@/globals.css";
 import { fontsVariables } from "@/lib/font";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "next-themes";
-import Link from "next/link";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages } from "next-intl/server";
 import type { PropsWithChildren } from "react";
 import { getLangDir } from "rtl-detect";
-import { formats } from "@/i18n/config";
+import { formats } from "@/lib/i18n/config";
 
 export const metadata = {
 	metadataBase: new URL("https://acme.com"),

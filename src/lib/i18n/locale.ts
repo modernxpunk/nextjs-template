@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies, headers } from "next/headers";
-import { type Locale, defaultLocale, locales } from "@/i18n/config";
+import { type Locale, defaultLocale, locales } from "@/lib/i18n/config";
 import Negotiator from "negotiator";
 
 const COOKIE_NAME = "locale";
