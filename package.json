@@ -14,8 +14,7 @@
 		"lint": "biome lint",
 		"format": "biome format",
 		"prepare": "husky install",
-		"plop": "plop",
-		"generate": "orval"
+		"plop": "plop"
 	},
 	"lint-staged": {
 		"./src/**/*.{ts,js,jsx,tsx}": [
@@ -54,7 +53,6 @@
 		"class-variance-authority": "^0.7.1",
 		"daisyui": "^4.12.14",
 		"lint-staged": "^15.2.10",
-		"orval": "^7.3.0",
 		"plop": "^4.0.1",
 		"postcss": "^8.4.49",
 		"tailwindcss": "^3.4.16",
