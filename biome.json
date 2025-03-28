@@ -1,6 +1,9 @@
 {
 	"files": {
-		"ignore": ["node_modules", ".next"]
+		"ignore": [
+			"node_modules",
+			".next"
+		]
 	},
 	"linter": {
 		"rules": {
@@ -13,7 +16,6 @@
 	},
 	"overrides": [
 		{
-			"include": [".storybook/**"],
 			"linter": {
 				"rules": {
 					"style": {
