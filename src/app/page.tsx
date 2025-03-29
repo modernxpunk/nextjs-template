@@ -4,9 +4,9 @@ import { formatDate } from "@/lib/date";
 import { useLocale, useNow, useTranslations } from "next-intl";
 import Link from "next/link";
 import { useFormatter } from "next-intl";
-import { getLangDir } from "rtl-detect";
 import { useTimeZone } from "next-intl";
 import { Input } from "@/components/ui/input";
+import { useQuery } from "@tanstack/react-query";
 
 const Page = () => {
 	const t = useTranslations("home");
@@ -20,7 +20,6 @@ const Page = () => {
 	const items = ["HTML", "CSS", "JavaScript"];
 
 	const locale = useLocale();
-	const dir = getLangDir(locale);
 
 	const users = [
 		{ id: 1, name: "Alice" },
@@ -36,9 +35,18 @@ const Page = () => {
 
 	const timeZone = useTimeZone();
 
+	const { data: all_users } = useQuery({
+		queryKey: ["users"],
+		queryFn: async () => {
+			const res = await fetch("/api/users");
+			const data = await res.json();
+			return data;
+		},
+	});
+	console.log("all_users", all_users);
+
 	return (
 		<div className="container flex flex-col gap-10">
-			<p>{dir}</p>
 			<p>{timeZone}</p>
 			<div>
 				<div>

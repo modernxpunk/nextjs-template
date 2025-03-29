@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 declare global {
 	namespace NodeJS {
 		interface ProcessEnv {
@@ -9,8 +8,9 @@ declare global {
 
 			REQUIRED_VAR: string;
 			OPTIONAL_VAR?: string;
+			DATABASE_URL: string;
 		}
 	}
 }
 
-export {};
+export { };
