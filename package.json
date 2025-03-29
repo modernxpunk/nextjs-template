@@ -9,7 +9,7 @@
 		"export": "next export",
 		"type-check": "tsc --project tsconfig.json --pretty --noEmit",
 		"lint": "biome lint",
-		"format": "biome format",
+		"format": "biome format --write",
 		"prepare": "husky install"
 	},
 	"lint-staged": {
