@@ -1,28 +1,13 @@
 {
-	"name": "Existing Dockerfile",
-	"build": {
-		"context": "..",
-		"dockerfile": "../Dockerfile"
-	},
-	"updateContentCommand": "bun run install",
-	"postAttachCommand": "bun run dev",
-	"forwardPorts": [3000],
-	"portsAttributes": {
-		"3000": {
-			"label": "Application",
-			"onAutoForward": "openPreview"
+	"name": "web-app",
+	"image": "ghcr.io/nhaef/devcontainer-bun:latest",
+	"customizations": {
+		"vscode": {
+			// "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
 		}
 	},
+	"postCreateCommand": "bun run install",
+	"postAttachCommand": "bun run dev",
+	"forwardPorts": [3000],
 	"runArgs": ["--memory=4gb", "--cpus=2"]
-	// "customizations": {
-	//   "vscode": {
-	//     "extensions": [
-	//       "streetsidesoftware.code-spell-checker",
-	//       "dbaeumer.vscode-eslint",
-	//       "esbenp.prettier-vscode",
-	//       "DavidAnson.vscode-markdownlint",
-	//       "ms-vscode-remote.remote-containers"
-	//     ]
-	//   }
-	// }
 }
