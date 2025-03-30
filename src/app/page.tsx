@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useFormatter } from "next-intl";
 import { useTimeZone } from "next-intl";
 import { Input } from "@/components/ui/input";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 const Page = () => {
 	const t = useTranslations("home");
@@ -35,7 +35,7 @@ const Page = () => {
 
 	const timeZone = useTimeZone();
 
-	const { data: all_users } = useQuery({
+	const { data: all_users, refetch } = useQuery({
 		queryKey: ["users"],
 		queryFn: async () => {
 			const res = await fetch("/api/users");
@@ -43,6 +43,26 @@ const Page = () => {
 			return data;
 		},
 	});
+
+	// mutate
+	const mutation = useMutation({
+		mutationFn: async ({
+			email,
+			password,
+		}: { email: string; password: string }) => {
+			const res = await fetch("/api/users", {
+				method: "POST",
+				body: JSON.stringify({
+					email,
+					password,
+				}),
+			});
+			const data = await res.json();
+			await refetch();
+			return data;
+		},
+	});
+
 	console.log("all_users", all_users);
 
 	return (
@@ -118,6 +138,27 @@ const Page = () => {
 			<div>
 				<Input placeholder="adsfasfd" />
 			</div>
+			<div>
+				<button
+					onClick={() =>
+						mutation.mutate({
+							// biome-ignore lint/style/useTemplate: <explanation>
+							email: Math.random().toString(36).substring(7) + "@example.com",
+							password: "password123",
+						})
+					}
+				>
+					mutate
+				</button>
+			</div>
+			{all_users && (
+				<div>
+					{/* @ts-ignore */}
+					{all_users.map((user) => (
+						<div key={user.id}>{user.email}</div>
+					))}
+				</div>
+			)}
 		</div>
 	);
 };
