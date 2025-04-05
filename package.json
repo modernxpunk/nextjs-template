@@ -24,10 +24,11 @@
 	},
 	"dependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@hookform/resolvers": "^3.10.0",
+		"@hookform/resolvers": "^5.0.1",
 		"@prisma/client": "6.5.0",
 		"@tanstack/react-query": "^5.70.0",
 		"axios": "^1.8.4",
+		"better-auth": "^1.2.5",
 		"clsx": "^2.1.1",
 		"dayjs": "^1.11.13",
 		"husky": "^9.1.7",

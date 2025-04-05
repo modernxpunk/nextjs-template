@@ -7,6 +7,8 @@ import { useFormatter } from "next-intl";
 import { useTimeZone } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery } from "@tanstack/react-query";
+import { signIn, signOut, signUp, useSession } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
 	const t = useTranslations("home");
@@ -35,10 +37,10 @@ const Page = () => {
 
 	const timeZone = useTimeZone();
 
-	const { data: all_users, refetch } = useQuery({
-		queryKey: ["users"],
+	const { data: all_items, refetch } = useQuery({
+		queryKey: ["items"],
 		queryFn: async () => {
-			const res = await fetch("/api/users");
+			const res = await fetch("/api/items");
 			const data = await res.json();
 			return data;
 		},
@@ -46,15 +48,12 @@ const Page = () => {
 
 	// mutate
 	const mutation = useMutation({
-		mutationFn: async ({
-			email,
-			password,
-		}: { email: string; password: string }) => {
-			const res = await fetch("/api/users", {
+		mutationFn: async ({ name }: { name: string }) => {
+			const res = await fetch("/api/items", {
 				method: "POST",
 				body: JSON.stringify({
-					email,
-					password,
+					userId: session?.user.id,
+					name,
 				}),
 			});
 			const data = await res.json();
@@ -63,10 +62,53 @@ const Page = () => {
 		},
 	});
 
-	console.log("all_users", all_users);
+	const { data: session } = useSession();
+
+	const router = useRouter();
+
+	const handleSignOut = async () => {
+		await signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					router.push("/auth/sign-in");
+				},
+			},
+		});
+	};
+
+	const handleSignIn = async (email: string, password: string) => {
+		await signIn.email({
+			email: email,
+			password: password,
+		});
+	};
+
+	const handleSignUp = async (
+		name: string,
+		email: string,
+		password: string,
+	) => {
+		await signUp.email({
+			name: name,
+			email: email,
+			password: password,
+		});
+	};
 
 	return (
 		<div className="container flex flex-col gap-10">
+			<div className="flex flex-col gap-4">
+				<div>
+					<h2>Session</h2>
+					<pre>{JSON.stringify(session, null, 2)}</pre>
+				</div>
+				<div>
+					<h2>Sign out</h2>
+					<button className="btn" onClick={handleSignOut}>
+						Sign out
+					</button>
+				</div>
+			</div>
 			<p>{timeZone}</p>
 			<div>
 				<div>
@@ -142,20 +184,18 @@ const Page = () => {
 				<button
 					onClick={() =>
 						mutation.mutate({
-							// biome-ignore lint/style/useTemplate: <explanation>
-							email: Math.random().toString(36).substring(7) + "@example.com",
-							password: "password123",
+							name: Math.random().toString(36).substring(7),
 						})
 					}
 				>
 					mutate
 				</button>
 			</div>
-			{all_users && (
+			{all_items && (
 				<div>
 					{/* @ts-ignore */}
-					{all_users.map((user) => (
-						<div key={user.id}>{user.email}</div>
+					{all_items.map((item) => (
+						<div key={item.id}>{item.name}</div>
 					))}
 				</div>
 			)}
