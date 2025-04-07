@@ -6,6 +6,7 @@ import type { PropsWithChildren } from "react";
 import { fontsVariables } from "@/lib/font";
 import { cn } from "@/lib/utils";
 import Providers from "@/providers";
+import ConnectWalletButton from "@/components/connet-wallet-button";
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	const locale = await getLocale();
@@ -17,12 +18,10 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 					<div className="flex flex-col min-h-screen">
 						<div className="bg-base-200 navbar">
 							<header className="container flex justify-between">
-								<nav className="items-center hidden gap-2 lg:flex">
+								<nav className="items-center hidden gap-2">
 									<DropdownTheme />
+									<ConnectWalletButton />
 								</nav>
-								<div className="flex drawer-button btn btn-circle btn-ghost lg:hidden">
-									<Icon className="text-3xl" name="common/menu" />
-								</div>
 							</header>
 						</div>
 						<main className="flex-1">{children}</main>
