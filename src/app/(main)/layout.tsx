@@ -18,7 +18,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 					<div className="flex flex-col min-h-screen">
 						<div className="bg-base-200 navbar">
 							<header className="container flex justify-between">
-								<nav className="items-center gap-2">
+								<nav className="flex items-center gap-2">
 									<DropdownTheme />
 									<ConnectWalletButton />
 								</nav>

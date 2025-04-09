@@ -2,7 +2,6 @@
 
 import { formatDate } from "@/lib/date";
 import { useLocale, useNow, useTranslations } from "next-intl";
-import Link from "next/link";
 import { useFormatter } from "next-intl";
 import { useTimeZone } from "next-intl";
 import { Input } from "@/components/ui/input";
@@ -172,9 +171,6 @@ const Page = () => {
 					<p>{format.list(items, { type: "disjunction" })}</p>
 					<p>{format.list(usersItems)}</p>
 				</div>
-				<Link scroll={false} href="/movies">
-					movies
-				</Link>
 				<p>{formatDate(new Date(), "L LT")}</p>
 			</div>
 			<div>
