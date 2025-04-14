@@ -6,7 +6,6 @@ import type { PropsWithChildren } from "react";
 import { fontsVariables } from "@/lib/font";
 import { cn } from "@/lib/utils";
 import Providers from "@/providers";
-import ConnectWalletButton from "@/components/connet-wallet-button";
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	const locale = await getLocale();
@@ -20,7 +19,6 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 							<header className="container flex justify-between">
 								<nav className="flex items-center gap-2">
 									<DropdownTheme />
-									<ConnectWalletButton />
 								</nav>
 							</header>
 						</div>
