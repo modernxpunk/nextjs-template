@@ -16,7 +16,7 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 
 const schemaSignUp = z.object({
 	email: z.string(), // .min(1, { message: 'Email is required' }).email({ message: 'Invalid email address' }),

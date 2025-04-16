@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPassword } from "@/lib/auth-client";
-import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -15,7 +14,7 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 
 const schemaResetPassword = z.object({
 	newPassword: z
@@ -84,15 +83,6 @@ const ResetPasswordForm = () => {
 									Reset Password
 								</Button>
 								<FormMessage className="text-red-500 text-sm" />
-							</div>
-							<div className="mt-4 text-sm text-center">
-								Do you remember your password?{" "}
-								<Link
-									href="/auth/sign-in"
-									className="underline underline-offset-4"
-								>
-									Login
-								</Link>
 							</div>
 						</form>
 					</Form>

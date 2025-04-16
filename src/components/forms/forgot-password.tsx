@@ -15,7 +15,7 @@ import {
 	FormItem,
 	FormLabel,
 	FormMessage,
-} from "../ui/form";
+} from "@/components/ui/form";
 
 const schemaForgotPassword = z.object({
 	email: z
