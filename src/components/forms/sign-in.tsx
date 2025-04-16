@@ -40,7 +40,10 @@ const SignInForm = () => {
 	};
 
 	return (
-		<form className="gap-2 form-control" onSubmit={handleSubmit(onSubmit)}>
+		<form
+			className="w-full gap-2 p-6 rounded-lg shadow-md form-control max-w-96 bg-base-300"
+			onSubmit={handleSubmit(onSubmit)}
+		>
 			<fieldset className="fieldset">
 				<legend className="fieldset-legend">Email</legend>
 				<input
@@ -66,12 +69,14 @@ const SignInForm = () => {
 				)}
 			</fieldset>
 			<fieldset className="fieldset">
-				<legend className="fieldset-legend">Remember me</legend>
-				<input
-					type="checkbox"
-					className="checkbox"
-					{...register("rememberMe")}
-				/>
+				<div className="flex gap-2">
+					<legend className="fieldset-legend">Remember me</legend>
+					<input
+						type="checkbox"
+						className="checkbox"
+						{...register("rememberMe")}
+					/>
+				</div>
 				{errors.rememberMe && (
 					<span className="error">{errors.rememberMe.message}</span>
 				)}

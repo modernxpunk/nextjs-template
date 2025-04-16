@@ -48,7 +48,10 @@ const SignUpForm = () => {
 	};
 
 	return (
-		<form className="gap-2 form-control" onSubmit={handleSubmit(onSubmit)}>
+		<form
+			className="w-full gap-2 p-6 rounded-lg shadow-md form-control max-w-96 bg-base-300"
+			onSubmit={handleSubmit(onSubmit)}
+		>
 			<fieldset className="fieldset">
 				<legend className="fieldset-legend">Email</legend>
 				<input
