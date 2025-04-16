@@ -9,7 +9,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	const locale = await getLocale();
 
 	return (
-		<html lang={locale}>
+		<html lang={locale} suppressHydrationWarning>
 			<body className={cn(fontsVariables, "font-sans")}>
 				<Providers>
 					<div className="flex flex-col items-center justify-center min-h-screen">

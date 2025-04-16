@@ -1,4 +1,3 @@
-import DropdownTheme from "@/components/dropdown-theme";
 import Icon from "@/components/icon";
 import "@/globals.css";
 import { getLocale } from "next-intl/server";
@@ -11,14 +10,14 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	const locale = await getLocale();
 
 	return (
-		<html lang={locale}>
+		<html lang={locale} suppressHydrationWarning>
 			<body className={cn(fontsVariables, "font-sans")}>
 				<Providers>
 					<div className="flex flex-col min-h-screen">
 						<div className="bg-base-200 navbar">
 							<header className="container flex justify-between">
 								<nav className="flex items-center gap-2">
-									<DropdownTheme />
+									{/* <DropdownTheme /> */}
 								</nav>
 							</header>
 						</div>
