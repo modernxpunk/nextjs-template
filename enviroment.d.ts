@@ -9,6 +9,9 @@ declare global {
 			REQUIRED_VAR: string;
 			OPTIONAL_VAR?: string;
 			DATABASE_URL: string;
+
+			EMAIL_USER: string;
+			EMAIL_PASS: string;
 		}
 	}
 }

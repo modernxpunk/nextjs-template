@@ -4,9 +4,19 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signUp } from "@/lib/auth-client";
-import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "../ui/form";
 
 const schemaSignUp = z.object({
 	email: z.string(), // .min(1, { message: 'Email is required' }).email({ message: 'Invalid email address' }),
@@ -16,14 +26,16 @@ const schemaSignUp = z.object({
 type SignUpSchema = z.infer<typeof schemaSignUp>;
 
 const SignUpForm = () => {
+	const methods = useForm<SignUpSchema>({
+		resolver: zodResolver(schemaSignUp),
+	});
+
 	const {
-		register,
+		control,
 		handleSubmit,
 		formState: { errors, isSubmitting },
 		setError,
-	} = useForm<SignUpSchema>({
-		resolver: zodResolver(schemaSignUp),
-	});
+	} = methods;
 
 	const router = useRouter();
 
@@ -48,46 +60,64 @@ const SignUpForm = () => {
 	};
 
 	return (
-		<form
-			className="w-full gap-2 p-6 rounded-lg shadow-md form-control max-w-96 bg-base-300"
-			onSubmit={handleSubmit(onSubmit)}
-		>
-			<fieldset className="fieldset">
-				<legend className="fieldset-legend">Email</legend>
-				<input
-					type="text"
-					className={cn("w-full input", errors.root && "input-error")}
-					placeholder="email"
-					{...register("email")}
-				/>
-				{errors.email && (
-					<span className="text-error">{errors.email.message}</span>
-				)}
-			</fieldset>
-			<fieldset className="fieldset">
-				<legend className="fieldset-legend">Password</legend>
-				<input
-					type="text"
-					className={cn("w-full input", errors.password && "input-error")}
-					placeholder="password"
-					{...register("password")}
-				/>
-				{errors.password && (
-					<span className="text-error">{errors.password.message}</span>
-				)}
-			</fieldset>
-			<button
-				className={cn("btn", errors.root && "btn-error")}
-				type="submit"
-				disabled={isSubmitting}
-			>
-				Sign Up
-			</button>
-			<Link href="/auth/sign-in" className="btn btn-xs">
-				Sign in
-			</Link>
-			{errors.root && <span className="text-error">{errors.root.message}</span>}
-		</form>
+		<div className="flex flex-col gap-6 w-full max-w-sm px-4">
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-2xl text-center">Sign up</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<Form {...methods}>
+						<form onSubmit={handleSubmit(onSubmit)}>
+							<div className="flex flex-col gap-6">
+								<FormField
+									control={control}
+									name="email"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Email</FormLabel>
+											<FormControl>
+												<Input placeholder="m@gmail.com" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<FormField
+									control={control}
+									name="password"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>Password</FormLabel>
+											<FormControl>
+												<Input {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<Button type="submit" className="w-full">
+									Sign up
+								</Button>
+								<Button variant="outline" className="w-full">
+									Sign up with Google
+								</Button>
+							</div>
+							<div className="mt-4 text-sm text-center">
+								Already have an account?{" "}
+								<Link
+									href="/auth/sign-in"
+									className="underline underline-offset-4"
+								>
+									Login
+								</Link>
+							</div>
+						</form>
+					</Form>
+				</CardContent>
+			</Card>
+		</div>
 	);
 };
 

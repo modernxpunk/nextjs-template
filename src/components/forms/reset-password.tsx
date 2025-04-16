@@ -1,0 +1,105 @@
+"use client";
+
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { resetPassword } from "@/lib/auth-client";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+	Form,
+	FormControl,
+	FormField,
+	FormItem,
+	FormLabel,
+	FormMessage,
+} from "../ui/form";
+
+const schemaResetPassword = z.object({
+	newPassword: z
+		.string()
+		.min(6, { message: "Password must be at lea6t 8 characters long" }),
+});
+
+type ResetPasswordSchema = z.infer<typeof schemaResetPassword>;
+
+const ResetPasswordForm = () => {
+	const methods = useForm<ResetPasswordSchema>({
+		resolver: zodResolver(schemaResetPassword),
+	});
+
+	const {
+		handleSubmit,
+		control,
+		formState: { errors },
+		setError,
+	} = methods;
+
+	const onSubmit = async ({ newPassword }: ResetPasswordSchema) => {
+		const token = new URLSearchParams(window.location.search).get("token");
+		if (!token) {
+			setError("root", {
+				message: "Token is required",
+			});
+			return;
+		}
+
+		const resetPasswordResponse = await resetPassword({
+			newPassword,
+		});
+		if (resetPasswordResponse.error) {
+			setError("root", {
+				message: resetPasswordResponse.error.message,
+			});
+		}
+	};
+
+	return (
+		<div className="flex flex-col gap-6 w-full max-w-sm px-4">
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-2xl text-center">Reset Password</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<Form {...methods}>
+						<form onSubmit={handleSubmit(onSubmit)}>
+							<div className="flex flex-col gap-6">
+								<FormField
+									control={control}
+									name="newPassword"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>New password</FormLabel>
+											<FormControl>
+												<Input type="password" {...field} />
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+
+								<Button type="submit" className="w-full">
+									Reset Password
+								</Button>
+								<FormMessage className="text-red-500 text-sm" />
+							</div>
+							<div className="mt-4 text-sm text-center">
+								Do you remember your password?{" "}
+								<Link
+									href="/auth/sign-in"
+									className="underline underline-offset-4"
+								>
+									Login
+								</Link>
+							</div>
+						</form>
+					</Form>
+				</CardContent>
+			</Card>
+		</div>
+	);
+};
+
+export default ResetPasswordForm;

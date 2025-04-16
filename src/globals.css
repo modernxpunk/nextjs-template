@@ -125,3 +125,7 @@
 @utility icon {
 	@apply inline-block select-none fill-current text-inherit w-[1em] h-[1em];
 }
+
+@utility container {
+	@apply px-4 max-w-[1440px] mx-auto;
+}

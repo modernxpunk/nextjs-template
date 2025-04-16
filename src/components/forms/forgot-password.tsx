@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "@/lib/auth-client";
+import { forgetPassword } from "@/lib/auth-client";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,21 +17,18 @@ import {
 	FormMessage,
 } from "../ui/form";
 
-const schemaSignIn = z.object({
+const schemaForgotPassword = z.object({
 	email: z
 		.string()
 		.min(1, { message: "Email is required" })
 		.email({ message: "Invalid email address" }),
-	password: z
-		.string()
-		.min(6, { message: "Password must be at lea6t 8 characters long" }),
 });
 
-type SignInSchema = z.infer<typeof schemaSignIn>;
+type ForgotPasswordSchema = z.infer<typeof schemaForgotPassword>;
 
-const SignInForm = () => {
-	const methods = useForm<SignInSchema>({
-		resolver: zodResolver(schemaSignIn),
+const ForgotPasswordForm = () => {
+	const methods = useForm<ForgotPasswordSchema>({
+		resolver: zodResolver(schemaForgotPassword),
 	});
 
 	const {
@@ -41,16 +38,14 @@ const SignInForm = () => {
 		setError,
 	} = methods;
 
-	const onSubmit = async ({ email, password }: SignInSchema) => {
-		const signInResponse = await signIn.email({
-			email: email,
-			password: password,
-			rememberMe: true,
-			callbackURL: "/",
+	const onSubmit = async ({ email }: ForgotPasswordSchema) => {
+		const forgotPasswordResponse = await forgetPassword({
+			email,
+			redirectTo: "/auth/reset-password",
 		});
-		if (signInResponse.error) {
+		if (forgotPasswordResponse.error) {
 			setError("root", {
-				message: signInResponse.error.message,
+				message: forgotPasswordResponse.error.message,
 			});
 		}
 	};
@@ -59,7 +54,9 @@ const SignInForm = () => {
 		<div className="flex flex-col gap-6 w-full max-w-sm px-4">
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-2xl text-center">Login</CardTitle>
+					<CardTitle className="text-2xl text-center">
+						Forgot Password
+					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Form {...methods}>
@@ -79,44 +76,18 @@ const SignInForm = () => {
 									)}
 								/>
 
-								<FormField
-									control={control}
-									name="password"
-									render={({ field }) => (
-										<FormItem>
-											<FormLabel className="flex justify-between">
-												<span>Password</span>
-												<Link
-													href="/auth/forgot-password"
-													className="hover:underline hover:underline-offset-4"
-												>
-													Forgot password?
-												</Link>
-											</FormLabel>
-											<FormControl>
-												<Input type="password" {...field} />
-											</FormControl>
-											<FormMessage />
-										</FormItem>
-									)}
-								/>
-
 								<Button type="submit" className="w-full">
-									Login
+									Send email
 								</Button>
 								<FormMessage className="text-red-500 text-sm" />
-
-								<Button variant="outline" className="w-full">
-									Login with Google
-								</Button>
 							</div>
 							<div className="mt-4 text-sm text-center">
-								Don&apos;t have an account?{" "}
+								Do you remember your password?{" "}
 								<Link
-									href="/auth/sign-up"
+									href="/auth/sign-in"
 									className="underline underline-offset-4"
 								>
-									Sign up
+									Login
 								</Link>
 							</div>
 						</form>
@@ -127,4 +98,4 @@ const SignInForm = () => {
 	);
 };
 
-export default SignInForm;
+export default ForgotPasswordForm;

@@ -4,7 +4,12 @@ import { type NextRequest, NextResponse } from "next/server";
 
 const REDIRECT_IF_UNAUTHENTICATED = "/auth/sign-in";
 const REDIRECT_IF_AUTHENTICATED = "/";
-const GUEST_ONLY_ROUTES = ["/auth/sign-in", "/auth/sign-up"];
+const GUEST_ONLY_ROUTES = [
+	"/auth/sign-in",
+	"/auth/sign-up",
+	"/auth/forgot-password",
+	"/auth/reset-password",
+];
 
 export async function middleware(request: NextRequest) {
 	const { data: session } = await betterFetch<Session>(
