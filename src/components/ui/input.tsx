@@ -38,7 +38,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
 					ref={ref}
 					{...props}
 				/>
-				<span className="absolute px-1 transition-all select-none peer-v top-3 left-2 bg-base-100 peer-[:not(:placeholder-shown)]:-top-3 peer-[:not(:placeholder-shown)]:text-sm">
+				<span className="absolute px-1 transition-all select-none peer-v top-3 left-2 bg-base-100 peer-not-placeholder-shown:-top-3 peer-not-placeholder-shown:text-sm">
 					{placeholder}
 				</span>
 			</label>
