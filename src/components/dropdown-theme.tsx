@@ -3,6 +3,7 @@
 import Icon from "@/components/icon";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { Button } from "./ui/button";
 
 const DropdownTheme = () => {
 	const [mounted, setMounted] = useState(false);
@@ -17,22 +18,17 @@ const DropdownTheme = () => {
 	};
 
 	if (!mounted) {
-		return (
-			<button className="btn btn-circle btn-ghost skeleton animate-appear" />
-		);
+		return <Button variant="outline" size="icon" />;
 	}
 
 	return (
-		<label className="swap btn btn-circle btn-ghost swap-rotate animate-appear">
-			<input
-				onChange={toggleTheme}
-				value={resolvedTheme}
-				type="checkbox"
-				className="theme-controller"
-			/>
-			<Icon className="text-2xl swap-on" name="common/white-balance-sunny" />
-			<Icon className="text-2xl swap-off" name="common/moon-waning-crescent" />
-		</label>
+		<Button variant="outline" size="icon" onClick={toggleTheme}>
+			{resolvedTheme === "light" ? (
+				<Icon className="text-2xl" name="common/moon-waning-crescent" />
+			) : (
+				<Icon className="text-2xl" name="common/white-balance-sunny" />
+			)}
+		</Button>
 	);
 };
 

@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils";
 import Providers from "@/providers";
 import DropdownTheme from "@/components/dropdown-theme";
 import ConnectWalletButton from "@/components/connect-button";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import ProfileButton from "@/components/profile-button";
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	const locale = await getLocale();
@@ -17,53 +20,61 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 				<Providers>
 					<div className="flex flex-col min-h-screen">
 						<div className="bg-base-200 navbar">
-							<header className="container flex justify-between">
+							<header className="container flex justify-between py-2">
 								<nav className="flex items-center gap-2">
 									<DropdownTheme />
+									<ProfileButton />
 									<ConnectWalletButton />
 								</nav>
 							</header>
+							<hr />
 						</div>
 						<main className="flex-1">{children}</main>
 						<footer className="bg-base-200">
 							<div className="container flex items-center justify-between p-4">
 								<aside className="flex items-center gap-2">
-									<Icon className="text-3xl" name="common/logo" />
+									<Button variant="ghost" size="icon">
+										<Icon name="common/logo" />
+									</Button>
 									<p>Copyright © 2024 - All right reserved</p>
 								</aside>
 								<nav className="flex justify-self-center">
-									<a
+									<Link
 										href="https://discord.com"
 										target="_blank"
 										rel="noreferrer"
 									>
-										<button className="text-2xl btn btn-circle btn-ghost">
+										<Button variant="ghost" size="icon">
 											<Icon name="socials/discord" />
-										</button>
-									</a>
-									<a
+										</Button>
+									</Link>
+									<Link
 										href="https://facebook.com"
 										target="_blank"
 										rel="noreferrer"
 									>
-										<button className="text-2xl btn btn-circle btn-ghost">
+										<Button variant="ghost" size="icon">
 											<Icon name="socials/facebook" />
-										</button>
-									</a>
-									<a href="https://github.com" target="_blank" rel="noreferrer">
-										<button className="text-2xl btn btn-circle btn-ghost">
+										</Button>
+									</Link>
+									<Link
+										href="https://github.com"
+										target="_blank"
+										rel="noreferrer"
+									>
+										<Button variant="ghost" size="icon">
 											<Icon name="socials/github" />
-										</button>
-									</a>
-									<a
+										</Button>
+									</Link>
+									<Link
 										href="https://twitter.com"
 										target="_blank"
 										rel="noreferrer"
 									>
-										<button className="text-2xl btn btn-circle btn-ghost">
+										<Button variant="ghost" size="icon">
 											<Icon name="socials/twitter" />
-										</button>
-									</a>
+										</Button>
+									</Link>
 								</nav>
 							</div>
 						</footer>
