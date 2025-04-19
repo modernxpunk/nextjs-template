@@ -2,11 +2,12 @@
 
 import { formatDate } from "@/lib/date";
 import { useLocale, useNow, useTranslations } from "next-intl";
-import Link from "next/link";
 import { useFormatter } from "next-intl";
-import { getLangDir } from "rtl-detect";
 import { useTimeZone } from "next-intl";
 import { Input } from "@/components/ui/input";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { signIn, signOut, signUp, useSession } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const Page = () => {
 	const t = useTranslations("home");
@@ -20,7 +21,6 @@ const Page = () => {
 	const items = ["HTML", "CSS", "JavaScript"];
 
 	const locale = useLocale();
-	const dir = getLangDir(locale);
 
 	const users = [
 		{ id: 1, name: "Alice" },
@@ -36,9 +36,78 @@ const Page = () => {
 
 	const timeZone = useTimeZone();
 
+	const { data: all_items, refetch } = useQuery({
+		queryKey: ["items"],
+		queryFn: async () => {
+			const res = await fetch("/api/items");
+			const data = await res.json();
+			return data;
+		},
+	});
+
+	// mutate
+	const mutation = useMutation({
+		mutationFn: async ({ name }: { name: string }) => {
+			const res = await fetch("/api/items", {
+				method: "POST",
+				body: JSON.stringify({
+					userId: session?.user.id,
+					name,
+				}),
+			});
+			const data = await res.json();
+			await refetch();
+			return data;
+		},
+	});
+
+	const { data: session } = useSession();
+
+	const router = useRouter();
+
+	const handleSignOut = async () => {
+		await signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					router.push("/auth/sign-in");
+				},
+			},
+		});
+	};
+
+	const handleSignIn = async (email: string, password: string) => {
+		await signIn.email({
+			email: email,
+			password: password,
+		});
+	};
+
+	const handleSignUp = async (
+		name: string,
+		email: string,
+		password: string,
+	) => {
+		await signUp.email({
+			name: name,
+			email: email,
+			password: password,
+		});
+	};
+
 	return (
 		<div className="container flex flex-col gap-10">
-			<p>{dir}</p>
+			<div className="flex flex-col gap-4">
+				<div>
+					<h2>Session</h2>
+					<pre>{JSON.stringify(session?.user, null, 2)}</pre>
+				</div>
+				<div>
+					<h2>Sign out</h2>
+					<button className="btn" onClick={handleSignOut}>
+						Sign out
+					</button>
+				</div>
+			</div>
 			<p>{timeZone}</p>
 			<div>
 				<div>
@@ -102,14 +171,30 @@ const Page = () => {
 					<p>{format.list(items, { type: "disjunction" })}</p>
 					<p>{format.list(usersItems)}</p>
 				</div>
-				<Link scroll={false} href="/movies">
-					movies
-				</Link>
 				<p>{formatDate(new Date(), "L LT")}</p>
 			</div>
 			<div>
 				<Input placeholder="adsfasfd" />
 			</div>
+			<div>
+				<button
+					onClick={() =>
+						mutation.mutate({
+							name: Math.random().toString(36).substring(7),
+						})
+					}
+				>
+					mutate
+				</button>
+			</div>
+			{all_items && (
+				<div>
+					{/* @ts-ignore */}
+					{all_items.map((item) => (
+						<div key={item.id}>{item.name}</div>
+					))}
+				</div>
+			)}
 		</div>
 	);
 };
