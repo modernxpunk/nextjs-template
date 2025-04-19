@@ -99,7 +99,7 @@ const Page = () => {
 			<div className="flex flex-col gap-4">
 				<div>
 					<h2>Session</h2>
-					<pre>{JSON.stringify(session, null, 2)}</pre>
+					<pre>{JSON.stringify(session?.user, null, 2)}</pre>
 				</div>
 				<div>
 					<h2>Sign out</h2>
