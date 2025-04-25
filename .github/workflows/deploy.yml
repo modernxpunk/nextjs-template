@@ -1,4 +1,4 @@
-name: Deploy Next.js on Bun
+name: Deploy Next.js
 
 on:
   push:
@@ -15,10 +15,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - uses: oven-sh/setup-bun@v2
+      - uses: actions/setup-node@v3
 
       - name: Install dependencies and build
-        run: bun install
+        run: pnpm install
 
       - name: Build
-        run: bun run build
+        run: pnpm run build

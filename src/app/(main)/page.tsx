@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { signIn, signOut, signUp, useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const Page = () => {
 	const t = useTranslations("home");
@@ -103,9 +104,7 @@ const Page = () => {
 				</div>
 				<div>
 					<h2>Sign out</h2>
-					<button className="btn" onClick={handleSignOut}>
-						Sign out
-					</button>
+					<Button onClick={handleSignOut}>Sign out</Button>
 				</div>
 			</div>
 			<p>{timeZone}</p>
