@@ -1,6 +1,6 @@
-import { betterFetch } from "@better-fetch/fetch";
 import type { Session } from "@/lib/auth";
 import { type NextRequest, NextResponse } from "next/server";
+import { betterFetch } from "@better-fetch/fetch";
 
 const REDIRECT_IF_UNAUTHENTICATED = "/auth/sign-in";
 const REDIRECT_IF_AUTHENTICATED = "/";

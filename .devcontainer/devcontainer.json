@@ -1,13 +1,13 @@
 {
 	"name": "web-app",
-	"image": "ghcr.io/nhaef/devcontainer-bun:latest",
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-20",
 	"customizations": {
 		"vscode": {
 			// "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
 		}
 	},
-	"postCreateCommand": "bun run install",
-	"postAttachCommand": "bun run dev",
+	"postCreateCommand": "pnpm run install",
+	"postAttachCommand": "pnpm run dev",
 	"forwardPorts": [3000],
 	"runArgs": ["--memory=4gb", "--cpus=2"]
 }

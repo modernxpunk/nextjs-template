@@ -1,6 +1,6 @@
 #!/bin/sh
 set -ex
 
-bunx --no-update-notifier prisma migrate deploy
+pnpm dlx --no-update-notifier prisma migrate deploy
 
-bun server.js
+node server.js

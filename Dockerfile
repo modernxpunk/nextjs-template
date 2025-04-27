@@ -1,10 +1,11 @@
-FROM oven/bun:alpine AS base
+FROM node:slim AS base
+
 WORKDIR /app
 
 # Stage 1: Install dependencies
 FROM base AS deps
-COPY package.json bun.lockb ./
-RUN bun install --frozen-lockfile
+COPY package.json package-lock.json ./
+RUN pnpm install --frozen-lockfile
 
 # Stage 2: Build
 FROM base AS builder
@@ -12,11 +13,11 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 COPY prisma ./prisma
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN bunx prisma generate
-RUN bun run build
+RUN pnpm dlx prisma generate
+RUN pnpm run build
 
 # Stage 3: Production image
-FROM oven/bun:alpine AS runner
+FROM node:slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
