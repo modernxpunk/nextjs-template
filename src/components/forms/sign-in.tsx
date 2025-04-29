@@ -55,6 +55,13 @@ const SignInForm = () => {
 		}
 	};
 
+	const signInGoogle = async () => {
+		await signIn.social({
+			provider: "google",
+			callbackURL: "/",
+		});
+	};
+
 	return (
 		<div className="flex flex-col gap-6 w-full max-w-sm px-4">
 			<Card>
@@ -106,7 +113,12 @@ const SignInForm = () => {
 								</Button>
 								<FormMessage className="text-red-500 text-sm" />
 
-								<Button variant="outline" className="w-full">
+								<Button
+									type="button"
+									variant="outline"
+									className="w-full"
+									onClick={signInGoogle}
+								>
 									Login with Google
 								</Button>
 							</div>

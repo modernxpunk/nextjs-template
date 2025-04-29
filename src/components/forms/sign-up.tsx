@@ -100,9 +100,6 @@ const SignUpForm = () => {
 								<Button type="submit" className="w-full">
 									Sign up
 								</Button>
-								<Button variant="outline" className="w-full">
-									Sign up with Google
-								</Button>
 							</div>
 							<div className="mt-4 text-sm text-center">
 								Already have an account?{" "}
