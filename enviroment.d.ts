@@ -12,6 +12,9 @@ declare global {
 
 			EMAIL_USER: string;
 			EMAIL_PASS: string;
+
+			GOOGLE_CLIENT_ID: string;
+			GOOGLE_CLIENT_SECRET: string;
 		}
 	}
 }
