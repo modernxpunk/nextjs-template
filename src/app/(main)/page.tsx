@@ -1,6 +1,5 @@
 "use client";
 
-import { formatDate } from "@/lib/date";
 import { useNow, useTranslations } from "next-intl";
 import { useFormatter } from "next-intl";
 import { useTimeZone } from "next-intl";
@@ -116,7 +115,7 @@ const Page = () => {
 						{format.dateTime(dateTime, { hour: "numeric", minute: "numeric" })}
 					</p>
 					<p>{format.dateTime(dateTime, "short")}</p>
-					<p>{format.relativeTime(dateTime)}</p>
+					<p>{format.relativeTime(dateTime, now)}</p>
 					<p>{format.relativeTime(dateTime, now)}</p>
 					<p>{format.relativeTime(dateTime, { now, unit: "day" })}</p>
 					<p>
@@ -148,7 +147,6 @@ const Page = () => {
 					<p>{format.list(items, { type: "disjunction" })}</p>
 					<p>{format.list(usersItems)}</p>
 				</div>
-				<p>{formatDate(new Date(), "L LT")}</p>
 			</div>
 			<div>
 				<Input placeholder="adsfasfd" />
