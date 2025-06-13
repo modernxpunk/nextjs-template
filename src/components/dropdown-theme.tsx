@@ -3,7 +3,7 @@
 import Icon from "@/components/icon";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 
 const DropdownTheme = () => {
 	const [mounted, setMounted] = useState(false);

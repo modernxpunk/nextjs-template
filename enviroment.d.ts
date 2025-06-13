@@ -1,3 +1,7 @@
+import type { routing } from '@/i18n/routing';
+import type { formats } from '@/i18n/request';
+import type messages from './messages/en.json';
+
 declare global {
 	namespace NodeJS {
 		interface ProcessEnv {
@@ -19,4 +23,16 @@ declare global {
 	}
 }
 
-export { };
+declare module 'next-intl' {
+	interface AppConfig {
+		Locale: (typeof routing.locales)[number];
+		Messages: typeof messages;
+		Formats: typeof formats;
+	}
+}
+
+declare module "wagmi" {
+	interface Register {
+		config: typeof config;
+	}
+}

@@ -16,6 +16,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { useTranslations } from "next-intl";
 
 const schemaForgotPassword = z.object({
 	email: z
@@ -27,16 +28,13 @@ const schemaForgotPassword = z.object({
 type ForgotPasswordSchema = z.infer<typeof schemaForgotPassword>;
 
 const ForgotPasswordForm = () => {
+	const t = useTranslations();
+
 	const methods = useForm<ForgotPasswordSchema>({
 		resolver: zodResolver(schemaForgotPassword),
 	});
 
-	const {
-		handleSubmit,
-		control,
-		formState: { errors },
-		setError,
-	} = methods;
+	const { handleSubmit, control, setError } = methods;
 
 	const onSubmit = async ({ email }: ForgotPasswordSchema) => {
 		const forgotPasswordResponse = await forgetPassword({
@@ -55,7 +53,7 @@ const ForgotPasswordForm = () => {
 			<Card>
 				<CardHeader>
 					<CardTitle className="text-2xl text-center">
-						Forgot Password
+						{t("auth.forgotPassword.title")}
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
@@ -67,7 +65,7 @@ const ForgotPasswordForm = () => {
 									name="email"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Email</FormLabel>
+											<FormLabel>{t("common.email")}</FormLabel>
 											<FormControl>
 												<Input placeholder="m@gmail.com" {...field} />
 											</FormControl>
@@ -75,19 +73,18 @@ const ForgotPasswordForm = () => {
 										</FormItem>
 									)}
 								/>
-
 								<Button type="submit" className="w-full">
-									Send email
+									{t("common.sendEmail")}
 								</Button>
 								<FormMessage className="text-red-500 text-sm" />
 							</div>
 							<div className="mt-4 text-sm text-center">
-								Do you remember your password?{" "}
+								{t("common.rememberPassword")}{" "}
 								<Link
 									href="/auth/sign-in"
 									className="underline underline-offset-4"
 								>
-									Login
+									{t("common.login")}
 								</Link>
 							</div>
 						</form>

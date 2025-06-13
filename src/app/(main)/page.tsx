@@ -1,12 +1,12 @@
 "use client";
 
 import { formatDate } from "@/lib/date";
-import { useLocale, useNow, useTranslations } from "next-intl";
+import { useNow, useTranslations } from "next-intl";
 import { useFormatter } from "next-intl";
 import { useTimeZone } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { signIn, signOut, signUp, useSession } from "@/lib/auth-client";
+import { signOut, useSession } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
@@ -20,8 +20,6 @@ const Page = () => {
 	const dateTimeB = new Date("2021-01-24T08:30:00.000Z");
 
 	const items = ["HTML", "CSS", "JavaScript"];
-
-	const locale = useLocale();
 
 	const users = [
 		{ id: 1, name: "Alice" },
@@ -46,7 +44,6 @@ const Page = () => {
 		},
 	});
 
-	// mutate
 	const mutation = useMutation({
 		mutationFn: async ({ name }: { name: string }) => {
 			const res = await fetch("/api/items", {
@@ -76,35 +73,16 @@ const Page = () => {
 		});
 	};
 
-	const handleSignIn = async (email: string, password: string) => {
-		await signIn.email({
-			email: email,
-			password: password,
-		});
-	};
-
-	const handleSignUp = async (
-		name: string,
-		email: string,
-		password: string,
-	) => {
-		await signUp.email({
-			name: name,
-			email: email,
-			password: password,
-		});
-	};
-
 	return (
 		<div className="container flex flex-col gap-10">
 			<div className="flex flex-col gap-4">
 				<div>
-					<h2>Session</h2>
+					<h2>{t("session")}</h2>
 					<pre>{JSON.stringify(session?.user, null, 2)}</pre>
 				</div>
 				<div>
-					<h2>Sign out</h2>
-					<Button onClick={handleSignOut}>Sign out</Button>
+					<h2>{t("signOut")}</h2>
+					<Button onClick={handleSignOut}>{t("signOut")}</Button>
 				</div>
 			</div>
 			<p>{timeZone}</p>
@@ -183,7 +161,7 @@ const Page = () => {
 						})
 					}
 				>
-					mutate
+					{t("mutate")}
 				</button>
 			</div>
 			{all_items && (

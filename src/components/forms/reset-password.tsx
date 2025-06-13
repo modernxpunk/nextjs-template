@@ -15,6 +15,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { useTranslations } from "next-intl";
 
 const schemaResetPassword = z.object({
 	newPassword: z
@@ -25,16 +26,13 @@ const schemaResetPassword = z.object({
 type ResetPasswordSchema = z.infer<typeof schemaResetPassword>;
 
 const ResetPasswordForm = () => {
+	const t = useTranslations();
+
 	const methods = useForm<ResetPasswordSchema>({
 		resolver: zodResolver(schemaResetPassword),
 	});
 
-	const {
-		handleSubmit,
-		control,
-		formState: { errors },
-		setError,
-	} = methods;
+	const { handleSubmit, control, setError } = methods;
 
 	const onSubmit = async ({ newPassword }: ResetPasswordSchema) => {
 		const token = new URLSearchParams(window.location.search).get("token");
@@ -59,7 +57,9 @@ const ResetPasswordForm = () => {
 		<div className="flex flex-col gap-6 w-full max-w-sm px-4">
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-2xl text-center">Reset Password</CardTitle>
+					<CardTitle className="text-2xl text-center">
+						{t("auth.resetPassword.title")}
+					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Form {...methods}>
@@ -70,7 +70,7 @@ const ResetPasswordForm = () => {
 									name="newPassword"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>New password</FormLabel>
+											<FormLabel>{t("common.newPassword")}</FormLabel>
 											<FormControl>
 												<Input type="password" {...field} />
 											</FormControl>
@@ -78,9 +78,8 @@ const ResetPasswordForm = () => {
 										</FormItem>
 									)}
 								/>
-
 								<Button type="submit" className="w-full">
-									Reset Password
+									{t("auth.resetPassword.subtitle")}
 								</Button>
 								<FormMessage className="text-red-500 text-sm" />
 							</div>

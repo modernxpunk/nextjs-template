@@ -1,6 +1,6 @@
 import Icon from "@/components/icon";
 import "@/globals.css";
-import { getLocale } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import type { PropsWithChildren } from "react";
 import { fontsVariables } from "@/lib/font";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ import Link from "next/link";
 import ProfileButton from "@/components/profile-button";
 
 export default async function RootLayout({ children }: PropsWithChildren) {
+	const t = await getTranslations("home");
 	const locale = await getLocale();
 
 	return (
@@ -36,7 +37,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 									<Button variant="ghost" size="icon">
 										<Icon name="common/logo" />
 									</Button>
-									<p>Copyright © 2024 - All right reserved</p>
+									<p>{t("copyright")}</p>
 								</aside>
 								<nav className="flex justify-self-center">
 									<Link

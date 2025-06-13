@@ -16,6 +16,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { useTranslations } from "next-intl";
 
 const schemaSignIn = z.object({
 	email: z
@@ -30,16 +31,13 @@ const schemaSignIn = z.object({
 type SignInSchema = z.infer<typeof schemaSignIn>;
 
 const SignInForm = () => {
+	const t = useTranslations();
+
 	const methods = useForm<SignInSchema>({
 		resolver: zodResolver(schemaSignIn),
 	});
 
-	const {
-		handleSubmit,
-		control,
-		formState: { errors },
-		setError,
-	} = methods;
+	const { handleSubmit, control, setError } = methods;
 
 	const onSubmit = async ({ email, password }: SignInSchema) => {
 		const signInResponse = await signIn.email({
@@ -66,7 +64,9 @@ const SignInForm = () => {
 		<div className="flex flex-col gap-6 w-full max-w-sm px-4">
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-2xl text-center">Login</CardTitle>
+					<CardTitle className="text-2xl text-center">
+						{t("common.login")}
+					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Form {...methods}>
@@ -77,7 +77,7 @@ const SignInForm = () => {
 									name="email"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Email</FormLabel>
+											<FormLabel>{t("common.email")}</FormLabel>
 											<FormControl>
 												<Input placeholder="m@gmail.com" {...field} />
 											</FormControl>
@@ -92,12 +92,12 @@ const SignInForm = () => {
 									render={({ field }) => (
 										<FormItem>
 											<FormLabel className="flex justify-between">
-												<span>Password</span>
+												<span>{t("common.password")}</span>
 												<Link
 													href="/auth/forgot-password"
 													className="hover:underline hover:underline-offset-4"
 												>
-													Forgot password?
+													{t("common.forgotPassword")}
 												</Link>
 											</FormLabel>
 											<FormControl>
@@ -109,7 +109,7 @@ const SignInForm = () => {
 								/>
 
 								<Button type="submit" className="w-full">
-									Login
+									{t("common.login")}
 								</Button>
 								<FormMessage className="text-red-500 text-sm" />
 
@@ -119,16 +119,16 @@ const SignInForm = () => {
 									className="w-full"
 									onClick={signInGoogle}
 								>
-									Login with Google
+									{t("common.loginWithGoogle")}
 								</Button>
 							</div>
 							<div className="mt-4 text-sm text-center">
-								Don&apos;t have an account?{" "}
+								{t("common.dontHaveAccount")}{" "}
 								<Link
 									href="/auth/sign-up"
 									className="underline underline-offset-4"
 								>
-									Sign up
+									{t("common.signUp")}
 								</Link>
 							</div>
 						</form>

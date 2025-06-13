@@ -17,6 +17,7 @@ import {
 	FormLabel,
 	FormMessage,
 } from "@/components/ui/form";
+import { useTranslations } from "next-intl";
 
 const schemaSignUp = z.object({
 	email: z.string(), // .min(1, { message: 'Email is required' }).email({ message: 'Invalid email address' }),
@@ -26,16 +27,13 @@ const schemaSignUp = z.object({
 type SignUpSchema = z.infer<typeof schemaSignUp>;
 
 const SignUpForm = () => {
+	const t = useTranslations();
+
 	const methods = useForm<SignUpSchema>({
 		resolver: zodResolver(schemaSignUp),
 	});
 
-	const {
-		control,
-		handleSubmit,
-		formState: { errors, isSubmitting },
-		setError,
-	} = methods;
+	const { control, handleSubmit, setError } = methods;
 
 	const router = useRouter();
 
@@ -51,7 +49,7 @@ const SignUpForm = () => {
 				},
 			},
 		});
-		console.log("signUpResponse", signUpResponse);
+
 		if (signUpResponse.error) {
 			setError("root", {
 				message: signUpResponse.error.message,
@@ -63,7 +61,9 @@ const SignUpForm = () => {
 		<div className="flex flex-col gap-6 w-full max-w-sm px-4">
 			<Card>
 				<CardHeader>
-					<CardTitle className="text-2xl text-center">Sign up</CardTitle>
+					<CardTitle className="text-2xl text-center">
+						{t("auth.signUp.title")}
+					</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<Form {...methods}>
@@ -74,7 +74,7 @@ const SignUpForm = () => {
 									name="email"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Email</FormLabel>
+											<FormLabel>{t("common.email")}</FormLabel>
 											<FormControl>
 												<Input placeholder="m@gmail.com" {...field} />
 											</FormControl>
@@ -88,7 +88,7 @@ const SignUpForm = () => {
 									name="password"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>Password</FormLabel>
+											<FormLabel>{t("common.password")}</FormLabel>
 											<FormControl>
 												<Input {...field} />
 											</FormControl>
@@ -98,16 +98,16 @@ const SignUpForm = () => {
 								/>
 
 								<Button type="submit" className="w-full">
-									Sign up
+									{t("common.signUp")}
 								</Button>
 							</div>
 							<div className="mt-4 text-sm text-center">
-								Already have an account?{" "}
+								{t("common.alreadyHaveAccount")}{" "}
 								<Link
 									href="/auth/sign-in"
 									className="underline underline-offset-4"
 								>
-									Login
+									{t("common.login")}
 								</Link>
 							</div>
 						</form>
