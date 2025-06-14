@@ -1,6 +1,6 @@
-import type { routing } from '@/i18n/routing';
-import type { formats } from '@/i18n/request';
-import type messages from './messages/en.json';
+import type { routing } from '@/lib/i18n/routing';
+import type { formats } from '@/lib/i18n/request';
+import type messages from "@/lib/i18n/messages/en.json";
 
 declare global {
 	namespace NodeJS {
