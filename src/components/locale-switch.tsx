@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const LocaleSwitch = () => {
-	const locale = useLocale();
+	const locale = useLocale() as Locale;
 	const t = useTranslations("languages");
 
 	const changeLanguage = async (newLocale: Locale) => {
