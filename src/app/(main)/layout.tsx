@@ -10,6 +10,7 @@ import ConnectWalletButton from "@/components/connect-button";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import ProfileButton from "@/components/profile-button";
+import LocaleSwitch from "@/components/locale-switch";
 
 export default async function RootLayout({ children }: PropsWithChildren) {
 	const t = await getTranslations("home");
@@ -26,6 +27,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 									<DropdownTheme />
 									<ProfileButton />
 									<ConnectWalletButton />
+									<LocaleSwitch />
 								</nav>
 							</header>
 							<hr />

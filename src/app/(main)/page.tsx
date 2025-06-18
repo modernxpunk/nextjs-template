@@ -87,7 +87,7 @@ const Page = () => {
 			<p>{timeZone}</p>
 			<div>
 				<div>
-					<p>{format.number(499.9, { style: "currency", currency: "USD" })}</p>
+					<p>{format.number(499.9)}</p>
 					<p>
 						{t(
 							"price",

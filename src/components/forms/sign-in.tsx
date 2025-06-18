@@ -25,7 +25,7 @@ const schemaSignIn = z.object({
 		.email({ message: "Invalid email address" }),
 	password: z
 		.string()
-		.min(6, { message: "Password must be at lea6t 8 characters long" }),
+		.min(6, { message: "Password must be at least 8 characters long" }),
 });
 
 type SignInSchema = z.infer<typeof schemaSignIn>;

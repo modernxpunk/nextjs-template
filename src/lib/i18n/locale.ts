@@ -16,6 +16,7 @@ export const getUserLocale = async () => {
 	const headersObject = Object.fromEntries((await headers()).entries());
 	const negotiator = new Negotiator({ headers: headersObject });
 	const locale = negotiator.language([...locales]) || defaultLocale;
+
 	return locale;
 };
 

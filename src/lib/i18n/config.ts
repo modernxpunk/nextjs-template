@@ -1,3 +1,5 @@
+import type { Formats } from "next-intl";
+
 export type Locale = (typeof locales)[number];
 
 export const locales = ["en", "ua"] as const;
@@ -22,4 +24,4 @@ export const formats = {
 			type: "conjunction",
 		},
 	},
-} as const;
+} satisfies Formats;
