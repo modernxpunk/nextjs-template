@@ -4,7 +4,7 @@ import { cookies, headers } from "next/headers";
 import { type Locale, defaultLocale, locales } from "@/lib/i18n/config";
 import Negotiator from "negotiator";
 
-const COOKIE_NAME = "locale";
+const COOKIE_NAME = "NEXT_LOCALE";
 
 // Read "locale" from cookie, otherwise from Accept-Language header
 export const getUserLocale = async () => {
