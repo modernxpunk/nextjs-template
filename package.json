@@ -10,7 +10,8 @@
 		"type-check": "tsc --project tsconfig.json --pretty --noEmit",
 		"lint": "biome lint",
 		"format": "biome format --write",
-		"prepare": "husky"
+		"prepare": "husky",
+		"prebuild": "prisma generate"
 	},
 	"lint-staged": {
 		"./src/**/*.{ts,js,jsx,tsx}": [

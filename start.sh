@@ -1,6 +1,6 @@
 #!/bin/sh
 set -ex
 
-pnpm dlx --no-update-notifier prisma migrate deploy
+npx --no-update-notifier prisma migrate deploy
 
-node server.js
+exec /sbin/tini -- node server.js
