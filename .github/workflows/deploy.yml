@@ -1,24 +1,55 @@
-name: Deploy Next.js
+name: Deploy App
 
 on:
   push:
-    branches:
-      - ${{ github.event.repository.default_branch }}
+    branches: [main]
   pull_request:
-    branches:
-      - ${{ github.event.repository.default_branch }}
+    branches: [main]
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: app
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/app
+      BETTER_AUTH_URL: http://localhost:3000
+      BETTER_AUTH_SECRET: fJG9jwvj5ejfa94fjAs3
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
 
-      - name: Install dependencies and build
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install pnpm
+        run: npm install -g pnpm
+
+      - name: Install dependencies
         run: pnpm install
 
-      - name: Build
-        run: pnpm run build
+      - name: Generate Prisma client
+        run: pnpm prisma generate
+
+      - name: Run migrations
+        run: pnpm prisma migrate deploy
+
+      - name: Build Next.js app
+        run: pnpm build
