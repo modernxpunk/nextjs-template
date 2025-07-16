@@ -39,17 +39,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
       - name: Install dependencies
-        run: pnpm install
-
-      - name: Generate Prisma client
-        run: pnpm prisma generate
+        run: npm install
 
       - name: Run migrations
-        run: pnpm prisma migrate deploy
+        run: npm prisma migrate deploy
 
-      - name: Build Next.js app
-        run: pnpm build
+      - name: Build app
+        run: npm build
