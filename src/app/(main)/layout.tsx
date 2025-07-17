@@ -5,8 +5,6 @@ import type { PropsWithChildren } from "react";
 import { fontsVariables } from "@/lib/font";
 import { cn } from "@/lib/utils";
 import Providers from "@/providers";
-import DropdownTheme from "@/components/dropdown-theme";
-import ConnectWalletButton from "@/components/connect-button";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import ProfileButton from "@/components/profile-button";
@@ -22,12 +20,10 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 				<Providers>
 					<div className="flex flex-col min-h-screen">
 						<div className="bg-base-200 navbar">
-							<header className="container flex justify-between py-2">
+							<header className="container flex justify-end py-2">
 								<nav className="flex items-center gap-2">
-									<DropdownTheme />
-									<ProfileButton />
-									<ConnectWalletButton />
 									<LocaleSwitch />
+									<ProfileButton />
 								</nav>
 							</header>
 							<hr />

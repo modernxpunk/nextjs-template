@@ -1,4 +1,5 @@
 import type { Formats } from "next-intl";
+import type messages from "@/lib/i18n/messages/en.json";
 
 export type Locale = (typeof locales)[number];
 
@@ -26,3 +27,11 @@ export const formats = {
 		},
 	},
 } satisfies Formats;
+
+declare module "next-intl" {
+	interface AppConfig {
+		Locale: (typeof locales)[number];
+		Messages: typeof messages;
+		Formats: typeof formats;
+	}
+}

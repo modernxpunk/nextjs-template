@@ -9,13 +9,16 @@ const COOKIE_NAME = "NEXT_LOCALE";
 // Read "locale" from cookie, otherwise from Accept-Language header
 export const getUserLocale = async () => {
 	const localeCookie = (await cookies()).get(COOKIE_NAME)?.value;
-	if (localeCookie) {
-		return localeCookie;
+	if (localeCookie && locales.includes(localeCookie as Locale)) {
+		return localeCookie as Locale;
 	}
 
 	const headersObject = Object.fromEntries((await headers()).entries());
 	const negotiator = new Negotiator({ headers: headersObject });
-	const locale = negotiator.language([...locales]) || defaultLocale;
+	const detected = negotiator.language([...locales]);
+	const locale: Locale = locales.includes(detected as Locale)
+		? (detected as Locale)
+		: defaultLocale;
 
 	return locale;
 };

@@ -5,9 +5,7 @@ import { useFormatter } from "next-intl";
 import { useTimeZone } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { signOut, useSession } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
+import { useSession } from "@/lib/auth-client";
 
 const Page = () => {
 	const t = useTranslations("home");
@@ -60,28 +58,12 @@ const Page = () => {
 
 	const { data: session } = useSession();
 
-	const router = useRouter();
-
-	const handleSignOut = async () => {
-		await signOut({
-			fetchOptions: {
-				onSuccess: () => {
-					router.push("/auth/sign-in");
-				},
-			},
-		});
-	};
-
 	return (
 		<div className="container flex flex-col gap-10">
 			<div className="flex flex-col gap-4">
 				<div>
 					<h2>{t("session")}</h2>
 					<pre>{JSON.stringify(session?.user, null, 2)}</pre>
-				</div>
-				<div>
-					<h2>{t("signOut")}</h2>
-					<Button onClick={handleSignOut}>{t("signOut")}</Button>
 				</div>
 			</div>
 			<p>{timeZone}</p>
