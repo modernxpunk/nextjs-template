@@ -10,26 +10,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: app
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd="pg_isready"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
-    env:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/app
-      BETTER_AUTH_URL: http://localhost:3000
-      BETTER_AUTH_SECRET: fJG9jwvj5ejfa94fjAs3
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -38,12 +18,16 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        run: npm install -g pnpm
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Run migrations
-        run: npx prisma migrate deploy
+        run: pnpm exec prisma migrate deploy
 
       - name: Build app
-        run: npm run build
+        run: pnpm run build

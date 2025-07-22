@@ -15,9 +15,9 @@
 	},
 	"lint-staged": {
 		"./src/**/*.{ts,js,jsx,tsx}": [
-			"npm run lint",
-			"npm run type-check",
-			"npm run format"
+			"pnpm run lint",
+			"pnpm run type-check",
+			"pnpm run format"
 		]
 	},
 	"prisma": {
