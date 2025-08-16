@@ -6,6 +6,9 @@ import { useTimeZone } from "next-intl";
 import { Input } from "@/components/ui/input";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useSession } from "@/lib/auth-client";
+import { orpc } from "@/lib/api/orpc";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const Page = () => {
 	const t = useTranslations("home");
@@ -32,29 +35,9 @@ const Page = () => {
 
 	const timeZone = useTimeZone();
 
-	const { data: all_items, refetch } = useQuery({
-		queryKey: ["items"],
-		queryFn: async () => {
-			const res = await fetch("/api/items");
-			const data = await res.json();
-			return data;
-		},
-	});
+	const { data: all_items, refetch } = useQuery(orpc.item.list.queryOptions());
 
-	const mutation = useMutation({
-		mutationFn: async ({ name }: { name: string }) => {
-			const res = await fetch("/api/items", {
-				method: "POST",
-				body: JSON.stringify({
-					userId: session?.user.id,
-					name,
-				}),
-			});
-			const data = await res.json();
-			await refetch();
-			return data;
-		},
-	});
+	const mutation = useMutation(orpc.item.add.mutationOptions());
 
 	const { data: session } = useSession();
 
@@ -152,6 +135,9 @@ const Page = () => {
 					))}
 				</div>
 			)}
+			<Link href="/another-page">
+				<Button variant="link">Another page</Button>
+			</Link>
 		</div>
 	);
 };

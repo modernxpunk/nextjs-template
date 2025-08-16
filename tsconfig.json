@@ -5,6 +5,7 @@
 		"allowJs": true,
 		"skipLibCheck": true,
 		"strict": true,
+		"strictNullChecks": true,
 		"forceConsistentCasingInFileNames": true,
 		"noEmit": true,
 		"esModuleInterop": true,
@@ -17,7 +18,8 @@
 		"incremental": true,
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["src/*"],
+			"@zod-schema": ["prisma/generated/zod"]
 		},
 		"plugins": [
 			{
