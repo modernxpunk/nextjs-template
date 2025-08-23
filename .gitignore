@@ -1,5 +1,5 @@
 # dependencies
-/node_modules
+/**/node_modules
 /.pnp
 .pnp.js
 
@@ -43,3 +43,6 @@ next-env.d.ts
 
 # monorepo
 .turbo
+
+# prisma
+/**/generated
