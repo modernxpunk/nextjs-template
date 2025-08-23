@@ -1,0 +1,20 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "ui": "tui",
+  "envMode": "loose",
+  "tasks": {
+    "//#lint": {},
+    "//#format": {
+      "cache": false
+    },
+    "build": {
+      "dependsOn": ["^build", "test"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
