@@ -16,9 +16,7 @@
 	"scripts": {
 		"format-and-lint": "biome check .",
 		"format-and-lint:fix": "biome check . --write",
-		"db:migrate:deploy": "turbo run db:migrate:deploy",
-		"db:push": "turbo run db:push",
-		"generate": "turbo run generate",
+		"start": "turbo run start --filter=apps/web",
 		"prepare": "husky"
 	},
 	"keywords": [],

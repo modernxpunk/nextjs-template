@@ -1,11 +1,11 @@
 import Icon from "@/components/icon";
-import "@/globals.css";
+import "@repo/ui/globals.css";
+import { Button } from "@repo/ui/components/button";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { PropsWithChildren } from "react";
 import LocaleSwitch from "@/components/locale-switch";
 import ProfileButton from "@/components/profile-button";
-import { Button } from "@/components/ui/button";
 import { fontsVariables } from "@/lib/font";
 import { cn } from "@/lib/utils";
 import Providers from "@/providers";

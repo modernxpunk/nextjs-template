@@ -1,8 +1,8 @@
 "use client";
 
+import { Input } from "@repo/ui/components/input";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useFormatter, useNow, useTimeZone, useTranslations } from "next-intl";
-import { Input } from "@/components/ui/input";
 import { useSession } from "@/lib/auth-client";
 
 const Page = () => {

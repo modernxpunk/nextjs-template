@@ -1,11 +1,10 @@
 "use client";
 
-import { LogOut, Moon, Settings, Sun, Wallet } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
-import { useTheme } from "next-themes";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+	Avatar,
+	AvatarFallback,
+	AvatarImage,
+} from "@repo/ui/components/avatar";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
@@ -13,10 +12,15 @@ import {
 	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@repo/ui/components/dropdown-menu";
+import { Skeleton } from "@repo/ui/components/skeleton";
+import { LogOut, Moon, Settings, Sun, Wallet } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useTheme } from "next-themes";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { signOut, useSession } from "@/lib/auth-client";
 import { formatAddress } from "@/lib/utils";
-import { Skeleton } from "./ui/skeleton";
 
 const ProfileButton = () => {
 	const router = useRouter();

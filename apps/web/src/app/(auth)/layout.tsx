@@ -1,4 +1,4 @@
-import "@/globals.css";
+import "@repo/ui/globals.css";
 import { getLocale } from "next-intl/server";
 import type { PropsWithChildren } from "react";
 import { fontsVariables } from "@/lib/font";

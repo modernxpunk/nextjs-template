@@ -1,14 +1,14 @@
 "use client";
 
-import { Languages } from "lucide-react";
-import { useLocale, useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
+import { Button } from "@repo/ui/components/button";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@repo/ui/components/dropdown-menu";
+import { Languages } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { type Locale, locales } from "@/lib/i18n/config";
 import { setUserLocale } from "@/lib/i18n/locale";
 

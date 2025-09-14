@@ -8,7 +8,8 @@
 		],
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["src/*"],
+			"@repo/ui/*": ["../../packages/ui/src/*"]
 		},
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"incremental": true
