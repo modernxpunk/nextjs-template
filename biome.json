@@ -1,0 +1,23 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
+	"linter": {
+		"rules": {
+			"suspicious": {
+				"noUnknownAtRules": "off"
+			}
+		}
+	},
+	"files": {
+		"includes": [
+			"**",
+			"!**/.next",
+			"!**/node_modules",
+			"!**/generated",
+			"!**/dist",
+			"!**/build",
+			"!**/out",
+			"!**/turbo",
+			"!**/.turbo"
+		]
+	}
+}

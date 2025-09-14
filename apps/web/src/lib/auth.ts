@@ -1,24 +1,24 @@
 import { PrismaClient } from "@repo/db";
-import { betterAuth } from 'better-auth';
-import { prismaAdapter } from 'better-auth/adapters/prisma';
-import { nextCookies } from 'better-auth/next-js';
-import { sendEmail } from '@/actions/email';
-import { env } from '@/env/server';
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { nextCookies } from "better-auth/next-js";
+import { sendEmail } from "@/actions/email";
+import { env } from "@/env/server";
 
 const prisma = new PrismaClient();
 
 export const auth = betterAuth({
 	database: prismaAdapter(prisma, {
-		provider: 'postgresql',
+		provider: "postgresql",
 	}),
 	emailAndPassword: {
 		enabled: true,
 		autoSignIn: true,
 		requireEmailVerification: false,
-		sendResetPassword: async ({ user, url, token }, request) => {
+		sendResetPassword: async ({ user, url }, _request) => {
 			await sendEmail({
 				to: user.email,
-				subject: 'Reset your password',
+				subject: "Reset your password",
 				text: `Click the link to reset your password: ${url}`,
 			});
 		},

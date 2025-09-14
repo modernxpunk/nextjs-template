@@ -1,9 +1,9 @@
-import { headers } from 'next/headers';
-import { type NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth';
 import { prisma } from "@repo/db";
+import { headers } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export async function GET() {
 	try {
@@ -11,16 +11,16 @@ export async function GET() {
 			headers: await headers(),
 		});
 		if (!session) {
-			return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		}
 
 		const items = await prisma.item.findMany();
 		return NextResponse.json(items);
 	} catch (error) {
-		console.error('Error fetching items:', error);
+		console.error("Error fetching items:", error);
 		return NextResponse.json(
-			{ message: 'Internal server error' },
-			{ status: 500 }
+			{ message: "Internal server error" },
+			{ status: 500 },
 		);
 	}
 }
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
 			headers: await headers(),
 		});
 		if (!session) {
-			return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+			return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
 		}
 
 		const body = await req.json();
@@ -46,10 +46,10 @@ export async function POST(req: NextRequest) {
 
 		return NextResponse.json(user, { status: 201 });
 	} catch (error) {
-		console.error('Error creating user:', error);
+		console.error("Error creating user:", error);
 		return NextResponse.json(
-			{ message: 'Internal server error' },
-			{ status: 500 }
+			{ message: "Internal server error" },
+			{ status: 500 },
 		);
 	}
 }

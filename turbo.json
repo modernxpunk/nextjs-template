@@ -1,50 +1,38 @@
 {
-  "$schema": "https://turborepo.com/schema.json",
-  "globalDependencies": [
-    "**/.env.*local"
-  ],
-  "ui": "tui",
-  "envMode": "loose",
-  "tasks": {
-    "topo": {
-      "dependsOn": ["^topo"]
-    },
-    "check-types": {
-      "dependsOn": ["topo"]
-    },
-    "build": {
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        ".env*"
-      ],
-      "dependsOn": [
-        "^build",
-        "^db:generate"
-      ],
-      "env": [
-        "DATABASE_URL"
-      ],
-      "outputs": [
-        ".next/**",
-        "!.next/cache/**"
-      ]
-    },
-    "dev": {
-      "dependsOn": [
-        "^db:generate"
-      ],
-      "cache": false,
-      "persistent": true
-    },
-    "db:generate": {
-      "cache": false
-    },
-    "db:migrate": {
-      "cache": false,
-      "persistent": true
-    },
-    "db:deploy": {
-      "cache": false
-    }
-  }
+	"$schema": "https://turborepo.com/schema.json",
+	"globalDependencies": ["**/.env.*local"],
+	"ui": "tui",
+	"envMode": "loose",
+	"tasks": {
+		"topo": {
+			"dependsOn": ["^topo"]
+		},
+		"check-types": {
+			"dependsOn": ["topo"]
+		},
+		"build": {
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"dependsOn": ["^build", "^db:generate"],
+			"env": ["DATABASE_URL"],
+			"outputs": [".next/**", "!.next/cache/**"]
+		},
+		"dev": {
+			"dependsOn": ["^db:generate"],
+			"cache": false,
+			"persistent": true
+		},
+		"db:generate": {
+			"cache": false
+		},
+		"db:migrate": {
+			"cache": false,
+			"persistent": true
+		},
+		"db:deploy": {
+			"cache": false
+		},
+		"//#format-and-lint:fix": {
+			"cache": false
+		}
+	}
 }
