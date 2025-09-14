@@ -6,6 +6,12 @@
   "ui": "tui",
   "envMode": "loose",
   "tasks": {
+    "topo": {
+      "dependsOn": ["^topo"]
+    },
+    "check-types": {
+      "dependsOn": ["topo"]
+    },
     "build": {
       "inputs": [
         "$TURBO_DEFAULT$",

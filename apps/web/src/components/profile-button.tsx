@@ -41,7 +41,9 @@ const ProfileButton = () => {
     if (isConnected) {
       disconnect();
     } else {
-      connect({ connector: connectors[0] });
+      if (connectors[0]) {
+        connect({ connector: connectors[0] });
+      }
     }
   };
 

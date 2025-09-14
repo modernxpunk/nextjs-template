@@ -1,5 +1,5 @@
 import type { Formats } from 'next-intl';
-import type messages from '@/lib/i18n/messages/en.json' with { type: 'json' };
+import messages from '@/lib/i18n/messages/en.json';
 
 export type Locale = (typeof locales)[number];
 

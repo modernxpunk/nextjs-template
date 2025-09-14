@@ -1,0 +1,3 @@
+npm lint-staged
+
+exit 1
