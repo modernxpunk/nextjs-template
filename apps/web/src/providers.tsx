@@ -9,19 +9,19 @@ const Providers = async ({ children }: PropsWithChildren) => {
 	const messages = await getMessages();
 
 	return (
-		<QueryWrapper>
-			<NextIntlClientProvider formats={formats} messages={messages}>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					disableTransitionOnChange
-					enableSystem
-					themes={["light", "dark"]}
-				>
-					{children}
-				</ThemeProvider>
-			</NextIntlClientProvider>
-		</QueryWrapper>
+		<NextIntlClientProvider formats={formats} messages={messages}>
+			<QueryWrapper>
+					<ThemeProvider
+						attribute="class"
+						defaultTheme="system"
+						disableTransitionOnChange
+						enableSystem
+						themes={["light", "dark"]}
+					>
+						{children}
+					</ThemeProvider>
+			</QueryWrapper>
+		</NextIntlClientProvider>
 	);
 };
 

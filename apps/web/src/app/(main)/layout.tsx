@@ -15,12 +15,12 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 	const locale = await getLocale();
 
 	return (
-		<html lang={locale}>
+		<html lang={locale} suppressHydrationWarning>
 			<body className={cn(fontsVariables, "font-sans")}>
 				<Providers>
 					<div className="flex min-h-screen flex-col">
 						<div className="navbar bg-base-200">
-							<header className="container flex justify-end py-2">
+							<header className="container mx-auto flex justify-end py-2">
 								<nav className="flex items-center gap-2">
 									<LocaleSwitch />
 									<ProfileButton />
@@ -30,7 +30,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 						</div>
 						<main className="flex-1">{children}</main>
 						<footer className="bg-base-200">
-							<div className="container flex items-center justify-between p-4">
+							<div className="container mx-auto flex items-center justify-between p-4">
 								<aside className="flex items-center gap-2">
 									<Button size="icon" variant="ghost">
 										<Icon name="common/logo" />
