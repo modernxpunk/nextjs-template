@@ -25,7 +25,7 @@
 		"zod": "^3.25.76"
 	},
 	"devDependencies": {
-		"@repo/typescript-config": "*",
+		"@repo/typescript-config": "workspace:*",
 		"@tailwindcss/postcss": "^4.1.11",
 		"@turbo/gen": "^2.5.5",
 		"@types/node": "^20.19.9",

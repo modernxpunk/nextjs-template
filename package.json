@@ -1,11 +1,7 @@
 {
 	"name": "nextjs-template",
 	"version": "1.0.0",
-	"packageManager": "npm@8.5.0",
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
+	"packageManager": "pnpm@10.16.1",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/modernxpunk/nextjs-template.git"
@@ -13,9 +9,12 @@
 	"prisma": {
 		"schema": "packages/database/prisma/schema.prisma"
 	},
+	"engines": {
+		"node": ">=22"
+	},
 	"scripts": {
-		"format-and-lint": "biome check .",
-		"format-and-lint:fix": "biome check . --write",
+		"lint": "biome check .",
+		"format": "biome check . --write",
 		"start": "turbo run start --filter=apps/web",
 		"prepare": "husky"
 	},
