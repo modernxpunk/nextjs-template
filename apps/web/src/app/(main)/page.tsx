@@ -4,6 +4,8 @@ import { Input } from "@repo/ui/components/input";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useFormatter, useNow, useTimeZone, useTranslations } from "next-intl";
 import { useSession } from "@/lib/auth-client";
+import Link from "next/link";
+import { Button } from "@repo/ui/components/button";
 
 const Page = () => {
 	const t = useTranslations("home");
@@ -151,6 +153,9 @@ const Page = () => {
 					))}
 				</div>
 			)}
+			<Button>
+				<Link href="/dashboard">Dashboard</Link>
+			</Button>
 		</div>
 	);
 };

@@ -1,8 +1,5 @@
-import Icon from "@/components/icon";
 import "@repo/ui/globals.css";
-import { Button } from "@repo/ui/components/button";
-import Link from "next/link";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
 import type { PropsWithChildren } from "react";
 import LocaleSwitch from "@/components/locale-switch";
 import ProfileButton from "@/components/profile-button";
@@ -11,73 +8,17 @@ import { cn } from "@/lib/utils";
 import Providers from "@/providers";
 
 export default async function RootLayout({ children }: PropsWithChildren) {
-	const t = await getTranslations("home");
 	const locale = await getLocale();
 
 	return (
 		<html lang={locale} suppressHydrationWarning>
 			<body className={cn(fontsVariables, "font-sans")}>
 				<Providers>
-					<div className="flex min-h-screen flex-col">
-						<div className="navbar bg-base-200">
-							<header className="container mx-auto flex justify-end py-2">
-								<nav className="flex items-center gap-2">
-									<LocaleSwitch />
-									<ProfileButton />
-								</nav>
-							</header>
-							<hr />
-						</div>
-						<main className="flex-1">{children}</main>
-						<footer className="bg-base-200">
-							<div className="container mx-auto flex items-center justify-between p-4">
-								<aside className="flex items-center gap-2">
-									<Button size="icon" variant="ghost">
-										<Icon name="common/logo" />
-									</Button>
-									<p>{t("copyright")}</p>
-								</aside>
-								<nav className="flex justify-self-center">
-									<Link
-										href="https://discord.com"
-										rel="noreferrer"
-										target="_blank"
-									>
-										<Button size="icon" variant="ghost">
-											<Icon name="socials/discord" />
-										</Button>
-									</Link>
-									<Link
-										href="https://facebook.com"
-										rel="noreferrer"
-										target="_blank"
-									>
-										<Button size="icon" variant="ghost">
-											<Icon name="socials/facebook" />
-										</Button>
-									</Link>
-									<Link
-										href="https://github.com"
-										rel="noreferrer"
-										target="_blank"
-									>
-										<Button size="icon" variant="ghost">
-											<Icon name="socials/github" />
-										</Button>
-									</Link>
-									<Link
-										href="https://twitter.com"
-										rel="noreferrer"
-										target="_blank"
-									>
-										<Button size="icon" variant="ghost">
-											<Icon name="socials/twitter" />
-										</Button>
-									</Link>
-								</nav>
-							</div>
-						</footer>
-					</div>
+					<nav className="flex items-center gap-2 justify-end p-2">
+						<LocaleSwitch />
+						<ProfileButton />
+					</nav>
+					<main className="flex-1">{children}</main>
 				</Providers>
 			</body>
 		</html>
