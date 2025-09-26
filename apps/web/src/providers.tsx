@@ -11,15 +11,15 @@ const Providers = async ({ children }: PropsWithChildren) => {
 	return (
 		<NextIntlClientProvider formats={formats} messages={messages}>
 			<QueryWrapper>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						disableTransitionOnChange
-						enableSystem
-						themes={["light", "dark"]}
-					>
-						{children}
-					</ThemeProvider>
+				<ThemeProvider
+					attribute="class"
+					defaultTheme="system"
+					disableTransitionOnChange
+					enableSystem
+					themes={["light", "dark"]}
+				>
+					{children}
+				</ThemeProvider>
 			</QueryWrapper>
 		</NextIntlClientProvider>
 	);

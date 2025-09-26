@@ -1,14 +1,6 @@
 "use client";
 
 import {
-	IconCreditCard,
-	IconDotsVertical,
-	IconLogout,
-	IconNotification,
-	IconUserCircle,
-} from "@tabler/icons-react";
-
-import {
 	Avatar,
 	AvatarFallback,
 	AvatarImage,
@@ -28,6 +20,13 @@ import {
 	SidebarMenuItem,
 	useSidebar,
 } from "@repo/ui/components/sidebar";
+import {
+	IconCreditCard,
+	IconDotsVertical,
+	IconLogout,
+	IconNotification,
+	IconUserCircle,
+} from "@tabler/icons-react";
 
 export function NavUser({
 	user,

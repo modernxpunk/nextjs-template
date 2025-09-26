@@ -1,16 +1,15 @@
 "use client";
 
-import * as React from "react";
 import {
 	closestCenter,
 	DndContext,
+	type DragEndEvent,
 	KeyboardSensor,
 	MouseSensor,
 	TouchSensor,
+	type UniqueIdentifier,
 	useSensor,
 	useSensors,
-	type DragEndEvent,
-	type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
@@ -20,39 +19,6 @@ import {
 	verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import {
-	IconChevronDown,
-	IconChevronLeft,
-	IconChevronRight,
-	IconChevronsLeft,
-	IconChevronsRight,
-	IconCircleCheckFilled,
-	IconDotsVertical,
-	IconGripVertical,
-	IconLayoutColumns,
-	IconLoader,
-	IconPlus,
-	IconTrendingUp,
-} from "@tabler/icons-react";
-import {
-	type ColumnDef,
-	type ColumnFiltersState,
-	flexRender,
-	getCoreRowModel,
-	getFacetedRowModel,
-	getFacetedUniqueValues,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	type Row,
-	type SortingState,
-	useReactTable,
-	type VisibilityState,
-} from "@tanstack/react-table";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
-import { toast } from "sonner";
-import { z } from "zod";
-
 import { Badge } from "@repo/ui/components/badge";
 import { Button } from "@repo/ui/components/button";
 import {
@@ -90,7 +56,6 @@ import {
 	SelectValue,
 } from "@repo/ui/components/select";
 import { Separator } from "@repo/ui/components/separator";
-import { useIsMobile } from "@repo/ui/hooks/use-mobile";
 import {
 	Table,
 	TableBody,
@@ -105,6 +70,40 @@ import {
 	TabsList,
 	TabsTrigger,
 } from "@repo/ui/components/tabs";
+import { useIsMobile } from "@repo/ui/hooks/use-mobile";
+import {
+	IconChevronDown,
+	IconChevronLeft,
+	IconChevronRight,
+	IconChevronsLeft,
+	IconChevronsRight,
+	IconCircleCheckFilled,
+	IconDotsVertical,
+	IconGripVertical,
+	IconLayoutColumns,
+	IconLoader,
+	IconPlus,
+	IconTrendingUp,
+} from "@tabler/icons-react";
+import {
+	type ColumnDef,
+	type ColumnFiltersState,
+	flexRender,
+	getCoreRowModel,
+	getFacetedRowModel,
+	getFacetedUniqueValues,
+	getFilteredRowModel,
+	getPaginationRowModel,
+	getSortedRowModel,
+	type Row,
+	type SortingState,
+	useReactTable,
+	type VisibilityState,
+} from "@tanstack/react-table";
+import * as React from "react";
+import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { toast } from "sonner";
+import { z } from "zod";
 
 export const schema = z.object({
 	id: z.number(),

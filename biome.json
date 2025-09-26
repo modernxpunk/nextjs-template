@@ -1,18 +1,15 @@
 {
 	"$schema": "https://biomejs.dev/schemas/2.2.4/schema.json",
-	"linter": {
-		"rules": {
-			"suspicious": {
-				"noUnknownAtRules": "off"
-			},
-			"correctness": {
-				"noInvalidPositionAtImportRule": "off"
-			}
-		}
-	},
 	"files": {
 		"includes": [
 			"**",
+
+			"!**/globals.css",
+
+			"!packages/ui/src/components",
+			"!packages/ui/src/lib",
+			"!packages/ui/src/hooks",
+
 			"!**/.next",
 			"!**/node_modules",
 			"!**/generated",

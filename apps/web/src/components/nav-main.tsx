@@ -1,7 +1,5 @@
 "use client";
 
-import { IconCirclePlusFilled, IconMail, type Icon } from "@tabler/icons-react";
-
 import { Button } from "@repo/ui/components/button";
 import {
 	SidebarGroup,
@@ -10,6 +8,7 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from "@repo/ui/components/sidebar";
+import { type Icon, IconCirclePlusFilled, IconMail } from "@tabler/icons-react";
 
 export function NavMain({
 	items,

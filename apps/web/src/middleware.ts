@@ -4,12 +4,10 @@ import type { Session } from "@/lib/auth";
 
 const REDIRECT_IF_UNAUTHENTICATED = "/auth/sign-in";
 const REDIRECT_IF_AUTHENTICATED = "/";
-const GUEST_ONLY_ROUTES = [
-	"/auth/sign-in",
-	"/auth/sign-up",
-	"/auth/forgot-password",
-	"/auth/reset-password",
-];
+
+const getIsGuestOnlyRoutes = (pathname: string) => {
+	return pathname.startsWith("/auth");
+};
 
 export async function middleware(request: NextRequest) {
 	const { data: session } = await betterFetch<Session>(
@@ -22,9 +20,7 @@ export async function middleware(request: NextRequest) {
 		},
 	);
 
-	const isGuestOnlyRoutes = GUEST_ONLY_ROUTES.includes(
-		request.nextUrl.pathname,
-	);
+	const isGuestOnlyRoutes = getIsGuestOnlyRoutes(request.nextUrl.pathname);
 
 	if (session && isGuestOnlyRoutes) {
 		return NextResponse.redirect(
