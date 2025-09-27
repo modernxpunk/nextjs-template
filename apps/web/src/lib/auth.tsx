@@ -1,8 +1,8 @@
 import { prisma } from "@repo/db";
+import { sendResetPasswordEmail } from "@repo/email/templates/reset-password";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
-import { sendEmail } from "@/actions/email";
 import { env } from "@/env/server";
 
 export const auth = betterAuth({
@@ -14,10 +14,10 @@ export const auth = betterAuth({
 		autoSignIn: true,
 		requireEmailVerification: false,
 		sendResetPassword: async ({ user, url }, _request) => {
-			await sendEmail({
-				to: user.email,
-				subject: "Reset your password",
-				text: `Click the link to reset your password: ${url}`,
+			await sendResetPasswordEmail({
+				name: user.name,
+				email: user.email,
+				url,
 			});
 		},
 	},
