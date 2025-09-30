@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import { Button } from "@repo/ui/components/button";
 import {
 	Card,
@@ -25,13 +26,15 @@ import { resetPassword } from "@/lib/auth-client";
 const schemaResetPassword = z.object({
 	newPassword: z
 		.string()
-		.min(6, { message: "Password must be at lea6t 8 characters long" }),
+		.min(8, { message: "Password must be at least 8 characters long" }),
 });
 
 type ResetPasswordSchema = z.infer<typeof schemaResetPassword>;
 
 const ResetPasswordForm = () => {
 	const t = useTranslations();
+
+	const router = useRouter();
 
 	const methods = useForm<ResetPasswordSchema>({
 		resolver: zodResolver(schemaResetPassword),
@@ -48,9 +51,18 @@ const ResetPasswordForm = () => {
 			return;
 		}
 
-		const resetPasswordResponse = await resetPassword({
-			newPassword,
-		});
+		const resetPasswordResponse = await resetPassword(
+			{
+				newPassword,
+				token,
+			},
+			{
+				onSuccess() {
+					router.replace("/auth/sign-in");
+				},
+			},
+		);
+
 		if (resetPasswordResponse.error) {
 			setError("root", {
 				message: resetPasswordResponse.error.message,

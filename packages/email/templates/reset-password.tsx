@@ -12,17 +12,17 @@ import {
 } from "@react-email/components";
 import { resend } from "..";
 
-type ResetPasswordTemplateProps = {
+type ForgotPasswordTemplateProps = {
 	readonly name: string;
 	readonly email: string;
 	readonly url: string;
 };
 
-const ResetPasswordEmail = ({
+const ForgotPasswordEmail = ({
 	name,
 	email,
 	url,
-}: ResetPasswordTemplateProps) => {
+}: ForgotPasswordTemplateProps) => {
 	return (
 		<Tailwind>
 			<Html>
@@ -55,13 +55,13 @@ const ResetPasswordEmail = ({
 	);
 };
 
-export const sendResetPasswordEmail = async (
-	props: ResetPasswordTemplateProps,
+export const sendForgotPasswordEmail = async (
+	props: ForgotPasswordTemplateProps,
 ) => {
 	await resend.emails.send({
 		from: "Your Name <onboarding@resend.dev>",
 		to: props.email,
 		subject: "Reset your password",
-		react: <ResetPasswordEmail {...props} />,
+		react: <ForgotPasswordEmail {...props} />,
 	});
 };
