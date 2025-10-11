@@ -37,6 +37,9 @@ const ForgotPasswordForm = () => {
 
 	const methods = useForm<ForgotPasswordSchema>({
 		resolver: zodResolver(schemaForgotPassword),
+		defaultValues: {
+			email: "",
+		},
 	});
 
 	const { handleSubmit, control, setError } = methods;

@@ -40,6 +40,10 @@ const SignInForm = () => {
 
 	const methods = useForm<SignInSchema>({
 		resolver: zodResolver(schemaSignIn),
+		defaultValues: {
+			email: "",
+			password: "",
+		},
 	});
 
 	const { handleSubmit, control, setError } = methods;
@@ -84,7 +88,7 @@ const SignInForm = () => {
 										<FormItem>
 											<FormLabel>{t("common.email")}</FormLabel>
 											<FormControl>
-												<Input placeholder="m@gmail.com" {...field} />
+												<Input {...field} />
 											</FormControl>
 											<FormMessage />
 										</FormItem>

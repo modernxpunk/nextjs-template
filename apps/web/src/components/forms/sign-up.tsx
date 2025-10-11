@@ -36,6 +36,10 @@ const SignUpForm = () => {
 
 	const methods = useForm<SignUpSchema>({
 		resolver: zodResolver(schemaSignUp),
+		defaultValues: {
+			email: "",
+			password: "",
+		},
 	});
 
 	const { control, handleSubmit, setError } = methods;

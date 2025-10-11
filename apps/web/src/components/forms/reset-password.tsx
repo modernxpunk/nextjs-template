@@ -38,6 +38,9 @@ const ResetPasswordForm = () => {
 
 	const methods = useForm<ResetPasswordSchema>({
 		resolver: zodResolver(schemaResetPassword),
+		defaultValues: {
+			newPassword: "",
+		},
 	});
 
 	const { handleSubmit, control, setError } = methods;
@@ -60,7 +63,7 @@ const ResetPasswordForm = () => {
 				onSuccess() {
 					router.replace("/auth/sign-in");
 				},
-			},
+			}
 		);
 
 		if (resetPasswordResponse.error) {
