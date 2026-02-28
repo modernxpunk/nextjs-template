@@ -28,22 +28,28 @@ jobs:
     env:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/app
       BETTER_AUTH_URL: http://localhost:3000
-      BETTER_AUTH_SECRET: fJG9jwvj5ejfa94fjAs3
+      BETTER_AUTH_SECRET: ci-test-secret
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 22
+          cache: pnpm
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install --frozen-lockfile
 
       - name: Run migrations
-        run: npm run db:deploy
+        run: pnpm --filter @repo/db db:deploy
 
       - name: Build project
-        run: npm run build
+        run: pnpm build
