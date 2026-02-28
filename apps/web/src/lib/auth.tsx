@@ -1,13 +1,15 @@
-import { prisma } from "@repo/db";
+import { authSchema, db } from "@repo/db";
 import { sendForgotPasswordEmail } from "@repo/email/templates/reset-password";
 import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { env } from "@/env/server";
 
 export const auth = betterAuth({
-	database: prismaAdapter(prisma, {
-		provider: "postgresql",
+	database: drizzleAdapter(db, {
+		provider: "pg",
+		schema: authSchema,
+		camelCase: true,
 	}),
 	emailAndPassword: {
 		enabled: true,

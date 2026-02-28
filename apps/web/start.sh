@@ -1,6 +1,7 @@
 #!/bin/sh
 set -ex
 
-# npx --no-update-notifier prisma migrate deploy
+# Run DB migrations before start if needed:
+# pnpm --filter @repo/db db:deploy
 
 exec /sbin/tini -- node server.js

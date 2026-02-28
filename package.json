@@ -14,8 +14,8 @@
 		"build": "turbo run build",
 		"lint": "biome check .",
 		"format": "biome check . --write",
-		"start": "turbo run start --filter=apps/web",
-		"migrate": "cd packages/database && npx prisma format && npx prisma generate && npx prisma db push",
+		"start": "turbo run start --filter=web",
+		"migrate": "pnpm --filter @repo/db db:migrate",
 		"prepare": "husky"
 	},
 	"keywords": [],
@@ -27,7 +27,6 @@
 	"homepage": "https://github.com/modernxpunk/nextjs-template#readme",
 	"description": "",
 	"dependencies": {
-		"@prisma/client": "^6.14.0",
 		"turbo": "^2.5.6"
 	},
 	"devDependencies": {

@@ -1,5 +1,6 @@
 "use client";
 
+import type { SelectItem } from "@repo/db";
 import { Button } from "@repo/ui/components/button";
 import { Input } from "@repo/ui/components/input";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -32,7 +33,7 @@ const Page = () => {
 
 	const timeZone = useTimeZone();
 
-	const { data: all_items, refetch } = useQuery({
+	const { data: all_items, refetch } = useQuery<SelectItem[]>({
 		queryKey: ["items"],
 		queryFn: async () => {
 			const res = await fetch("/api/items");
@@ -147,7 +148,6 @@ const Page = () => {
 			</div>
 			{all_items && (
 				<div>
-					{/* @ts-ignore */}
 					{all_items.map((item) => (
 						<div key={item.id}>{item.name}</div>
 					))}

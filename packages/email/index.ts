@@ -1,3 +1,16 @@
 import { Resend } from "resend";
 
-export const resend = new Resend("re_NzMdLr7N_MdDYNnuy3q1JtAt4hqYrgFsA");
+let resendClient: Resend | null = null;
+
+export const getResendClient = () => {
+	const token = process.env.RESEND_TOKEN;
+	if (!token) {
+		throw new Error("Missing Resend API key. Set RESEND_TOKEN.");
+	}
+
+	if (!resendClient) {
+		resendClient = new Resend(token);
+	}
+
+	return resendClient;
+};
