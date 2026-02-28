@@ -60,7 +60,7 @@ const Page = () => {
 	const { data: session } = useSession();
 
 	return (
-		<div className="container mx-auto flex flex-col gap-10">
+		<div className="container flex flex-col gap-10">
 			<div className="flex flex-col gap-4">
 				<div>
 					<h2>{t("session")}</h2>

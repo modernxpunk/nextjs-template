@@ -14,7 +14,7 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 		<html lang={locale} suppressHydrationWarning>
 			<body className={cn(fontsVariables, "font-sans")}>
 				<Providers>
-					<nav className="flex items-center gap-2 justify-end p-2">
+					<nav className="flex container items-center gap-2 justify-end p-2">
 						<LocaleSwitch />
 						<ProfileButton />
 					</nav>
