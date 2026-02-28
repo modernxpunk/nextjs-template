@@ -26,9 +26,17 @@ jobs:
           --health-retries=5
 
     env:
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/app
-      BETTER_AUTH_URL: http://localhost:3000
-      BETTER_AUTH_SECRET: ci-test-secret
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET}}
+      ONLY_BOOLEAN: "true"
+      ONLY_NUMBER: "1"
+      REQUIRED_VAR: ci-required
+      EMAIL_USER: ${{ secrets.EMAIL_USER }}
+      EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+      GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+      GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+      RESEND_TOKEN: ${{ secrets.RESEND_TOKEN }}
+      PUBLIC_HELLO: hello-from-ci
 
     steps:
       - name: Checkout code
