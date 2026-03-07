@@ -29,13 +29,13 @@
 	"homepage": "https://github.com/modernxpunk/nextjs-template#readme",
 	"description": "",
 	"dependencies": {
-		"turbo": "^2.5.6"
+		"turbo": "^2.8.14"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.2.4",
-		"@commitlint/cli": "^19.8.1",
-		"@commitlint/config-conventional": "^19.8.1",
+		"@biomejs/biome": "2.4.6",
+		"@commitlint/cli": "^20.4.3",
+		"@commitlint/config-conventional": "^20.4.3",
 		"husky": "^9.1.7",
-		"typescript": "^5.9.2"
+		"typescript": "^5.9.3"
 	}
 }
