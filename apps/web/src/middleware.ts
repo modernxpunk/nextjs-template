@@ -1,6 +1,5 @@
-import { betterFetch } from "@better-fetch/fetch";
 import { type NextRequest, NextResponse } from "next/server";
-import type { Session } from "@/lib/auth";
+import { env } from "@/env/server";
 
 const REDIRECT_IF_UNAUTHENTICATED = "/auth/sign-in";
 const REDIRECT_IF_AUTHENTICATED = "/";
@@ -10,15 +9,22 @@ const getIsGuestOnlyRoutes = (pathname: string) => {
 };
 
 export async function middleware(request: NextRequest) {
-	const { data: session } = await betterFetch<Session>(
-		"/api/auth/get-session",
-		{
-			baseURL: request.nextUrl.origin,
+	let session: unknown = null;
+	try {
+		const response = await fetch(`${env.API_URL}/api/auth/get-session`, {
 			headers: {
 				cookie: request.headers.get("cookie") || "",
 			},
-		},
-	);
+			cache: "no-store",
+		});
+
+		if (response.ok) {
+			session = await response.json();
+		}
+	} catch {
+		// API may be temporarily unavailable during startup/redeploy.
+		session = null;
+	}
 
 	const isGuestOnlyRoutes = getIsGuestOnlyRoutes(request.nextUrl.pathname);
 

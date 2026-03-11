@@ -1,0 +1,16 @@
+.git
+.github
+.turbo
+.vscode
+.husky
+.pnpm-store
+node_modules
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+coverage
+*.log
+.env
+.env*.local
+CHANGELOG.md

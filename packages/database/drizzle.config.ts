@@ -5,7 +5,6 @@ export default defineConfig({
 	schema: "./src/schema.ts",
 	out: "./drizzle",
 	schemaFilter: ["public"],
-	tablesFilter: ["user", "session", "account", "verification", "item"],
 	dbCredentials: {
 		url: process.env.DATABASE_URL || "",
 	},

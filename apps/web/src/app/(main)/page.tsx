@@ -6,6 +6,7 @@ import { Input } from "@repo/ui/components/input";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useFormatter, useNow, useTimeZone, useTranslations } from "next-intl";
+import { env } from "@/env/client";
 import { useSession } from "@/lib/auth-client";
 
 const Page = () => {
@@ -32,11 +33,17 @@ const Page = () => {
 	));
 
 	const timeZone = useTimeZone();
+	const apiUrl = env.PUBLIC_API_URL;
 
 	const { data: all_items, refetch } = useQuery<SelectItem[]>({
 		queryKey: ["items"],
 		queryFn: async () => {
-			const res = await fetch("/api/items");
+			const res = await fetch(`${apiUrl}/api/items`, {
+				credentials: "include",
+			});
+			if (!res.ok) {
+				throw new Error("Failed to fetch items");
+			}
 			const data = await res.json();
 			return data;
 		},
@@ -44,13 +51,20 @@ const Page = () => {
 
 	const mutation = useMutation({
 		mutationFn: async ({ name }: { name: string }) => {
-			const res = await fetch("/api/items", {
+			const res = await fetch(`${apiUrl}/api/items`, {
 				method: "POST",
+				credentials: "include",
+				headers: {
+					"content-type": "application/json",
+				},
 				body: JSON.stringify({
 					userId: session?.user.id,
 					name,
 				}),
 			});
+			if (!res.ok) {
+				throw new Error("Failed to create item");
+			}
 			const data = await res.json();
 			await refetch();
 			return data;

@@ -1,7 +1,16 @@
+import { existsSync } from "node:fs";
+import { resolve } from "node:path";
+import dotenv from "dotenv";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { EnhancedQueryLogger } from "drizzle-query-logger";
 import { Pool } from "pg";
 import * as schema from "./schema";
+
+// Load .env from monorepo root (works from any cwd)
+const envPath = resolve(process.cwd(), ".env");
+if (existsSync(envPath)) {
+	dotenv.config({ path: envPath });
+}
 
 const globalForDb = globalThis as typeof globalThis & {
 	__dbPool?: Pool;

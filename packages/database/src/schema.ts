@@ -6,7 +6,7 @@ import {
 	uniqueIndex,
 } from "drizzle-orm/pg-core";
 
-const user = pgTable(
+export const user = pgTable(
 	"user",
 	{
 		id: text("id").primaryKey(),
@@ -20,7 +20,7 @@ const user = pgTable(
 	(table) => [uniqueIndex("user_email_key").on(table.email)],
 );
 
-const session = pgTable(
+export const session = pgTable(
 	"session",
 	{
 		id: text("id").primaryKey(),
@@ -37,7 +37,7 @@ const session = pgTable(
 	(table) => [uniqueIndex("session_token_key").on(table.token)],
 );
 
-const account = pgTable("account", {
+export const account = pgTable("account", {
 	id: text("id").primaryKey(),
 	accountId: text("accountId").notNull(),
 	providerId: text("providerId").notNull(),
@@ -55,7 +55,7 @@ const account = pgTable("account", {
 	updatedAt: timestamp("updatedAt", { mode: "date" }).notNull(),
 });
 
-const verification = pgTable("verification", {
+export const verification = pgTable("verification", {
 	id: text("id").primaryKey(),
 	identifier: text("identifier").notNull(),
 	value: text("value").notNull(),

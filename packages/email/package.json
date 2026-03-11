@@ -2,12 +2,25 @@
 	"name": "@repo/email",
 	"version": "0.0.0",
 	"private": true,
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"files": [
+		"dist"
+	],
 	"scripts": {
+		"build": "tsc -p tsconfig.build.json",
 		"clean": "git clean -xdf .cache .turbo dist node_modules",
 		"typecheck": "tsc --noEmit --emitDeclarationOnly false"
 	},
 	"exports": {
-		"./templates/*": "./templates/*.tsx"
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		},
+		"./templates/*": {
+			"types": "./dist/templates/*.d.ts",
+			"default": "./dist/templates/*.js"
+		}
 	},
 	"dependencies": {
 		"@react-email/components": "^1.0.8",

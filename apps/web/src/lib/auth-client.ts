@@ -1,6 +1,11 @@
-import { createAuthClient } from "better-auth/react";
+"use client";
 
-export const authClient = createAuthClient({});
+import { createAuthClient } from "better-auth/react";
+import { env } from "@/env/client";
+
+export const authClient = createAuthClient({
+	baseURL: env.PUBLIC_API_URL,
+});
 
 export type Session = typeof authClient.$Infer.Session;
 

@@ -15,7 +15,12 @@
 		"lint": "biome check . --error-on-warnings",
 		"lint:staged": "biome check --staged --error-on-warnings --no-errors-on-unmatched",
 		"format": "biome check . --write",
-		"start": "turbo run start --filter=web",
+		"start": "turbo run start --filter=api --filter=web",
+		"docker:bootstrap": "docker compose up -d postgres && docker compose build migrate && docker compose run --rm migrate && docker compose up --build -d api web",
+		"docker:up": "docker compose up --build -d postgres api web",
+		"docker:migrate": "docker compose build migrate && docker compose run --rm migrate",
+		"docker:down": "docker compose down",
+		"docker:logs": "docker compose logs -f web api postgres",
 		"db:deploy": "pnpm --filter @repo/db db:deploy",
 		"migrate": "pnpm --filter @repo/db db:migrate",
 		"prepare": "husky"
