@@ -1,6 +1,5 @@
 "use client";
 
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@repo/ui/components/badge";
 import { Button } from "@repo/ui/components/button";
 import { Calendar } from "@repo/ui/components/calendar";
@@ -53,6 +52,11 @@ import {
 	TableHeader,
 	TableRow,
 } from "@repo/ui/components/table";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import type {
+	SessionWithImpersonatedBy,
+	UserWithRole,
+} from "better-auth/client/plugins";
 import {
 	CalendarIcon,
 	CheckCircle2,
@@ -64,10 +68,6 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import type {
-	SessionWithImpersonatedBy,
-	UserWithRole,
-} from "better-auth/client/plugins";
 import { authClient, useSession } from "@/lib/auth-client";
 import {
 	getPrimaryRole,
@@ -91,7 +91,10 @@ type SortField = (typeof SORT_FIELDS)[number];
 type SortDirection = (typeof SORT_DIRECTIONS)[number];
 type BannedFilter = (typeof BANNED_FILTERS)[number];
 
-type AdminUser = Omit<UserWithRole, "role" | "createdAt" | "updatedAt" | "banExpires"> & {
+type AdminUser = Omit<
+	UserWithRole,
+	"role" | "createdAt" | "updatedAt" | "banExpires"
+> & {
 	role?: RoleValue;
 	createdAt?: string | Date | null;
 	updatedAt?: string | Date | null;
@@ -160,7 +163,9 @@ type ListUserSessionsResponse = {
 	sessions: AdminSession[];
 };
 
-type ListUsersParams = NonNullable<Parameters<typeof authClient.admin.listUsers>[0]>;
+type ListUsersParams = NonNullable<
+	Parameters<typeof authClient.admin.listUsers>[0]
+>;
 type ListUsersQuery = NonNullable<ListUsersParams["query"]>;
 type PermissionInput = Parameters<
 	typeof authClient.admin.checkRolePermission
@@ -189,7 +194,10 @@ const DEFAULT_CREATE_USER_STATE: CreateUserState = {
 	role: "user",
 };
 
-const PERMISSION_CHECKS: Array<{ label: string; permissions: PermissionInput }> = [
+const PERMISSION_CHECKS: Array<{
+	label: string;
+	permissions: PermissionInput;
+}> = [
 	{ label: "user.create", permissions: { user: ["create"] } },
 	{ label: "user.list", permissions: { user: ["list"] } },
 	{ label: "user.get", permissions: { user: ["get"] } },
@@ -224,7 +232,12 @@ const ABILITY_GROUPS: AbilityGroup[] = [
 	},
 	{
 		title: "Projects",
-		labels: ["project.read", "project.create", "project.update", "project.delete"],
+		labels: [
+			"project.read",
+			"project.create",
+			"project.update",
+			"project.delete",
+		],
 	},
 ];
 
@@ -338,17 +351,25 @@ const AdminDashboard = () => {
 	const queryClient = useQueryClient();
 	const { data: session, isPending: isSessionPending, refetch } = useSession();
 
-	const [filters, setFilters] = useState<ListUsersState>(DEFAULT_LIST_USERS_STATE);
-	const [queryState, setQueryState] = useState<ListUsersState>(DEFAULT_LIST_USERS_STATE);
+	const [filters, setFilters] = useState<ListUsersState>(
+		DEFAULT_LIST_USERS_STATE,
+	);
+	const [queryState, setQueryState] = useState<ListUsersState>(
+		DEFAULT_LIST_USERS_STATE,
+	);
 	const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
 	const [createUserOpen, setCreateUserOpen] = useState(false);
 	const [createUserState, setCreateUserState] = useState<CreateUserState>(
 		DEFAULT_CREATE_USER_STATE,
 	);
-	const [roleDraftByUserId, setRoleDraftByUserId] = useState<Record<string, AppRole>>({});
+	const [roleDraftByUserId, setRoleDraftByUserId] = useState<
+		Record<string, AppRole>
+	>({});
 	const [pendingActionId, setPendingActionId] = useState<string | null>(null);
 	const [feedback, setFeedback] = useState<Feedback>(null);
-	const [banModal, setBanModal] = useState<BanModalState>(getDefaultBanModalState);
+	const [banModal, setBanModal] = useState<BanModalState>(
+		getDefaultBanModalState,
+	);
 	const [sessionsModal, setSessionsModal] = useState<SessionsModalState>({
 		open: false,
 		userId: null,
@@ -411,7 +432,8 @@ const AdminDashboard = () => {
 		}),
 	);
 	const allowedSet = new Set(allowedPermissions.map((item) => item.label));
-	const deniedPermissionsCount = PERMISSION_CHECKS.length - allowedPermissions.length;
+	const deniedPermissionsCount =
+		PERMISSION_CHECKS.length - allowedPermissions.length;
 
 	const activeFilterBadges: string[] = [];
 	if (filters.searchValue.trim()) {
@@ -479,7 +501,13 @@ const AdminDashboard = () => {
 				isLoading: false,
 			});
 		} catch (error) {
-			setSessionsModal((prev) => ({ ...prev, open, userId, sessions: [], isLoading: false }));
+			setSessionsModal((prev) => ({
+				...prev,
+				open,
+				userId,
+				sessions: [],
+				isLoading: false,
+			}));
 			setFeedback({
 				type: "error",
 				message: getErrorMessage(error, "Unable to load user sessions."),
@@ -488,7 +516,11 @@ const AdminDashboard = () => {
 	};
 
 	const applyFilters = () => {
-		setQueryState((prev) => ({ ...filters, offset: 0, limit: filters.limit || prev.limit }));
+		setQueryState((prev) => ({
+			...filters,
+			offset: 0,
+			limit: filters.limit || prev.limit,
+		}));
 	};
 
 	const resetFilters = () => {
@@ -526,7 +558,8 @@ const AdminDashboard = () => {
 
 	const setRole = async (user: AdminUser) => {
 		const fallback = getPrimaryRole(user.role);
-		const role = roleDraftByUserId[user.id] ?? (isAppRole(fallback) ? fallback : "user");
+		const role =
+			roleDraftByUserId[user.id] ?? (isAppRole(fallback) ? fallback : "user");
 
 		await runAction(`set-role-${user.id}`, "User role updated.", async () => {
 			const result = await authClient.admin.setRole({ userId: user.id, role });
@@ -558,7 +591,9 @@ const AdminDashboard = () => {
 			return;
 		}
 
-		const expiresIn = Math.floor((banModal.expiresAt.getTime() - Date.now()) / 1000);
+		const expiresIn = Math.floor(
+			(banModal.expiresAt.getTime() - Date.now()) / 1000,
+		);
 		if (!Number.isFinite(expiresIn) || expiresIn <= 0) {
 			setFeedback({
 				type: "error",
@@ -588,13 +623,17 @@ const AdminDashboard = () => {
 	};
 
 	const revokeAllSessions = async (userId: string) => {
-		await runAction(`revoke-all-${userId}`, "All user sessions revoked.", async () => {
-			const result = await authClient.admin.revokeUserSessions({ userId });
-			ensureData(result, "Revoke user sessions failed.");
-			if (sessionsModal.open && sessionsModal.userId === userId) {
-				await fetchUserSessions(userId, true);
-			}
-		});
+		await runAction(
+			`revoke-all-${userId}`,
+			"All user sessions revoked.",
+			async () => {
+				const result = await authClient.admin.revokeUserSessions({ userId });
+				ensureData(result, "Revoke user sessions failed.");
+				if (sessionsModal.open && sessionsModal.userId === userId) {
+					await fetchUserSessions(userId, true);
+				}
+			},
+		);
 	};
 
 	const revokeSession = async (sessionToken: string) => {
@@ -603,11 +642,17 @@ const AdminDashboard = () => {
 			return;
 		}
 
-		await runAction(`revoke-${sessionToken}`, "User session revoked.", async () => {
-			const result = await authClient.admin.revokeUserSession({ sessionToken });
-			ensureData(result, "Revoke user session failed.");
-			await fetchUserSessions(userId, true);
-		});
+		await runAction(
+			`revoke-${sessionToken}`,
+			"User session revoked.",
+			async () => {
+				const result = await authClient.admin.revokeUserSession({
+					sessionToken,
+				});
+				ensureData(result, "Revoke user session failed.");
+				await fetchUserSessions(userId, true);
+			},
+		);
 	};
 
 	const impersonateUser = async (userId: string) => {
@@ -620,16 +665,22 @@ const AdminDashboard = () => {
 	};
 
 	const stopImpersonating = async () => {
-		await runAction("stop-impersonating", "Returned to admin session.", async () => {
-			const result = await authClient.admin.stopImpersonating();
-			ensureData(result, "Stop impersonation failed.");
-			await refetch();
-			router.refresh();
-		});
+		await runAction(
+			"stop-impersonating",
+			"Returned to admin session.",
+			async () => {
+				const result = await authClient.admin.stopImpersonating();
+				ensureData(result, "Stop impersonation failed.");
+				await refetch();
+				router.refresh();
+			},
+		);
 	};
 
 	const removeUser = async (user: AdminUser) => {
-		const confirmed = window.confirm(`Delete ${user.email}? This action is permanent.`);
+		const confirmed = window.confirm(
+			`Delete ${user.email}? This action is permanent.`,
+		);
 		if (!confirmed) {
 			return;
 		}
@@ -721,11 +772,15 @@ const AdminDashboard = () => {
 					<div className="flex flex-wrap items-center gap-2">
 						<Badge variant="secondary">{`Allowed ${allowedPermissions.length}`}</Badge>
 						<Badge variant="outline">{`Denied ${deniedPermissionsCount}`}</Badge>
-						{isImpersonating ? <Badge variant="destructive">Impersonating</Badge> : null}
+						{isImpersonating ? (
+							<Badge variant="destructive">Impersonating</Badge>
+						) : null}
 					</div>
 					<div className="grid gap-3 md:grid-cols-3">
 						{ABILITY_GROUPS.map((group) => {
-							const allowedInGroup = group.labels.filter((label) => allowedSet.has(label));
+							const allowedInGroup = group.labels.filter((label) =>
+								allowedSet.has(label),
+							);
 							return (
 								<div className="rounded-lg border p-3" key={group.title}>
 									<div className="mb-2 flex items-center justify-between">
@@ -736,7 +791,10 @@ const AdminDashboard = () => {
 										{group.labels.map((label) => {
 											const allowed = allowedSet.has(label);
 											return (
-												<div className="flex items-center justify-between" key={label}>
+												<div
+													className="flex items-center justify-between"
+													key={label}
+												>
 													<span className="text-sm">{label}</span>
 													{allowed ? (
 														<CheckCircle2 className="size-4 text-emerald-600" />
@@ -758,7 +816,8 @@ const AdminDashboard = () => {
 				<CardHeader>
 					<CardTitle>User Directory</CardTitle>
 					<CardDescription>
-						Use quick search for speed and open advanced filters only when needed.
+						Use quick search for speed and open advanced filters only when
+						needed.
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4">
@@ -780,7 +839,10 @@ const AdminDashboard = () => {
 										placeholder="Type name or email"
 										value={filters.searchValue}
 										onChange={(event) =>
-											setFilters((prev) => ({ ...prev, searchValue: event.target.value }))
+											setFilters((prev) => ({
+												...prev,
+												searchValue: event.target.value,
+											}))
 										}
 									/>
 								</div>
@@ -791,7 +853,10 @@ const AdminDashboard = () => {
 								<Select
 									value={filters.searchField}
 									onValueChange={(value) =>
-										setFilters((prev) => ({ ...prev, searchField: value as SearchField }))
+										setFilters((prev) => ({
+											...prev,
+											searchField: value as SearchField,
+										}))
 									}
 								>
 									<SelectTrigger className="w-full">
@@ -808,7 +873,11 @@ const AdminDashboard = () => {
 							</div>
 
 							<div className="flex items-end">
-								<Button className="w-full md:w-auto" disabled={pendingActionId !== null} type="submit">
+								<Button
+									className="w-full md:w-auto"
+									disabled={pendingActionId !== null}
+									type="submit"
+								>
 									Apply
 								</Button>
 							</div>
@@ -834,7 +903,9 @@ const AdminDashboard = () => {
 							<div className="flex flex-wrap items-center justify-between gap-3 rounded-md border p-3">
 								<div className="flex flex-wrap items-center gap-2">
 									{activeFilterBadges.length === 0 ? (
-										<span className="text-muted-foreground text-sm">No active filters</span>
+										<span className="text-muted-foreground text-sm">
+											No active filters
+										</span>
 									) : (
 										activeFilterBadges.map((item) => (
 											<Badge key={item} variant="outline">
@@ -882,7 +953,10 @@ const AdminDashboard = () => {
 									<Select
 										value={filters.filterBanned}
 										onValueChange={(value) =>
-											setFilters((prev) => ({ ...prev, filterBanned: value as BannedFilter }))
+											setFilters((prev) => ({
+												...prev,
+												filterBanned: value as BannedFilter,
+											}))
 										}
 									>
 										<SelectTrigger className="w-full">
@@ -903,7 +977,10 @@ const AdminDashboard = () => {
 									<Select
 										value={filters.sortBy}
 										onValueChange={(value) =>
-											setFilters((prev) => ({ ...prev, sortBy: value as SortField }))
+											setFilters((prev) => ({
+												...prev,
+												sortBy: value as SortField,
+											}))
 										}
 									>
 										<SelectTrigger className="w-full">
@@ -924,7 +1001,10 @@ const AdminDashboard = () => {
 									<Select
 										value={filters.sortDirection}
 										onValueChange={(value) =>
-											setFilters((prev) => ({ ...prev, sortDirection: value as SortDirection }))
+											setFilters((prev) => ({
+												...prev,
+												sortDirection: value as SortDirection,
+											}))
 										}
 									>
 										<SelectTrigger className="w-full">
@@ -995,7 +1075,9 @@ const AdminDashboard = () => {
 											</TableCell>
 										</TableRow>
 									) : null}
-									{!usersQuery.isPending && !usersQuery.error && users.length === 0 ? (
+									{!usersQuery.isPending &&
+									!usersQuery.error &&
+									users.length === 0 ? (
 										<TableRow>
 											<TableCell className="text-muted-foreground" colSpan={6}>
 												No users found.
@@ -1005,15 +1087,21 @@ const AdminDashboard = () => {
 									{users.map((user) => {
 										const fallback = getPrimaryRole(user.role);
 										const selectedRole =
-											roleDraftByUserId[user.id] ?? (isAppRole(fallback) ? fallback : "user");
-										const rolesLabel = normalizeRoles(user.role).join(", ") || "user";
+											roleDraftByUserId[user.id] ??
+											(isAppRole(fallback) ? fallback : "user");
+										const rolesLabel =
+											normalizeRoles(user.role).join(", ") || "user";
 
 										return (
 											<TableRow key={user.id}>
 												<TableCell className="max-w-[280px] whitespace-normal">
 													<div className="font-medium">{user.name}</div>
-													<div className="text-muted-foreground text-xs">{user.email}</div>
-													<div className="text-muted-foreground text-xs">{user.id}</div>
+													<div className="text-muted-foreground text-xs">
+														{user.email}
+													</div>
+													<div className="text-muted-foreground text-xs">
+														{user.id}
+													</div>
 												</TableCell>
 												<TableCell>
 													<div className="space-y-2">
@@ -1025,7 +1113,10 @@ const AdminDashboard = () => {
 																	if (!isAppRole(value)) {
 																		return;
 																	}
-																	setRoleDraftByUserId((prev) => ({ ...prev, [user.id]: value }));
+																	setRoleDraftByUserId((prev) => ({
+																		...prev,
+																		[user.id]: value,
+																	}));
 																}}
 															>
 																<SelectTrigger className="w-[120px]">
@@ -1042,7 +1133,9 @@ const AdminDashboard = () => {
 															<Button
 																size="sm"
 																variant="outline"
-																disabled={pendingActionId !== null || !canSetRole}
+																disabled={
+																	pendingActionId !== null || !canSetRole
+																}
 																onClick={() => void setRole(user)}
 															>
 																Save
@@ -1051,7 +1144,9 @@ const AdminDashboard = () => {
 													</div>
 												</TableCell>
 												<TableCell>
-													<Badge variant={user.banned ? "destructive" : "outline"}>
+													<Badge
+														variant={user.banned ? "destructive" : "outline"}
+													>
 														{user.banned ? "banned" : "active"}
 													</Badge>
 												</TableCell>
@@ -1070,9 +1165,15 @@ const AdminDashboard = () => {
 															</Button>
 														</DropdownMenuTrigger>
 														<DropdownMenuContent align="end">
-															<DropdownMenuItem onSelect={() => void fetchUserSessions(user.id, true)}>
+															<DropdownMenuItem
+																onSelect={() =>
+																	void fetchUserSessions(user.id, true)
+																}
+															>
 																View sessions...
-																<span className="ml-auto text-muted-foreground text-xs">modal</span>
+																<span className="ml-auto text-muted-foreground text-xs">
+																	modal
+																</span>
 															</DropdownMenuItem>
 															<DropdownMenuItem
 																disabled={!canRevokeSessions}
@@ -1094,7 +1195,9 @@ const AdminDashboard = () => {
 																	onSelect={() => openBanModal(user)}
 																>
 																	Ban user...
-																	<span className="ml-auto text-muted-foreground text-xs">modal</span>
+																	<span className="ml-auto text-muted-foreground text-xs">
+																		modal
+																	</span>
 																</DropdownMenuItem>
 															)}
 															<DropdownMenuItem
@@ -1145,7 +1248,10 @@ const AdminDashboard = () => {
 								variant="outline"
 								disabled={queryState.offset + queryState.limit >= totalUsers}
 								onClick={() =>
-									setQueryState((prev) => ({ ...prev, offset: prev.offset + prev.limit }))
+									setQueryState((prev) => ({
+										...prev,
+										offset: prev.offset + prev.limit,
+									}))
 								}
 							>
 								Next
@@ -1159,7 +1265,9 @@ const AdminDashboard = () => {
 				<DialogContent>
 					<DialogHeader>
 						<DialogTitle>Create User</DialogTitle>
-						<DialogDescription>Create a new user via admin API.</DialogDescription>
+						<DialogDescription>
+							Create a new user via admin API.
+						</DialogDescription>
 					</DialogHeader>
 					<div className="grid gap-3">
 						<div className="space-y-2">
@@ -1168,7 +1276,10 @@ const AdminDashboard = () => {
 								id="create-name"
 								value={createUserState.name}
 								onChange={(event) =>
-									setCreateUserState((prev) => ({ ...prev, name: event.target.value }))
+									setCreateUserState((prev) => ({
+										...prev,
+										name: event.target.value,
+									}))
 								}
 							/>
 						</div>
@@ -1179,7 +1290,10 @@ const AdminDashboard = () => {
 								type="email"
 								value={createUserState.email}
 								onChange={(event) =>
-									setCreateUserState((prev) => ({ ...prev, email: event.target.value }))
+									setCreateUserState((prev) => ({
+										...prev,
+										email: event.target.value,
+									}))
 								}
 							/>
 						</div>
@@ -1190,7 +1304,10 @@ const AdminDashboard = () => {
 								type="password"
 								value={createUserState.password}
 								onChange={(event) =>
-									setCreateUserState((prev) => ({ ...prev, password: event.target.value }))
+									setCreateUserState((prev) => ({
+										...prev,
+										password: event.target.value,
+									}))
 								}
 							/>
 						</div>
@@ -1219,7 +1336,11 @@ const AdminDashboard = () => {
 						</div>
 					</div>
 					<DialogFooter>
-						<Button onClick={() => setCreateUserOpen(false)} type="button" variant="outline">
+						<Button
+							onClick={() => setCreateUserOpen(false)}
+							type="button"
+							variant="outline"
+						>
 							Cancel
 						</Button>
 						<Button
@@ -1259,7 +1380,10 @@ const AdminDashboard = () => {
 								id="ban-reason"
 								value={banModal.reason}
 								onChange={(event) =>
-									setBanModal((prev) => ({ ...prev, reason: event.target.value }))
+									setBanModal((prev) => ({
+										...prev,
+										reason: event.target.value,
+									}))
 								}
 							/>
 						</div>
@@ -1268,7 +1392,11 @@ const AdminDashboard = () => {
 								<Label>Ban until (date)</Label>
 								<Popover>
 									<PopoverTrigger asChild>
-										<Button className="w-full justify-between" type="button" variant="outline">
+										<Button
+											className="w-full justify-between"
+											type="button"
+											variant="outline"
+										>
 											<span>{toDayLabel(banModal.expiresAt)}</span>
 											<CalendarIcon className="size-4 text-muted-foreground" />
 										</Button>
@@ -1303,7 +1431,8 @@ const AdminDashboard = () => {
 									type="time"
 									value={toTimeValue(banModal.expiresAt)}
 									onChange={(event) => {
-										const [hoursRaw, minutesRaw] = event.target.value.split(":");
+										const [hoursRaw, minutesRaw] =
+											event.target.value.split(":");
 										const hours = Number(hoursRaw);
 										const minutes = Number(minutesRaw);
 										if (!Number.isFinite(hours) || !Number.isFinite(minutes)) {
@@ -1319,7 +1448,8 @@ const AdminDashboard = () => {
 							</div>
 						</div>
 						<p className="text-muted-foreground text-xs">
-							Default horizon: {Math.floor(DEFAULT_BAN_EXPIRES_IN / 86400)} days.
+							Default horizon: {Math.floor(DEFAULT_BAN_EXPIRES_IN / 86400)}{" "}
+							days.
 						</p>
 					</div>
 					<DialogFooter>
@@ -1327,7 +1457,9 @@ const AdminDashboard = () => {
 							Cancel
 						</Button>
 						<Button
-							disabled={pendingActionId !== null || !canBanUsers || !banModal.user}
+							disabled={
+								pendingActionId !== null || !canBanUsers || !banModal.user
+							}
 							onClick={() => void confirmBanUser()}
 							type="button"
 						>
@@ -1379,18 +1511,25 @@ const AdminDashboard = () => {
 									<TableBody>
 										{sessionsModal.sessions.length === 0 ? (
 											<TableRow>
-												<TableCell className="text-muted-foreground" colSpan={6}>
+												<TableCell
+													className="text-muted-foreground"
+													colSpan={6}
+												>
 													No active sessions for this user.
 												</TableCell>
 											</TableRow>
 										) : (
 											sessionsModal.sessions.map((item) => (
 												<TableRow key={item.id}>
-													<TableCell className="max-w-[190px] truncate">{item.id}</TableCell>
+													<TableCell className="max-w-[190px] truncate">
+														{item.id}
+													</TableCell>
 													<TableCell>{compactToken(item.token)}</TableCell>
 													<TableCell>{toDateLabel(item.expiresAt)}</TableCell>
 													<TableCell className="max-w-[280px] whitespace-normal">
-														<div className="text-xs">{item.ipAddress || "n/a"}</div>
+														<div className="text-xs">
+															{item.ipAddress || "n/a"}
+														</div>
 														<div className="text-muted-foreground text-xs">
 															{item.userAgent || "n/a"}
 														</div>
@@ -1400,7 +1539,9 @@ const AdminDashboard = () => {
 														<Button
 															size="sm"
 															variant="outline"
-															disabled={pendingActionId !== null || !canRevokeSessions}
+															disabled={
+																pendingActionId !== null || !canRevokeSessions
+															}
 															onClick={() => void revokeSession(item.token)}
 														>
 															Revoke
@@ -1417,7 +1558,9 @@ const AdminDashboard = () => {
 
 					<div className="flex justify-end px-6 py-4">
 						<Button
-							onClick={() => setSessionsModal((prev) => ({ ...prev, open: false }))}
+							onClick={() =>
+								setSessionsModal((prev) => ({ ...prev, open: false }))
+							}
 							type="button"
 							variant="outline"
 						>
