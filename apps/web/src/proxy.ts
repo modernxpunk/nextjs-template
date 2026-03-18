@@ -8,7 +8,7 @@ const getIsGuestOnlyRoutes = (pathname: string) => {
 	return pathname.startsWith("/auth");
 };
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
 	let session: unknown = null;
 	try {
 		const response = await fetch(`${env.API_URL}/api/auth/get-session`, {

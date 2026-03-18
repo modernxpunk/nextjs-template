@@ -114,7 +114,7 @@ const ProfileButton = () => {
 					</span>
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
-				<DropdownMenuItem>
+				<DropdownMenuItem onSelect={() => router.push("/settings")}>
 					<Settings />
 					Settings
 				</DropdownMenuItem>
