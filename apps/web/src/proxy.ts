@@ -1,5 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { env } from "@/env/server";
+import { isAdminRole } from "@/lib/auth-roles";
 
 const REDIRECT_IF_UNAUTHENTICATED = "/auth/sign-in";
 const REDIRECT_IF_AUTHENTICATED = "/";
@@ -8,8 +9,18 @@ const getIsGuestOnlyRoutes = (pathname: string) => {
 	return pathname.startsWith("/auth");
 };
 
+const getIsAdminRoute = (pathname: string) => {
+	return pathname.startsWith("/admin");
+};
+
+type SessionResponse = {
+	user?: {
+		role?: string | string[] | null;
+	};
+};
+
 export async function proxy(request: NextRequest) {
-	let session: unknown = null;
+	let session: SessionResponse | null = null;
 	try {
 		const response = await fetch(`${env.API_URL}/api/auth/get-session`, {
 			headers: {
@@ -27,6 +38,7 @@ export async function proxy(request: NextRequest) {
 	}
 
 	const isGuestOnlyRoutes = getIsGuestOnlyRoutes(request.nextUrl.pathname);
+	const isAdminRoute = getIsAdminRoute(request.nextUrl.pathname);
 
 	if (session && isGuestOnlyRoutes) {
 		return NextResponse.redirect(
@@ -37,6 +49,12 @@ export async function proxy(request: NextRequest) {
 	if (!(session || isGuestOnlyRoutes)) {
 		return NextResponse.redirect(
 			new URL(REDIRECT_IF_UNAUTHENTICATED, request.url),
+		);
+	}
+
+	if (isAdminRoute && !isAdminRole(session?.user?.role)) {
+		return NextResponse.redirect(
+			new URL(REDIRECT_IF_AUTHENTICATED, request.url),
 		);
 	}
 

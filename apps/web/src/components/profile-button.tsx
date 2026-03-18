@@ -14,19 +14,28 @@ import {
 	DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu";
 import { Skeleton } from "@repo/ui/components/skeleton";
-import { LogOut, Moon, Settings, Sun, Wallet } from "lucide-react";
+import {
+	LogOut,
+	Moon,
+	Settings,
+	ShieldCheck,
+	Sun,
+	UserCheck,
+	Wallet,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { signOut, useSession } from "@/lib/auth-client";
+import { authClient, signOut, useSession } from "@/lib/auth-client";
+import { isAdminRole } from "@/lib/auth-roles";
 import { formatAddress } from "@/lib/utils";
 
 const ProfileButton = () => {
 	const router = useRouter();
 	const t = useTranslations();
 	const { resolvedTheme: theme, setTheme } = useTheme();
-	const { data: session, isPending } = useSession();
+	const { data: session, isPending, refetch } = useSession();
 	const { address, isConnected } = useAccount();
 	const { connectors, connect } = useConnect();
 	const { disconnect } = useDisconnect();
@@ -61,6 +70,20 @@ const ProfileButton = () => {
 		});
 	};
 
+	const handleStopImpersonating = async (e: Event) => {
+		e.preventDefault();
+
+		const { error } = await authClient.admin.stopImpersonating();
+		if (error) {
+			return;
+		}
+
+		await refetch();
+		router.refresh();
+	};
+
+	const isAdmin = isAdminRole(session?.user.role);
+	const isImpersonating = Boolean(session?.session.impersonatedBy);
 	const avatarUrl = session?.user.image ?? undefined;
 	const fallbackLabel = (session?.user.name || session?.user.email || "")
 		.charAt(0)
@@ -118,6 +141,18 @@ const ProfileButton = () => {
 					<Settings />
 					Settings
 				</DropdownMenuItem>
+				{isAdmin ? (
+					<DropdownMenuItem onSelect={() => router.push("/admin")}>
+						<ShieldCheck />
+						Admin
+					</DropdownMenuItem>
+				) : null}
+				{isImpersonating ? (
+					<DropdownMenuItem onSelect={handleStopImpersonating}>
+						<UserCheck />
+						Stop impersonating
+					</DropdownMenuItem>
+				) : null}
 				<DropdownMenuItem onSelect={handleSignOut} variant="destructive">
 					<LogOut />
 					{t("home.signOut")}
