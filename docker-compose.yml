@@ -1,6 +1,33 @@
 name: nextjs-template
 
 services:
+  loki:
+    image: grafana/loki:3.2.1
+    container_name: nextjs-template-loki
+    command: -config.file=/etc/loki/config.yml
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./infra/loki/config.yml:/etc/loki/config.yml:ro
+      - loki-data:/loki
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.2.2
+    container_name: nextjs-template-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infra/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - loki
+    restart: unless-stopped
+
   postgres:
     image: postgres:16-alpine
     container_name: nextjs-template-postgres
@@ -43,6 +70,8 @@ services:
     ports:
       - "4000:4000"
     depends_on:
+      loki:
+        condition: service_started
       postgres:
         condition: service_healthy
     healthcheck:
@@ -75,3 +104,5 @@ services:
 
 volumes:
   postgres-data:
+  loki-data:
+  grafana-data:
