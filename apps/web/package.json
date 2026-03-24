@@ -4,7 +4,8 @@
 	"private": true,
 	"scripts": {
 		"dev": "node ./scripts/with-api-ready.mjs next dev -p 3000 --turbopack",
-		"build": "next build",
+		"dev:types": "kubb --watch --config ./kubb.config.ts",
+		"build": "kubb --config ./kubb.config.ts && next build",
 		"start": "node ./scripts/with-api-ready.mjs next start",
 		"export": "next export",
 		"check-types": "tsc --noEmit"
@@ -49,6 +50,10 @@
 		"zod": "^4.3.6"
 	},
 	"devDependencies": {
+		"@kubb/cli": "^4.36.1",
+		"@kubb/core": "^4.36.1",
+		"@kubb/plugin-oas": "^4.36.1",
+		"@kubb/plugin-ts": "^4.36.1",
 		"@repo/typescript-config": "workspace:*",
 		"@types/negotiator": "^0.6.4",
 		"@types/node": "^25.3.5",

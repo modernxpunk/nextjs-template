@@ -1,24 +1,54 @@
 import {
-	BadRequestException,
 	Body,
 	Controller,
-	ForbiddenException,
 	Get,
-	HttpException,
 	InternalServerErrorException,
 	Post,
 } from "@nestjs/common";
 import { db, item, type SelectItem } from "@repo/db";
 import { Session, type UserSession } from "@thallesp/nestjs-better-auth";
+import { IsNotEmpty, Length } from "class-validator";
+import {
+	ApiBody,
+	ApiCreatedResponse,
+	ApiOkResponse,
+	ApiOperation,
+	ApiProperty,
+	ApiTags,
+} from "@nestjs/swagger";
 
-type CreateItemBody = {
+class CreateItemDto {
+	@ApiProperty({
+		description: "Display name of the item.",
+		example: "My first item",
+		maxLength: 20,
+	})
+	@IsNotEmpty()
+	@Length(0, 20)
 	name: string;
-	userId?: string;
-};
+}
 
+class ItemDto {
+	@ApiProperty({ example: "clx5dhnwo0000abc123xyz" })
+	id: string;
+
+	@ApiProperty({ example: "My first item" })
+	name: string;
+
+	@ApiProperty({ example: "clx5dhm7e0001abc123xyz" })
+	userId: string;
+}
+
+@ApiTags("items")
 @Controller("api/items")
 export class ItemsController {
 	@Get()
+	@ApiOperation({ summary: "List all items" })
+	@ApiOkResponse({
+		description: "Items list.",
+		type: ItemDto,
+		isArray: true,
+	})
 	async getAll(@Session() _session: UserSession): Promise<SelectItem[]> {
 		try {
 			return await db.select().from(item);
@@ -29,27 +59,23 @@ export class ItemsController {
 	}
 
 	@Post()
+	@ApiOperation({ summary: "Create a new item" })
+	@ApiBody({ type: CreateItemDto })
+	@ApiCreatedResponse({
+		description: "Created item.",
+		type: ItemDto,
+	})
 	async create(
-		@Body() body: CreateItemBody,
+		@Body() body: CreateItemDto,
 		@Session() session: UserSession,
 	): Promise<SelectItem> {
 		try {
-			const trimmedName = body.name?.trim();
-			if (!trimmedName) {
-				throw new BadRequestException("name is required");
-			}
-
-			const userId = body.userId ?? session.user.id;
-			if (userId !== session.user.id) {
-				throw new ForbiddenException("Forbidden");
-			}
-
 			const [createdItem] = await db
 				.insert(item)
 				.values({
 					id: crypto.randomUUID(),
-					name: trimmedName,
-					userId,
+					name: body.name,
+					userId: session.user.id,
 				})
 				.returning();
 
@@ -59,11 +85,7 @@ export class ItemsController {
 
 			return createdItem;
 		} catch (error) {
-			if (error instanceof HttpException) {
-				throw error;
-			}
-
-			console.error("Error creating user:", error);
+			console.error("Error creating item:", error);
 			throw new InternalServerErrorException("Internal server error");
 		}
 	}

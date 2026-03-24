@@ -1,7 +1,12 @@
 import "reflect-metadata";
+import { writeFile } from "node:fs/promises";
+import { resolve } from "node:path";
+import { ValidationPipe } from "@nestjs/common/pipes/validation.pipe";
 import { NestFactory } from "@nestjs/core";
+import { SwaggerModule } from "@nestjs/swagger";
 import { Logger } from "nestjs-pino";
 import { AppModule } from "./app.module";
+import { createOpenApiDocument } from "./openapi/openapi-document";
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule, {
@@ -9,6 +14,25 @@ async function bootstrap() {
 		bufferLogs: true,
 	});
 	app.useLogger(app.get(Logger));
+	app.useGlobalPipes(
+		new ValidationPipe({
+			whitelist: true,
+		}),
+	);
+
+	const openApiDocument = await createOpenApiDocument(app);
+
+	const filePath = resolve(process.cwd(), "openapi.json");
+	await writeFile(filePath, JSON.stringify(openApiDocument, null, 2), "utf8");
+	app.get(Logger).log(`OpenAPI spec saved to ${filePath}`);
+
+	SwaggerModule.setup("docs", app, openApiDocument, {
+		jsonDocumentUrl: "docs-json",
+		yamlDocumentUrl: "docs-yaml",
+		swaggerOptions: {
+			persistAuthorization: true,
+		},
+	});
 
 	const port = Number(process.env.PORT ?? process.env.API_PORT ?? 4000);
 	await app.listen(port);

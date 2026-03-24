@@ -2,6 +2,7 @@ import { authSchema, db } from "@repo/db";
 import { sendForgotPasswordEmail } from "@repo/email/templates/reset-password";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { openAPI } from "better-auth/plugins";
 import { createAccessControl } from "better-auth/plugins/access";
 import { admin } from "better-auth/plugins/admin";
 import {
@@ -69,8 +70,14 @@ export const auth = betterAuth({
 			roles,
 			adminUserIds,
 			defaultRole: "user",
+			adminRoles: ["admin"],
+			impersonationSessionDuration: 60 * 60 * 24, // 1 day
+			defaultBanReason: "Violation of terms of service",
 			bannedUserMessage:
 				"Your account is currently suspended. Contact support if this seems incorrect.",
+		}),
+		openAPI({
+			disableDefaultReference: true,
 		}),
 	],
 	...(googleClientId && googleClientSecret

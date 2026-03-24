@@ -68,6 +68,19 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
+import type {
+	BanUserMutationRequest,
+	CreateUserMutationRequest,
+	ImpersonateUserMutationRequest,
+	ListUserSessions200,
+	ListUserSessionsMutationRequest,
+	ListUsers200,
+	RemoveUserMutationRequest,
+	RevokeUserSessionMutationRequest,
+	RevokeUserSessionsMutationRequest,
+	SetUserRoleMutationRequest,
+	UnbanUserMutationRequest,
+} from "@/lib/api/generated/types";
 import { authClient, useSession } from "@/lib/auth-client";
 import {
 	getPrimaryRole,
@@ -154,13 +167,30 @@ type ApiResult<T> = {
 	} | null;
 };
 
-type ListUsersResponse = {
+type ListUsersResponse = Omit<ListUsers200, "users"> & {
 	users: AdminUser[];
-	total: number;
 };
 
-type ListUserSessionsResponse = {
+type ListUserSessionsResponse = Omit<ListUserSessions200, "sessions"> & {
 	sessions: AdminSession[];
+};
+
+type CreateUserPayload = Omit<
+	CreateUserMutationRequest,
+	"role" | "password" | "data"
+> & {
+	role: AppRole;
+	password: string;
+};
+
+type SetRolePayload = Omit<SetUserRoleMutationRequest, "role"> & {
+	role: AppRole;
+};
+
+type BanUserPayload = Omit<BanUserMutationRequest, "userId" | "banReason"> & {
+	userId: string;
+	banReason?: string;
+	banExpiresIn?: number;
 };
 
 type ListUsersParams = NonNullable<
@@ -489,7 +519,8 @@ const AdminDashboard = () => {
 		setFeedback(null);
 
 		try {
-			const result = await authClient.admin.listUserSessions({ userId });
+			const payload: ListUserSessionsMutationRequest = { userId };
+			const result = await authClient.admin.listUserSessions(payload);
 			const data = ensureData<ListUserSessionsResponse>(
 				result,
 				"Unable to load user sessions.",
@@ -543,12 +574,13 @@ const AdminDashboard = () => {
 		}
 
 		await runAction("create-user", "User created successfully.", async () => {
-			const result = await authClient.admin.createUser({
+			const payload: CreateUserPayload = {
 				name: createUserState.name.trim(),
 				email: createUserState.email.trim(),
 				password: createUserState.password,
 				role: createUserState.role,
-			});
+			};
+			const result = await authClient.admin.createUser(payload);
 			ensureData(result, "Create user failed.");
 			setCreateUserState(DEFAULT_CREATE_USER_STATE);
 			setCreateUserOpen(false);
@@ -562,7 +594,8 @@ const AdminDashboard = () => {
 			roleDraftByUserId[user.id] ?? (isAppRole(fallback) ? fallback : "user");
 
 		await runAction(`set-role-${user.id}`, "User role updated.", async () => {
-			const result = await authClient.admin.setRole({ userId: user.id, role });
+			const payload: SetRolePayload = { userId: user.id, role };
+			const result = await authClient.admin.setRole(payload);
 			ensureData(result, "Set role failed.");
 			await refreshUsers();
 			if (session?.user.id === user.id) {
@@ -603,11 +636,12 @@ const AdminDashboard = () => {
 		}
 
 		await runAction(`ban-user-${user.id}`, "User banned.", async () => {
-			const result = await authClient.admin.banUser({
+			const payload: BanUserPayload = {
 				userId: user.id,
 				banReason: banModal.reason.trim() || undefined,
 				banExpiresIn: expiresIn,
-			});
+			};
+			const result = await authClient.admin.banUser(payload);
 			ensureData(result, "Ban user failed.");
 			closeBanModal();
 			await refreshUsers();
@@ -616,7 +650,8 @@ const AdminDashboard = () => {
 
 	const unbanUser = async (user: AdminUser) => {
 		await runAction(`unban-user-${user.id}`, "User unbanned.", async () => {
-			const result = await authClient.admin.unbanUser({ userId: user.id });
+			const payload: UnbanUserMutationRequest = { userId: user.id };
+			const result = await authClient.admin.unbanUser(payload);
 			ensureData(result, "Unban user failed.");
 			await refreshUsers();
 		});
@@ -627,7 +662,8 @@ const AdminDashboard = () => {
 			`revoke-all-${userId}`,
 			"All user sessions revoked.",
 			async () => {
-				const result = await authClient.admin.revokeUserSessions({ userId });
+				const payload: RevokeUserSessionsMutationRequest = { userId };
+				const result = await authClient.admin.revokeUserSessions(payload);
 				ensureData(result, "Revoke user sessions failed.");
 				if (sessionsModal.open && sessionsModal.userId === userId) {
 					await fetchUserSessions(userId, true);
@@ -646,9 +682,10 @@ const AdminDashboard = () => {
 			`revoke-${sessionToken}`,
 			"User session revoked.",
 			async () => {
-				const result = await authClient.admin.revokeUserSession({
+				const payload: RevokeUserSessionMutationRequest = {
 					sessionToken,
-				});
+				};
+				const result = await authClient.admin.revokeUserSession(payload);
 				ensureData(result, "Revoke user session failed.");
 				await fetchUserSessions(userId, true);
 			},
@@ -657,7 +694,8 @@ const AdminDashboard = () => {
 
 	const impersonateUser = async (userId: string) => {
 		await runAction("impersonate-user", "Impersonation started.", async () => {
-			const result = await authClient.admin.impersonateUser({ userId });
+			const payload: ImpersonateUserMutationRequest = { userId };
+			const result = await authClient.admin.impersonateUser(payload);
 			ensureData(result, "Impersonation failed.");
 			await refetch();
 			router.refresh();
@@ -686,7 +724,8 @@ const AdminDashboard = () => {
 		}
 
 		await runAction(`remove-${user.id}`, "User removed.", async () => {
-			const result = await authClient.admin.removeUser({ userId: user.id });
+			const payload: RemoveUserMutationRequest = { userId: user.id };
+			const result = await authClient.admin.removeUser(payload);
 			ensureData(result, "Remove user failed.");
 			await refreshUsers();
 			if (sessionsModal.userId === user.id) {
@@ -727,7 +766,7 @@ const AdminDashboard = () => {
 				<div>
 					<h1 className="font-semibold text-3xl">Admin Dashboard</h1>
 					<p className="text-muted-foreground text-sm">
-						Single-file admin panel powered by Better Auth.
+						Single-file admin panel.
 					</p>
 				</div>
 				<div className="flex items-center gap-2">
@@ -760,57 +799,6 @@ const AdminDashboard = () => {
 					{feedback.message}
 				</div>
 			) : null}
-
-			<Card>
-				<CardHeader>
-					<CardTitle>Role Abilities</CardTitle>
-					<CardDescription>
-						Current role: <span className="font-medium">{currentRole}</span>
-					</CardDescription>
-				</CardHeader>
-				<CardContent className="space-y-4">
-					<div className="flex flex-wrap items-center gap-2">
-						<Badge variant="secondary">{`Allowed ${allowedPermissions.length}`}</Badge>
-						<Badge variant="outline">{`Denied ${deniedPermissionsCount}`}</Badge>
-						{isImpersonating ? (
-							<Badge variant="destructive">Impersonating</Badge>
-						) : null}
-					</div>
-					<div className="grid gap-3 md:grid-cols-3">
-						{ABILITY_GROUPS.map((group) => {
-							const allowedInGroup = group.labels.filter((label) =>
-								allowedSet.has(label),
-							);
-							return (
-								<div className="rounded-lg border p-3" key={group.title}>
-									<div className="mb-2 flex items-center justify-between">
-										<p className="font-medium text-sm">{group.title}</p>
-										<Badge variant="secondary">{`${allowedInGroup.length}/${group.labels.length}`}</Badge>
-									</div>
-									<div className="space-y-2">
-										{group.labels.map((label) => {
-											const allowed = allowedSet.has(label);
-											return (
-												<div
-													className="flex items-center justify-between"
-													key={label}
-												>
-													<span className="text-sm">{label}</span>
-													{allowed ? (
-														<CheckCircle2 className="size-4 text-emerald-600" />
-													) : (
-														<XCircle className="size-4 text-muted-foreground" />
-													)}
-												</div>
-											);
-										})}
-									</div>
-								</div>
-							);
-						})}
-					</div>
-				</CardContent>
-			</Card>
 
 			<Card>
 				<CardHeader>
@@ -1045,184 +1033,180 @@ const AdminDashboard = () => {
 					</form>
 
 					<div className="overflow-x-auto rounded-lg border">
-						<div className="min-w-[980px]">
-							<Table>
-								<TableHeader>
+						<Table>
+							<TableHeader>
+								<TableRow>
+									<TableHead>User</TableHead>
+									<TableHead>Role</TableHead>
+									<TableHead>Status</TableHead>
+									<TableHead>Ban Expires</TableHead>
+									<TableHead>Created</TableHead>
+									<TableHead>Actions</TableHead>
+								</TableRow>
+							</TableHeader>
+							<TableBody>
+								{usersQuery.isPending ? (
 									<TableRow>
-										<TableHead>User</TableHead>
-										<TableHead>Role</TableHead>
-										<TableHead>Status</TableHead>
-										<TableHead>Ban Expires</TableHead>
-										<TableHead>Created</TableHead>
-										<TableHead>Actions</TableHead>
+										<TableCell className="text-muted-foreground" colSpan={6}>
+											<div className="flex items-center gap-2">
+												<Loader2 className="size-4 animate-spin" />
+												Loading users...
+											</div>
+										</TableCell>
 									</TableRow>
-								</TableHeader>
-								<TableBody>
-									{usersQuery.isPending ? (
-										<TableRow>
-											<TableCell className="text-muted-foreground" colSpan={6}>
-												<div className="flex items-center gap-2">
-													<Loader2 className="size-4 animate-spin" />
-													Loading users...
+								) : null}
+								{usersQuery.error ? (
+									<TableRow>
+										<TableCell className="text-destructive" colSpan={6}>
+											Unable to load users.
+										</TableCell>
+									</TableRow>
+								) : null}
+								{!usersQuery.isPending &&
+								!usersQuery.error &&
+								users.length === 0 ? (
+									<TableRow>
+										<TableCell className="text-muted-foreground" colSpan={6}>
+											No users found.
+										</TableCell>
+									</TableRow>
+								) : null}
+								{users.map((user) => {
+									const fallback = getPrimaryRole(user.role);
+									const selectedRole =
+										roleDraftByUserId[user.id] ??
+										(isAppRole(fallback) ? fallback : "user");
+									const rolesLabel =
+										normalizeRoles(user.role).join(", ") || "user";
+
+									return (
+										<TableRow key={user.id}>
+											<TableCell className="max-w-[280px] whitespace-normal">
+												<div className="font-medium">{user.name}</div>
+												<div className="text-muted-foreground text-xs">
+													{user.email}
+												</div>
+												<div className="text-muted-foreground text-xs">
+													{user.id}
 												</div>
 											</TableCell>
-										</TableRow>
-									) : null}
-									{usersQuery.error ? (
-										<TableRow>
-											<TableCell className="text-destructive" colSpan={6}>
-												Unable to load users.
-											</TableCell>
-										</TableRow>
-									) : null}
-									{!usersQuery.isPending &&
-									!usersQuery.error &&
-									users.length === 0 ? (
-										<TableRow>
-											<TableCell className="text-muted-foreground" colSpan={6}>
-												No users found.
-											</TableCell>
-										</TableRow>
-									) : null}
-									{users.map((user) => {
-										const fallback = getPrimaryRole(user.role);
-										const selectedRole =
-											roleDraftByUserId[user.id] ??
-											(isAppRole(fallback) ? fallback : "user");
-										const rolesLabel =
-											normalizeRoles(user.role).join(", ") || "user";
-
-										return (
-											<TableRow key={user.id}>
-												<TableCell className="max-w-[280px] whitespace-normal">
-													<div className="font-medium">{user.name}</div>
-													<div className="text-muted-foreground text-xs">
-														{user.email}
-													</div>
-													<div className="text-muted-foreground text-xs">
-														{user.id}
-													</div>
-												</TableCell>
-												<TableCell>
-													<div className="space-y-2">
-														<Badge variant="secondary">{rolesLabel}</Badge>
-														<div className="flex items-center gap-2">
-															<Select
-																value={selectedRole}
-																onValueChange={(value) => {
-																	if (!isAppRole(value)) {
-																		return;
-																	}
-																	setRoleDraftByUserId((prev) => ({
-																		...prev,
-																		[user.id]: value,
-																	}));
-																}}
-															>
-																<SelectTrigger className="w-[120px]">
-																	<SelectValue />
-																</SelectTrigger>
-																<SelectContent>
-																	{APP_ROLES.map((role) => (
-																		<SelectItem key={role} value={role}>
-																			{role}
-																		</SelectItem>
-																	))}
-																</SelectContent>
-															</Select>
-															<Button
-																size="sm"
-																variant="outline"
-																disabled={
-																	pendingActionId !== null || !canSetRole
+											<TableCell>
+												<div className="space-y-2">
+													<Badge variant="secondary">{rolesLabel}</Badge>
+													<div className="flex items-center gap-2">
+														<Select
+															value={selectedRole}
+															onValueChange={(value) => {
+																if (!isAppRole(value)) {
+																	return;
 																}
-																onClick={() => void setRole(user)}
-															>
-																Save
-															</Button>
-														</div>
+																setRoleDraftByUserId((prev) => ({
+																	...prev,
+																	[user.id]: value,
+																}));
+															}}
+														>
+															<SelectTrigger className="w-[120px]">
+																<SelectValue />
+															</SelectTrigger>
+															<SelectContent>
+																{APP_ROLES.map((role) => (
+																	<SelectItem key={role} value={role}>
+																		{role}
+																	</SelectItem>
+																))}
+															</SelectContent>
+														</Select>
+														<Button
+															size="sm"
+															variant="outline"
+															disabled={pendingActionId !== null || !canSetRole}
+															onClick={() => void setRole(user)}
+														>
+															Save
+														</Button>
 													</div>
-												</TableCell>
-												<TableCell>
-													<Badge
-														variant={user.banned ? "destructive" : "outline"}
-													>
-														{user.banned ? "banned" : "active"}
-													</Badge>
-												</TableCell>
-												<TableCell>{toDateLabel(user.banExpires)}</TableCell>
-												<TableCell>{toDateLabel(user.createdAt)}</TableCell>
-												<TableCell>
-													<DropdownMenu>
-														<DropdownMenuTrigger asChild>
-															<Button
-																size="sm"
-																variant="outline"
-																disabled={pendingActionId !== null}
-															>
-																Actions
-																<MoreHorizontal className="size-4" />
-															</Button>
-														</DropdownMenuTrigger>
-														<DropdownMenuContent align="end">
+												</div>
+											</TableCell>
+											<TableCell>
+												<Badge
+													variant={user.banned ? "destructive" : "outline"}
+												>
+													{user.banned ? "banned" : "active"}
+												</Badge>
+											</TableCell>
+											<TableCell>{toDateLabel(user.banExpires)}</TableCell>
+											<TableCell>{toDateLabel(user.createdAt)}</TableCell>
+											<TableCell>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<Button
+															size="sm"
+															variant="outline"
+															disabled={pendingActionId !== null}
+														>
+															Actions
+															<MoreHorizontal className="size-4" />
+														</Button>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent align="end">
+														<DropdownMenuItem
+															onSelect={() =>
+																void fetchUserSessions(user.id, true)
+															}
+														>
+															View sessions...
+															<span className="ml-auto text-muted-foreground text-xs">
+																modal
+															</span>
+														</DropdownMenuItem>
+														<DropdownMenuItem
+															disabled={!canRevokeSessions}
+															onSelect={() => void revokeAllSessions(user.id)}
+														>
+															Revoke all sessions
+														</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														{user.banned ? (
 															<DropdownMenuItem
-																onSelect={() =>
-																	void fetchUserSessions(user.id, true)
-																}
+																disabled={!canBanUsers}
+																onSelect={() => void unbanUser(user)}
 															>
-																View sessions...
+																Unban user
+															</DropdownMenuItem>
+														) : (
+															<DropdownMenuItem
+																disabled={!canBanUsers}
+																onSelect={() => openBanModal(user)}
+															>
+																Ban user...
 																<span className="ml-auto text-muted-foreground text-xs">
 																	modal
 																</span>
 															</DropdownMenuItem>
-															<DropdownMenuItem
-																disabled={!canRevokeSessions}
-																onSelect={() => void revokeAllSessions(user.id)}
-															>
-																Revoke all sessions
-															</DropdownMenuItem>
-															<DropdownMenuSeparator />
-															{user.banned ? (
-																<DropdownMenuItem
-																	disabled={!canBanUsers}
-																	onSelect={() => void unbanUser(user)}
-																>
-																	Unban user
-																</DropdownMenuItem>
-															) : (
-																<DropdownMenuItem
-																	disabled={!canBanUsers}
-																	onSelect={() => openBanModal(user)}
-																>
-																	Ban user...
-																	<span className="ml-auto text-muted-foreground text-xs">
-																		modal
-																	</span>
-																</DropdownMenuItem>
-															)}
-															<DropdownMenuItem
-																disabled={!canImpersonateUsers}
-																onSelect={() => void impersonateUser(user.id)}
-															>
-																Impersonate user
-															</DropdownMenuItem>
-															<DropdownMenuSeparator />
-															<DropdownMenuItem
-																disabled={!canDeleteUsers}
-																onSelect={() => void removeUser(user)}
-																variant="destructive"
-															>
-																Remove user
-															</DropdownMenuItem>
-														</DropdownMenuContent>
-													</DropdownMenu>
-												</TableCell>
-											</TableRow>
-										);
-									})}
-								</TableBody>
-							</Table>
-						</div>
+														)}
+														<DropdownMenuItem
+															disabled={!canImpersonateUsers}
+															onSelect={() => void impersonateUser(user.id)}
+														>
+															Impersonate user
+														</DropdownMenuItem>
+														<DropdownMenuSeparator />
+														<DropdownMenuItem
+															disabled={!canDeleteUsers}
+															onSelect={() => void removeUser(user)}
+															variant="destructive"
+														>
+															Remove user
+														</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</TableCell>
+										</TableRow>
+									);
+								})}
+							</TableBody>
+						</Table>
 					</div>
 
 					<div className="flex items-center justify-between gap-2">
@@ -1257,6 +1241,57 @@ const AdminDashboard = () => {
 								Next
 							</Button>
 						</div>
+					</div>
+				</CardContent>
+			</Card>
+
+			<Card>
+				<CardHeader>
+					<CardTitle>Role Abilities</CardTitle>
+					<CardDescription>
+						Current role: <span className="font-medium">{currentRole}</span>
+					</CardDescription>
+				</CardHeader>
+				<CardContent className="space-y-4">
+					<div className="flex flex-wrap items-center gap-2">
+						<Badge variant="secondary">{`Allowed ${allowedPermissions.length}`}</Badge>
+						<Badge variant="outline">{`Denied ${deniedPermissionsCount}`}</Badge>
+						{isImpersonating ? (
+							<Badge variant="destructive">Impersonating</Badge>
+						) : null}
+					</div>
+					<div className="grid gap-3 md:grid-cols-3">
+						{ABILITY_GROUPS.map((group) => {
+							const allowedInGroup = group.labels.filter((label) =>
+								allowedSet.has(label),
+							);
+							return (
+								<div className="rounded-lg border p-3" key={group.title}>
+									<div className="mb-2 flex items-center justify-between">
+										<p className="font-medium text-sm">{group.title}</p>
+										<Badge variant="secondary">{`${allowedInGroup.length}/${group.labels.length}`}</Badge>
+									</div>
+									<div className="space-y-2">
+										{group.labels.map((label) => {
+											const allowed = allowedSet.has(label);
+											return (
+												<div
+													className="flex items-center justify-between"
+													key={label}
+												>
+													<span className="text-sm">{label}</span>
+													{allowed ? (
+														<CheckCircle2 className="size-4 text-emerald-600" />
+													) : (
+														<XCircle className="size-4 text-muted-foreground" />
+													)}
+												</div>
+											);
+										})}
+									</div>
+								</div>
+							);
+						})}
 					</div>
 				</CardContent>
 			</Card>
@@ -1495,8 +1530,8 @@ const AdminDashboard = () => {
 							</div>
 						</div>
 					) : (
-						<div className="max-h-[65vh] overflow-auto border-y">
-							<div className="min-w-[940px]">
+						<div className="overflow-auto border-y">
+							<div>
 								<Table>
 									<TableHeader>
 										<TableRow>
