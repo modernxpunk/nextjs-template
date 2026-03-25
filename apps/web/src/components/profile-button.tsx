@@ -95,7 +95,7 @@ const ProfileButton = () => {
 		<DropdownMenu>
 			<DropdownMenuTrigger className="rounded-full" disabled={isPending}>
 				<Avatar>
-					<AvatarImage src={avatarUrl} />
+					<AvatarImage className="object-cover" src={avatarUrl} />
 					{isPending ? (
 						<Skeleton className="h-full w-full rounded-full" />
 					) : (

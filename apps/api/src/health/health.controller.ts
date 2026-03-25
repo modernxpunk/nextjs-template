@@ -1,5 +1,10 @@
 import { Controller, Get } from "@nestjs/common";
-import { ApiOkResponse, ApiOperation, ApiProperty, ApiTags } from "@nestjs/swagger";
+import {
+	ApiOkResponse,
+	ApiOperation,
+	ApiProperty,
+	ApiTags,
+} from "@nestjs/swagger";
 import { AllowAnonymous } from "@thallesp/nestjs-better-auth";
 
 class HealthResponseDto {

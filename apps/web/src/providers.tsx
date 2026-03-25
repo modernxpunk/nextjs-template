@@ -1,3 +1,4 @@
+import { Toaster } from "@repo/ui/components/sonner";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { ThemeProvider } from "next-themes";
@@ -19,6 +20,7 @@ const Providers = async ({ children }: PropsWithChildren) => {
 					themes={["light", "dark"]}
 				>
 					{children}
+					<Toaster />
 				</ThemeProvider>
 			</QueryWrapper>
 		</NextIntlClientProvider>

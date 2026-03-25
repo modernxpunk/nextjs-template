@@ -1,8 +1,8 @@
 import type { INestApplication } from "@nestjs/common";
 import {
 	DocumentBuilder,
-	SwaggerModule,
 	type OpenAPIObject,
+	SwaggerModule,
 } from "@nestjs/swagger";
 import { auth } from "../auth/auth";
 

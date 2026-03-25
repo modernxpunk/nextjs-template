@@ -5,6 +5,7 @@ import { auth } from "./auth/auth";
 import { HealthController } from "./health/health.controller";
 import { ItemsController } from "./items/items.controller";
 import { pinoHttpConfig } from "./logger/pino.config";
+import { StorageModule } from "./storage/storage.module";
 
 @Module({
 	imports: [
@@ -14,6 +15,7 @@ import { pinoHttpConfig } from "./logger/pino.config";
 		AuthModule.forRoot({
 			auth,
 		}),
+		StorageModule,
 	],
 	controllers: [HealthController, ItemsController],
 })

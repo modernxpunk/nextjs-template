@@ -1,5 +1,86 @@
 # nextjs-template
 
+## Local Development
+
+### Quick Start
+
+```bash
+pnpm setup:local
+pnpm dev
+```
+
+This will install dependencies, start Docker services, run migrations, and prepare everything for development.
+
+### Manual Setup
+
+<details>
+<summary>Click to expand manual steps</summary>
+
+#### Prerequisites
+
+- Node.js 20+
+- pnpm
+- Docker (for PostgreSQL and RustFS)
+
+#### 1. Install dependencies
+
+```bash
+pnpm install
+```
+
+#### 2. Prepare env
+
+```bash
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
+```
+
+#### 3. Start services
+
+Start PostgreSQL and RustFS (S3-compatible storage):
+
+```bash
+docker-compose up -d postgres rustfs rustfs-init
+```
+
+This will:
+- Start PostgreSQL on port 5432
+- Start RustFS on ports 9000 (S3 API) and 9001 (console)
+- Auto-create `uploads` bucket with public read access
+
+#### 4. Run migrations
+
+```bash
+pnpm --filter @repo/db db:migrate
+```
+
+#### 5. Start dev server
+
+```bash
+pnpm dev
+```
+
+</details>
+
+### URLs
+
+- API: http://localhost:4000
+- Web: http://localhost:3000
+- RustFS Console: http://localhost:9001 (login: admin / password123)
+
+### Reset storage
+
+To clear all uploaded files:
+
+```bash
+docker-compose stop rustfs rustfs-init
+docker-compose rm -f rustfs rustfs-init
+docker volume rm nextjs-template_rustfs-data
+docker-compose up -d rustfs rustfs-init
+```
+
+---
+
 ## Docker setup
 
 This repository runs in Docker with 4 services:
