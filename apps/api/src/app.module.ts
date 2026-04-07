@@ -2,8 +2,9 @@ import { Module } from "@nestjs/common";
 import { AuthModule } from "@thallesp/nestjs-better-auth";
 import { LoggerModule } from "nestjs-pino";
 import { auth } from "./auth/auth";
-import { HealthController } from "./health/health.controller";
-import { ItemsController } from "./items/items.controller";
+import { DatabaseModule } from "./database/database.module";
+import { HealthModule } from "./health/health.module";
+import { ItemsModule } from "./items/items.module";
 import { pinoHttpConfig } from "./logger/pino.config";
 import { StorageModule } from "./storage/storage.module";
 
@@ -15,8 +16,10 @@ import { StorageModule } from "./storage/storage.module";
 		AuthModule.forRoot({
 			auth,
 		}),
+		DatabaseModule,
+		HealthModule,
+		ItemsModule,
 		StorageModule,
 	],
-	controllers: [HealthController, ItemsController],
 })
 export class AppModule {}
