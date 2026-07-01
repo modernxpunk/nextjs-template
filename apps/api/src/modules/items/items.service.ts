@@ -5,7 +5,7 @@ import {
 } from "@nestjs/common";
 import { item, type SelectItem } from "@repo/db";
 // biome-ignore lint/style/useImportType: NestJS DI requires runtime import
-import { DatabaseService } from "../database/database.service";
+import { DatabaseService } from "../../database/database.service";
 import type { CreateItemDto } from "./dto/create-item.dto";
 
 @Injectable()

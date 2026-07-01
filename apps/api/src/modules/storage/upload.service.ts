@@ -5,9 +5,9 @@ import {
 	UnauthorizedException,
 } from "@nestjs/common";
 import { authSchema, eq } from "@repo/db";
-import { auth } from "../auth/auth";
 // biome-ignore lint/style/useImportType: NestJS DI requires runtime import
-import { DatabaseService } from "../database/database.service";
+import { DatabaseService } from "../../database/database.service";
+import { auth } from "../auth/auth";
 import type { UploadAvatarResponseDto } from "./dto/upload-avatar-response.dto";
 // biome-ignore lint/style/useImportType: NestJS DI requires runtime import
 import { StorageService } from "./storage.service";

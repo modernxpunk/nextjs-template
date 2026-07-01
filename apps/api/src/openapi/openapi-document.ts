@@ -4,7 +4,7 @@ import {
 	type OpenAPIObject,
 	SwaggerModule,
 } from "@nestjs/swagger";
-import { auth } from "../auth/auth";
+import { auth } from "../modules/auth/auth";
 
 type OpenApiComponents = NonNullable<OpenAPIObject["components"]>;
 const AUTH_PREFIX = "/api/auth";

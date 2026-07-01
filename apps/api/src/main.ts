@@ -1,11 +1,11 @@
 import "reflect-metadata";
 import { writeFile } from "node:fs/promises";
-import { resolve } from "node:path";
+import { resolve as resolvePath } from "node:path";
 import { ValidationPipe } from "@nestjs/common/pipes/validation.pipe";
 import { NestFactory } from "@nestjs/core";
 import { SwaggerModule } from "@nestjs/swagger";
-import { Logger } from "nestjs-pino";
 import { AppModule } from "./app.module";
+import { LoggerService } from "./common/logger";
 import { createOpenApiDocument } from "./openapi/openapi-document";
 
 async function bootstrap() {
@@ -13,7 +13,11 @@ async function bootstrap() {
 		bodyParser: false,
 		bufferLogs: true,
 	});
-	app.useLogger(app.get(Logger));
+
+	const logger = await app.resolve(LoggerService);
+	logger.setContext("Bootstrap");
+	app.useLogger(logger);
+
 	app.useGlobalPipes(
 		new ValidationPipe({
 			whitelist: true,
@@ -22,9 +26,9 @@ async function bootstrap() {
 
 	const openApiDocument = await createOpenApiDocument(app);
 
-	const filePath = resolve(process.cwd(), "openapi.json");
+	const filePath = resolvePath(process.cwd(), "openapi.json");
 	await writeFile(filePath, JSON.stringify(openApiDocument, null, 2), "utf8");
-	app.get(Logger).log(`OpenAPI spec saved to ${filePath}`);
+	logger.log(`OpenAPI spec saved to ${filePath}`);
 
 	SwaggerModule.setup("docs", app, openApiDocument, {
 		jsonDocumentUrl: "docs-json",
@@ -36,7 +40,7 @@ async function bootstrap() {
 
 	const port = Number(process.env.PORT ?? process.env.API_PORT ?? 4000);
 	await app.listen(port);
-	app.get(Logger).log(`API is running on http://localhost:${port}`);
+	logger.log(`API is running on http://localhost:${port}`);
 }
 
 void bootstrap();
