@@ -69,11 +69,11 @@ import {
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type {
+	AdminListUserSessions200,
+	AdminListUserSessionsMutationRequest,
 	BanUserMutationRequest,
 	CreateUserMutationRequest,
 	ImpersonateUserMutationRequest,
-	ListUserSessions200,
-	ListUserSessionsMutationRequest,
 	ListUsers200,
 	RemoveUserMutationRequest,
 	RevokeUserSessionMutationRequest,
@@ -171,7 +171,7 @@ type ListUsersResponse = Omit<ListUsers200, "users"> & {
 	users: AdminUser[];
 };
 
-type ListUserSessionsResponse = Omit<ListUserSessions200, "sessions"> & {
+type ListUserSessionsResponse = Omit<AdminListUserSessions200, "sessions"> & {
 	sessions: AdminSession[];
 };
 
@@ -519,7 +519,7 @@ const AdminDashboard = () => {
 		setFeedback(null);
 
 		try {
-			const payload: ListUserSessionsMutationRequest = { userId };
+			const payload: AdminListUserSessionsMutationRequest = { userId };
 			const result = await authClient.admin.listUserSessions(payload);
 			const data = ensureData<ListUserSessionsResponse>(
 				result,

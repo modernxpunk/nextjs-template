@@ -1,5 +1,5 @@
 import { authSchema, db } from "@repo/db";
-import { sendForgotPasswordEmail } from "@repo/email/templates/reset-password";
+import { sendForgotPasswordEmail } from "@repo/email";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { openAPI } from "better-auth/plugins";

@@ -9,6 +9,7 @@
 	],
 	"scripts": {
 		"build": "tsc -p tsconfig.build.json",
+		"dev": "tsc -p tsconfig.build.json --watch",
 		"clean": "git clean -xdf .cache .turbo dist node_modules",
 		"typecheck": "tsc --noEmit --emitDeclarationOnly false"
 	},
@@ -16,24 +17,20 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"default": "./dist/index.js"
-		},
-		"./templates/*": {
-			"types": "./dist/templates/*.d.ts",
-			"default": "./dist/templates/*.js"
 		}
 	},
 	"dependencies": {
-		"@react-email/components": "^1.0.8",
-		"react": "^19.2.4",
-		"react-dom": "^19.2.4",
-		"resend": "^6.9.3",
-		"zod": "^4.3.6"
+		"@react-email/components": "^1.0.12",
+		"react": "^19.2.7",
+		"react-dom": "^19.2.7",
+		"resend": "^6.16.0",
+		"zod": "^4.4.3"
 	},
 	"devDependencies": {
 		"@repo/typescript-config": "workspace:*",
-		"@types/node": "^25.3.5",
-		"@types/react": "^19.2.14",
+		"@types/node": "^26.1.0",
+		"@types/react": "^19.2.17",
 		"@types/react-dom": "^19.2.3",
-		"typescript": "^5.9.3"
+		"typescript": "^6.0.3"
 	}
 }

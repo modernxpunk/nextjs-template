@@ -14,3 +14,5 @@ export const getResendClient = () => {
 
 	return resendClient;
 };
+
+export { sendForgotPasswordEmail } from "./templates/reset-password";

@@ -1,5 +1,5 @@
 {
-	"$schema": "https://biomejs.dev/schemas/2.4.6/schema.json",
+	"$schema": "https://biomejs.dev/schemas/2.5.2/schema.json",
 	"javascript": {
 		"parser": {
 			"unsafeParameterDecoratorsEnabled": true
@@ -22,7 +22,9 @@
 			"!**/build",
 			"!**/out",
 			"!**/turbo",
-			"!**/.turbo"
+			"!**/.turbo",
+
+			"!**/openapi.json"
 		]
 	}
 }
