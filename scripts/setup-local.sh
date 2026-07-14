@@ -1,5 +1,5 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+set -euo pipefail
 
 echo "🚀 Setting up local development environment..."
 
@@ -54,30 +54,21 @@ echo -e "${GREEN}✓ Environment files ready${NC}"
 
 # Start Docker services
 echo -e "${YELLOW}Starting Docker services (PostgreSQL, RustFS)...${NC}"
-docker-compose up -d postgres rustfs
+docker compose up -d --wait postgres rustfs
 
-# Wait for postgres to be healthy
-echo -e "${YELLOW}Waiting for PostgreSQL to be ready...${NC}"
-until docker-compose exec -T postgres pg_isready -U modernpunk -d app &> /dev/null; do
-    sleep 1
-done
+echo -e "${YELLOW}Preparing RustFS bucket...${NC}"
+docker compose run --rm rustfs-init
 echo -e "${GREEN}✓ PostgreSQL is ready${NC}"
-
-# Wait for rustfs to be ready
-echo -e "${YELLOW}Waiting for RustFS to be ready...${NC}"
-sleep 3
-docker-compose up -d rustfs-init
 echo -e "${GREEN}✓ RustFS is ready${NC}"
-
-# Build database package
-echo -e "${YELLOW}Building database package...${NC}"
-pnpm --filter @repo/db build
-echo -e "${GREEN}✓ Database package built${NC}"
 
 # Run migrations
 echo -e "${YELLOW}Running database migrations...${NC}"
-pnpm --filter @repo/db db:migrate
+pnpm --filter @repo/db db:deploy
 echo -e "${GREEN}✓ Migrations complete${NC}"
+
+echo -e "${YELLOW}Seeding sample admin user...${NC}"
+pnpm db:seed
+echo -e "${GREEN}✓ Sample admin user ready${NC}"
 
 echo ""
 echo -e "${GREEN}========================================${NC}"
@@ -89,4 +80,5 @@ echo ""
 echo "URLs:"
 echo "  - API: http://localhost:4000"
 echo "  - Web: http://localhost:3000"
+echo "  - Sample admin: admin@example.com / change-me-admin-password"
 echo "  - RustFS Console: http://localhost:9001 (admin / password123)"

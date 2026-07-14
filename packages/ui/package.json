@@ -4,7 +4,7 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"lint": "eslint . --max-warnings 0",
+		"lint": "pnpm --workspace-root biome check packages/ui/package.json packages/ui/postcss.config.mjs packages/ui/tsconfig.json --error-on-warnings",
 		"check-types": "tsc --noEmit"
 	},
 	"dependencies": {

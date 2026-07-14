@@ -1,22 +1,20 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { env } from "@/env/server";
 import { isAdminRole } from "@/lib/auth-roles";
+import {
+	isSessionResponse,
+	type SessionResponse,
+} from "@/lib/session-response";
 
 const REDIRECT_IF_UNAUTHENTICATED = "/auth/sign-in";
 const REDIRECT_IF_AUTHENTICATED = "/";
 
-const getIsGuestOnlyRoutes = (pathname: string) => {
-	return pathname.startsWith("/auth");
+const isPathWithin = (pathname: string, prefix: string) => {
+	return pathname === prefix || pathname.startsWith(`${prefix}/`);
 };
 
 const getIsAdminRoute = (pathname: string) => {
-	return pathname.startsWith("/admin");
-};
-
-type SessionResponse = {
-	user?: {
-		role?: string | string[] | null;
-	};
+	return isPathWithin(pathname, "/admin");
 };
 
 export async function proxy(request: NextRequest) {
@@ -27,17 +25,19 @@ export async function proxy(request: NextRequest) {
 				cookie: request.headers.get("cookie") || "",
 			},
 			cache: "no-store",
+			signal: AbortSignal.timeout(5000),
 		});
 
 		if (response.ok) {
-			session = await response.json();
+			const body: unknown = await response.json();
+			session = isSessionResponse(body) ? body : null;
 		}
 	} catch {
 		// API may be temporarily unavailable during startup/redeploy.
 		session = null;
 	}
 
-	const isGuestOnlyRoutes = getIsGuestOnlyRoutes(request.nextUrl.pathname);
+	const isGuestOnlyRoutes = isPathWithin(request.nextUrl.pathname, "/auth");
 	const isAdminRoute = getIsAdminRoute(request.nextUrl.pathname);
 
 	if (session && isGuestOnlyRoutes) {

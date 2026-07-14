@@ -3,7 +3,7 @@ import {
 	InternalServerErrorException,
 	Logger,
 } from "@nestjs/common";
-import { item, type SelectItem } from "@repo/db";
+import { eq, item, type SelectItem } from "@repo/db";
 // biome-ignore lint/style/useImportType: NestJS DI requires runtime import
 import { DatabaseService } from "../../database/database.service";
 import type { CreateItemDto } from "./dto/create-item.dto";
@@ -14,9 +14,12 @@ export class ItemsService {
 
 	constructor(private readonly databaseService: DatabaseService) {}
 
-	async findAll(): Promise<SelectItem[]> {
+	async findAll(userId: string): Promise<SelectItem[]> {
 		try {
-			return await this.databaseService.db.select().from(item);
+			return await this.databaseService.db
+				.select()
+				.from(item)
+				.where(eq(item.userId, userId));
 		} catch (error) {
 			this.logger.error("Error fetching items:", error);
 			throw new InternalServerErrorException("Failed to fetch items");

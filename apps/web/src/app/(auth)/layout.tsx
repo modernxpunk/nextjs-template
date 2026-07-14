@@ -12,9 +12,12 @@ export default async function RootLayout({ children }: PropsWithChildren) {
 		<html lang={locale} suppressHydrationWarning>
 			<body className={cn(fontsVariables, "font-sans")}>
 				<Providers>
-					<div className="flex min-h-screen flex-col items-center justify-center">
+					<main
+						className="flex min-h-screen flex-col items-center justify-center"
+						id="main-content"
+					>
 						{children}
-					</div>
+					</main>
 				</Providers>
 			</body>
 		</html>

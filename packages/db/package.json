@@ -8,7 +8,8 @@
 	],
 	"scripts": {
 		"build": "tsc -p tsconfig.build.json",
-		"db:generate": "echo 'Drizzle schema ready'",
+		"check-types": "tsc --noEmit -p tsconfig.build.json",
+		"db:generate": "drizzle-kit generate --config=drizzle.config.ts",
 		"db:migrate": "drizzle-kit migrate --config=drizzle.config.ts",
 		"db:deploy": "drizzle-kit migrate --config=drizzle.config.ts"
 	},
@@ -21,7 +22,6 @@
 	"dependencies": {
 		"dotenv": "^17.4.2",
 		"drizzle-orm": "^0.45.2",
-		"drizzle-query-logger": "^1.1.2",
 		"pg": "^8.22.0"
 	},
 	"exports": {

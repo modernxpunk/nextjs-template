@@ -32,11 +32,17 @@ const roles = {
 };
 
 export const authClient = createAuthClient({
-	baseURL: env.PUBLIC_API_URL,
+	baseURL: env.NEXT_PUBLIC_API_URL,
 	plugins: [adminClient({ ac, roles })],
 });
 
 export type Session = typeof authClient.$Infer.Session;
 
-export const { useSession, signIn, signUp, signOut, resetPassword } =
-	authClient;
+export const {
+	requestPasswordReset,
+	resetPassword,
+	signIn,
+	signOut,
+	signUp,
+	useSession,
+} = authClient;

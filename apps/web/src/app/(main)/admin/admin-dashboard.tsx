@@ -271,8 +271,13 @@ const ABILITY_GROUPS: AbilityGroup[] = [
 	},
 ];
 
+const isOneOf = <T extends string>(
+	values: readonly T[],
+	value: string,
+): value is T => values.some((candidate) => candidate === value);
+
 const isAppRole = (role: string): role is AppRole => {
-	return APP_ROLES.includes(role as AppRole);
+	return isOneOf(APP_ROLES, role);
 };
 
 const toDateLabel = (value: string | Date | null | undefined): string => {
@@ -307,7 +312,7 @@ const compactToken = (token: string): string => {
 		return token;
 	}
 
-	return `${token.slice(0, 8)}...${token.slice(-6)}`;
+	return `${token.slice(0, 8)}…${token.slice(-6)}`;
 };
 
 const getErrorMessage = (error: unknown, fallback: string): string => {
@@ -738,8 +743,8 @@ const AdminDashboard = () => {
 		return (
 			<div className="container py-10">
 				<div className="flex items-center gap-2 text-muted-foreground text-sm">
-					<Loader2 className="size-4 animate-spin" />
-					Loading admin session...
+					<Loader2 className="size-4 animate-spin motion-reduce:animate-none" />
+					Loading admin session…
 				</div>
 			</div>
 		);
@@ -790,11 +795,13 @@ const AdminDashboard = () => {
 
 			{feedback ? (
 				<div
+					aria-live="polite"
 					className={
 						feedback.type === "success"
 							? "rounded-md border border-emerald-600/30 bg-emerald-500/10 px-3 py-2 text-emerald-700 text-sm"
 							: "rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-destructive text-sm"
 					}
+					role={feedback.type === "error" ? "alert" : "status"}
 				>
 					{feedback.message}
 				</div>
@@ -820,11 +827,17 @@ const AdminDashboard = () => {
 							<div className="space-y-2">
 								<Label htmlFor="search">Search users</Label>
 								<div className="relative">
-									<Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+									<Search
+										aria-hidden="true"
+										className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
+									/>
 									<Input
+										autoComplete="off"
 										id="search"
 										className="pl-9"
+										name="search"
 										placeholder="Type name or email"
+										spellCheck={false}
 										value={filters.searchValue}
 										onChange={(event) =>
 											setFilters((prev) => ({
@@ -837,17 +850,18 @@ const AdminDashboard = () => {
 							</div>
 
 							<div className="space-y-2">
-								<Label>Search in</Label>
+								<Label htmlFor="search-field">Search in</Label>
 								<Select
 									value={filters.searchField}
-									onValueChange={(value) =>
+									onValueChange={(value) => {
+										if (!isOneOf(SEARCH_FIELDS, value)) return;
 										setFilters((prev) => ({
 											...prev,
-											searchField: value as SearchField,
-										}))
-									}
+											searchField: value,
+										}));
+									}}
 								>
-									<SelectTrigger className="w-full">
+									<SelectTrigger className="w-full" id="search-field">
 										<SelectValue />
 									</SelectTrigger>
 									<SelectContent>
@@ -912,17 +926,18 @@ const AdminDashboard = () => {
 
 							<CollapsibleContent className="grid gap-3 rounded-md border p-3 md:grid-cols-5">
 								<div className="space-y-2">
-									<Label>Role</Label>
+									<Label htmlFor="filter-role">Role</Label>
 									<Select
 										value={filters.filterRole}
-										onValueChange={(value) =>
+										onValueChange={(value) => {
+											if (value !== "all" && !isAppRole(value)) return;
 											setFilters((prev) => ({
 												...prev,
-												filterRole: value as AppRole | "all",
-											}))
-										}
+												filterRole: value,
+											}));
+										}}
 									>
-										<SelectTrigger className="w-full">
+										<SelectTrigger className="w-full" id="filter-role">
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
@@ -937,17 +952,18 @@ const AdminDashboard = () => {
 								</div>
 
 								<div className="space-y-2">
-									<Label>Banned</Label>
+									<Label htmlFor="filter-banned">Banned</Label>
 									<Select
 										value={filters.filterBanned}
-										onValueChange={(value) =>
+										onValueChange={(value) => {
+											if (!isOneOf(BANNED_FILTERS, value)) return;
 											setFilters((prev) => ({
 												...prev,
-												filterBanned: value as BannedFilter,
-											}))
-										}
+												filterBanned: value,
+											}));
+										}}
 									>
-										<SelectTrigger className="w-full">
+										<SelectTrigger className="w-full" id="filter-banned">
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
@@ -961,17 +977,18 @@ const AdminDashboard = () => {
 								</div>
 
 								<div className="space-y-2">
-									<Label>Sort by</Label>
+									<Label htmlFor="sort-by">Sort by</Label>
 									<Select
 										value={filters.sortBy}
-										onValueChange={(value) =>
+										onValueChange={(value) => {
+											if (!isOneOf(SORT_FIELDS, value)) return;
 											setFilters((prev) => ({
 												...prev,
-												sortBy: value as SortField,
-											}))
-										}
+												sortBy: value,
+											}));
+										}}
 									>
-										<SelectTrigger className="w-full">
+										<SelectTrigger className="w-full" id="sort-by">
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
@@ -985,17 +1002,18 @@ const AdminDashboard = () => {
 								</div>
 
 								<div className="space-y-2">
-									<Label>Direction</Label>
+									<Label htmlFor="sort-direction">Direction</Label>
 									<Select
 										value={filters.sortDirection}
-										onValueChange={(value) =>
+										onValueChange={(value) => {
+											if (!isOneOf(SORT_DIRECTIONS, value)) return;
 											setFilters((prev) => ({
 												...prev,
-												sortDirection: value as SortDirection,
-											}))
-										}
+												sortDirection: value,
+											}));
+										}}
 									>
-										<SelectTrigger className="w-full">
+										<SelectTrigger className="w-full" id="sort-direction">
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
@@ -1009,14 +1027,16 @@ const AdminDashboard = () => {
 								</div>
 
 								<div className="space-y-2">
-									<Label>Page size</Label>
+									<Label htmlFor="page-size">Page size</Label>
 									<Select
 										value={String(filters.limit)}
-										onValueChange={(value) =>
-											setFilters((prev) => ({ ...prev, limit: Number(value) }))
-										}
+										onValueChange={(value) => {
+											const limit = Number(value);
+											if (!PAGE_SIZES.some((size) => size === limit)) return;
+											setFilters((prev) => ({ ...prev, limit }));
+										}}
 									>
-										<SelectTrigger className="w-full">
+										<SelectTrigger className="w-full" id="page-size">
 											<SelectValue />
 										</SelectTrigger>
 										<SelectContent>
@@ -1049,8 +1069,8 @@ const AdminDashboard = () => {
 									<TableRow>
 										<TableCell className="text-muted-foreground" colSpan={6}>
 											<div className="flex items-center gap-2">
-												<Loader2 className="size-4 animate-spin" />
-												Loading users...
+												<Loader2 className="size-4 animate-spin motion-reduce:animate-none" />
+												Loading users…
 											</div>
 										</TableCell>
 									</TableRow>
@@ -1081,7 +1101,7 @@ const AdminDashboard = () => {
 
 									return (
 										<TableRow key={user.id}>
-											<TableCell className="max-w-[280px] whitespace-normal">
+											<TableCell className="max-w-70 whitespace-normal">
 												<div className="font-medium">{user.name}</div>
 												<div className="text-muted-foreground text-xs">
 													{user.email}
@@ -1106,7 +1126,10 @@ const AdminDashboard = () => {
 																}));
 															}}
 														>
-															<SelectTrigger className="w-[120px]">
+															<SelectTrigger
+																aria-label={`Role for ${user.email}`}
+																className="w-30"
+															>
 																<SelectValue />
 															</SelectTrigger>
 															<SelectContent>
@@ -1146,7 +1169,10 @@ const AdminDashboard = () => {
 															disabled={pendingActionId !== null}
 														>
 															Actions
-															<MoreHorizontal className="size-4" />
+															<MoreHorizontal
+																aria-hidden="true"
+																className="size-4"
+															/>
 														</Button>
 													</DropdownMenuTrigger>
 													<DropdownMenuContent align="end">
@@ -1155,7 +1181,7 @@ const AdminDashboard = () => {
 																void fetchUserSessions(user.id, true)
 															}
 														>
-															View sessions...
+															View sessions…
 															<span className="ml-auto text-muted-foreground text-xs">
 																modal
 															</span>
@@ -1179,7 +1205,7 @@ const AdminDashboard = () => {
 																disabled={!canBanUsers}
 																onSelect={() => openBanModal(user)}
 															>
-																Ban user...
+																Ban user…
 																<span className="ml-auto text-muted-foreground text-xs">
 																	modal
 																</span>
@@ -1308,7 +1334,9 @@ const AdminDashboard = () => {
 						<div className="space-y-2">
 							<Label htmlFor="create-name">Name</Label>
 							<Input
+								autoComplete="name"
 								id="create-name"
+								name="name"
 								value={createUserState.name}
 								onChange={(event) =>
 									setCreateUserState((prev) => ({
@@ -1321,7 +1349,10 @@ const AdminDashboard = () => {
 						<div className="space-y-2">
 							<Label htmlFor="create-email">Email</Label>
 							<Input
+								autoComplete="off"
 								id="create-email"
+								name="email"
+								spellCheck={false}
 								type="email"
 								value={createUserState.email}
 								onChange={(event) =>
@@ -1335,7 +1366,9 @@ const AdminDashboard = () => {
 						<div className="space-y-2">
 							<Label htmlFor="create-password">Password</Label>
 							<Input
+								autoComplete="new-password"
 								id="create-password"
+								name="password"
 								type="password"
 								value={createUserState.password}
 								onChange={(event) =>
@@ -1347,7 +1380,7 @@ const AdminDashboard = () => {
 							/>
 						</div>
 						<div className="space-y-2">
-							<Label>Role</Label>
+							<Label htmlFor="create-role">Role</Label>
 							<Select
 								value={createUserState.role}
 								onValueChange={(value) => {
@@ -1357,7 +1390,7 @@ const AdminDashboard = () => {
 									setCreateUserState((prev) => ({ ...prev, role: value }));
 								}}
 							>
-								<SelectTrigger className="w-full">
+								<SelectTrigger className="w-full" id="create-role">
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
@@ -1413,6 +1446,7 @@ const AdminDashboard = () => {
 							<Label htmlFor="ban-reason">Reason</Label>
 							<Input
 								id="ban-reason"
+								name="banReason"
 								value={banModal.reason}
 								onChange={(event) =>
 									setBanModal((prev) => ({
@@ -1424,16 +1458,20 @@ const AdminDashboard = () => {
 						</div>
 						<div className="grid gap-3 md:grid-cols-[1fr_140px]">
 							<div className="space-y-2">
-								<Label>Ban until (date)</Label>
+								<Label htmlFor="ban-date">Ban until (date)</Label>
 								<Popover>
 									<PopoverTrigger asChild>
 										<Button
 											className="w-full justify-between"
+											id="ban-date"
 											type="button"
 											variant="outline"
 										>
 											<span>{toDayLabel(banModal.expiresAt)}</span>
-											<CalendarIcon className="size-4 text-muted-foreground" />
+											<CalendarIcon
+												aria-hidden="true"
+												className="size-4 text-muted-foreground"
+											/>
 										</Button>
 									</PopoverTrigger>
 									<PopoverContent align="start" className="w-auto p-0">
@@ -1463,6 +1501,7 @@ const AdminDashboard = () => {
 								<Label htmlFor="ban-time">Time</Label>
 								<Input
 									id="ban-time"
+									name="banTime"
 									type="time"
 									value={toTimeValue(banModal.expiresAt)}
 									onChange={(event) => {
@@ -1525,8 +1564,8 @@ const AdminDashboard = () => {
 					{sessionsModal.isLoading ? (
 						<div className="px-6 py-8">
 							<div className="flex items-center gap-2 text-muted-foreground text-sm">
-								<Loader2 className="size-4 animate-spin" />
-								Loading sessions...
+								<Loader2 className="size-4 animate-spin motion-reduce:animate-none" />
+								Loading sessions…
 							</div>
 						</div>
 					) : (
@@ -1556,12 +1595,12 @@ const AdminDashboard = () => {
 										) : (
 											sessionsModal.sessions.map((item) => (
 												<TableRow key={item.id}>
-													<TableCell className="max-w-[190px] truncate">
+													<TableCell className="max-w-47.5 truncate">
 														{item.id}
 													</TableCell>
 													<TableCell>{compactToken(item.token)}</TableCell>
 													<TableCell>{toDateLabel(item.expiresAt)}</TableCell>
-													<TableCell className="max-w-[280px] whitespace-normal">
+													<TableCell className="max-w-70 whitespace-normal">
 														<div className="text-xs">
 															{item.ipAddress || "n/a"}
 														</div>

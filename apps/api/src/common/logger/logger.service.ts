@@ -23,6 +23,36 @@ const LOG_LEVEL_MAP: Record<string, LogLevel> = {
 	fatal: "fatal",
 };
 
+function serializeLogValue(value: unknown): string {
+	const seen = new WeakSet<object>();
+	try {
+		const serialized = JSON.stringify(value, (_key, item: unknown) => {
+			if (typeof item === "bigint") return item.toString();
+			if (typeof item === "object" && item !== null) {
+				if (seen.has(item)) return "[Circular]";
+				seen.add(item);
+			}
+			if (item instanceof Error) {
+				return {
+					name: item.name,
+					message: item.message,
+					stack: item.stack,
+					cause: item.cause,
+				};
+			}
+			return item;
+		});
+
+		return serialized ?? String(value);
+	} catch {
+		try {
+			return String(value);
+		} catch {
+			return "[Unserializable]";
+		}
+	}
+}
+
 @Injectable({ scope: Scope.TRANSIENT })
 export class LoggerService extends ConsoleLogger {
 	private readonly isJson: boolean;
@@ -64,7 +94,8 @@ export class LoggerService extends ConsoleLogger {
 			service: this.serviceName,
 			env: this.env,
 			context: context ?? this.context,
-			message: typeof message === "string" ? message : JSON.stringify(message),
+			message:
+				typeof message === "string" ? message : serializeLogValue(message),
 		};
 
 		if (trace) {

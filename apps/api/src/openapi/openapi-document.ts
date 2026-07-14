@@ -29,6 +29,46 @@ const mergeOpenApiDocuments = (
 ): OpenAPIObject => {
 	const baseComponents: OpenApiComponents = base.components ?? {};
 	const extensionComponents: OpenApiComponents = extension.components ?? {};
+	const components: OpenApiComponents = {
+		...baseComponents,
+		...extensionComponents,
+		schemas: {
+			...(baseComponents.schemas ?? {}),
+			...(extensionComponents.schemas ?? {}),
+		},
+		responses: {
+			...(baseComponents.responses ?? {}),
+			...(extensionComponents.responses ?? {}),
+		},
+		parameters: {
+			...(baseComponents.parameters ?? {}),
+			...(extensionComponents.parameters ?? {}),
+		},
+		requestBodies: {
+			...(baseComponents.requestBodies ?? {}),
+			...(extensionComponents.requestBodies ?? {}),
+		},
+		headers: {
+			...(baseComponents.headers ?? {}),
+			...(extensionComponents.headers ?? {}),
+		},
+		securitySchemes: {
+			...(baseComponents.securitySchemes ?? {}),
+			...(extensionComponents.securitySchemes ?? {}),
+		},
+		links: {
+			...(baseComponents.links ?? {}),
+			...(extensionComponents.links ?? {}),
+		},
+		callbacks: {
+			...(baseComponents.callbacks ?? {}),
+			...(extensionComponents.callbacks ?? {}),
+		},
+		examples: {
+			...(baseComponents.examples ?? {}),
+			...(extensionComponents.examples ?? {}),
+		},
+	};
 
 	return {
 		...base,
@@ -40,46 +80,7 @@ const mergeOpenApiDocuments = (
 			...(extension.paths ?? {}),
 		},
 		tags: mergeArrayByName(base.tags ?? [], extension.tags ?? []),
-		components: {
-			...baseComponents,
-			...extensionComponents,
-			schemas: {
-				...(baseComponents.schemas ?? {}),
-				...(extensionComponents.schemas ?? {}),
-			},
-			responses: {
-				...(baseComponents.responses ?? {}),
-				...(extensionComponents.responses ?? {}),
-			},
-			parameters: {
-				...(baseComponents.parameters ?? {}),
-				...(extensionComponents.parameters ?? {}),
-			},
-			requestBodies: {
-				...(baseComponents.requestBodies ?? {}),
-				...(extensionComponents.requestBodies ?? {}),
-			},
-			headers: {
-				...(baseComponents.headers ?? {}),
-				...(extensionComponents.headers ?? {}),
-			},
-			securitySchemes: {
-				...(baseComponents.securitySchemes ?? {}),
-				...(extensionComponents.securitySchemes ?? {}),
-			},
-			links: {
-				...(baseComponents.links ?? {}),
-				...(extensionComponents.links ?? {}),
-			},
-			callbacks: {
-				...(baseComponents.callbacks ?? {}),
-				...(extensionComponents.callbacks ?? {}),
-			},
-			examples: {
-				...(baseComponents.examples ?? {}),
-				...(extensionComponents.examples ?? {}),
-			},
-		} as OpenApiComponents,
+		components,
 	};
 };
 
@@ -116,13 +117,11 @@ export const createOpenApiDocument = async (
 			.build(),
 	);
 
-	const betterAuthDocument = await auth.api.generateOpenAPISchema();
+	const betterAuthDocument =
+		(await auth.api.generateOpenAPISchema()) as Partial<OpenAPIObject>;
 	return mergeOpenApiDocuments(nestDocument, {
-		...(betterAuthDocument as Partial<OpenAPIObject>),
-		paths: addPathPrefix(
-			(betterAuthDocument as Partial<OpenAPIObject>).paths,
-			AUTH_PREFIX,
-		),
+		...betterAuthDocument,
+		paths: addPathPrefix(betterAuthDocument.paths, AUTH_PREFIX),
 		servers: undefined,
 	});
 };

@@ -10,18 +10,33 @@ import {
 	defaultStatements,
 	userAc,
 } from "better-auth/plugins/admin/access";
+import { webOrigins } from "./web-origins";
 
-const webOrigins = (process.env.WEB_ORIGIN ?? "http://localhost:3000")
-	.split(",")
-	.map((origin) => origin.trim())
-	.filter(Boolean);
+const apiUrl = process.env.API_URL?.trim();
+if (!apiUrl) {
+	throw new Error("API_URL environment variable is not set");
+}
+const parsedApiUrl = new URL(apiUrl);
+if (parsedApiUrl.origin !== apiUrl.replace(/\/+$/, "")) {
+	throw new Error("API_URL must be an exact origin without a path");
+}
 
-const googleClientId = process.env.GOOGLE_CLIENT_ID;
-const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
-const adminUserIds = (process.env.ADMIN_USER_IDS ?? "")
-	.split(",")
-	.map((value) => value.trim())
-	.filter(Boolean);
+const betterAuthSecret = process.env.BETTER_AUTH_SECRET?.trim();
+if (
+	process.env.NODE_ENV === "production" &&
+	(!betterAuthSecret || betterAuthSecret.length < 32)
+) {
+	throw new Error("BETTER_AUTH_SECRET must contain at least 32 characters");
+}
+
+const googleClientId = process.env.GOOGLE_CLIENT_ID?.trim() || undefined;
+const googleClientSecret =
+	process.env.GOOGLE_CLIENT_SECRET?.trim() || undefined;
+if (Boolean(googleClientId) !== Boolean(googleClientSecret)) {
+	throw new Error(
+		"GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET must be configured together",
+	);
+}
 
 const statement = {
 	...defaultStatements,
@@ -45,7 +60,8 @@ const roles = {
 };
 
 export const auth = betterAuth({
-	baseURL: process.env.API_URL,
+	baseURL: apiUrl,
+	secret: betterAuthSecret,
 	database: drizzleAdapter(db, {
 		provider: "pg",
 		schema: authSchema,
@@ -68,7 +84,6 @@ export const auth = betterAuth({
 		admin({
 			ac,
 			roles,
-			adminUserIds,
 			defaultRole: "user",
 			adminRoles: ["admin"],
 			impersonationSessionDuration: 60 * 60 * 24, // 1 day

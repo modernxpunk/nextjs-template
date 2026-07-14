@@ -9,6 +9,7 @@
 		"includes": [
 			"**",
 
+			"!**/.codebase-memory",
 			"!**/globals.css",
 
 			"!packages/ui/src/components",

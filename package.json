@@ -7,22 +7,25 @@
 		"url": "git+https://github.com/modernxpunk/nextjs-template.git"
 	},
 	"engines": {
-		"node": ">=22"
+		"node": ">=22.6.0"
 	},
 	"scripts": {
 		"setup:local": "chmod +x scripts/setup-local.sh && ./scripts/setup-local.sh",
 		"dev": "turbo run dev",
 		"build": "turbo run build",
+		"check-types": "turbo run check-types",
 		"lint": "biome check . --error-on-warnings",
 		"lint:staged": "biome check --staged --error-on-warnings --no-errors-on-unmatched",
 		"format": "biome check . --write",
+		"test": "turbo run test",
 		"start": "turbo run start --filter=api --filter=web",
-		"docker:bootstrap": "docker compose up -d postgres loki grafana && docker compose build migrate && docker compose run --rm migrate && docker compose up --build -d api web",
-		"docker:up": "docker compose up --build -d postgres loki grafana api web",
-		"docker:migrate": "docker compose build migrate && docker compose run --rm migrate",
-		"docker:down": "docker compose down",
-		"docker:logs": "docker compose logs -f web api postgres loki grafana",
+		"docker:bootstrap": "docker compose --env-file .env.docker up -d postgres loki grafana rustfs rustfs-init && docker compose --env-file .env.docker build migrate && docker compose --env-file .env.docker run --rm migrate && docker compose --env-file .env.docker up --build -d api web",
+		"docker:up": "docker compose --env-file .env.docker up --build -d postgres loki grafana rustfs rustfs-init api web",
+		"docker:migrate": "docker compose --env-file .env.docker build migrate && docker compose --env-file .env.docker run --rm migrate",
+		"docker:down": "docker compose --env-file .env.docker down",
+		"docker:logs": "docker compose --env-file .env.docker logs -f web api postgres loki grafana rustfs rustfs-init",
 		"db:deploy": "pnpm --filter @repo/db db:deploy",
+		"db:seed": "pnpm --filter @repo/db build && pnpm --filter api seed:admin",
 		"migrate": "pnpm --filter @repo/db db:migrate",
 		"prepare": "husky"
 	},
@@ -34,6 +37,12 @@
 	},
 	"homepage": "https://github.com/modernxpunk/nextjs-template#readme",
 	"description": "",
+	"pnpm": {
+		"overrides": {
+			"esbuild@<=0.24.2": "0.25.12",
+			"postcss@<8.5.10": "8.5.19"
+		}
+	},
 	"dependencies": {
 		"turbo": "^2.10.2"
 	},

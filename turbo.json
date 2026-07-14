@@ -12,20 +12,22 @@
 		},
 		"build": {
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"dependsOn": ["^build", "^db:generate"],
+			"dependsOn": ["^build"],
 			"env": ["DATABASE_URL"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**", "openapi.json"]
 		},
 		"web#build": {
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
-			"dependsOn": ["api#build", "^db:generate"],
+			"dependsOn": ["api#build"],
 			"env": ["DATABASE_URL"],
 			"outputs": [".next/**", "!.next/cache/**"]
 		},
 		"dev": {
-			"dependsOn": ["^db:generate"],
 			"cache": false,
 			"persistent": true
+		},
+		"test": {
+			"dependsOn": ["^build"]
 		},
 		"start": {
 			"dependsOn": ["build"],

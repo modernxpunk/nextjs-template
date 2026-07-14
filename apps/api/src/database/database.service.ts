@@ -1,31 +1,17 @@
 import { Injectable, Logger, type OnModuleDestroy } from "@nestjs/common";
-import * as schema from "@repo/db";
-import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
-
-export type AppDatabase = NodePgDatabase<typeof schema>;
+import { type AppDatabase, closeDbConnection, db } from "@repo/db";
 
 @Injectable()
 export class DatabaseService implements OnModuleDestroy {
-	private readonly pool: Pool;
 	private readonly logger = new Logger(DatabaseService.name);
-	readonly db: AppDatabase;
+	readonly db: AppDatabase = db;
 
 	constructor() {
-		const connectionString = process.env.DATABASE_URL;
-
-		if (!connectionString) {
-			throw new Error("DATABASE_URL environment variable is not set");
-		}
-
-		this.pool = new Pool({ connectionString });
-		this.db = drizzle(this.pool, { schema });
-
-		this.logger.log("Database connection pool initialized");
+		this.logger.log("Shared database connection pool initialized");
 	}
 
 	async onModuleDestroy() {
-		await this.pool.end();
+		await closeDbConnection();
 		this.logger.log("Database connection pool closed");
 	}
 }

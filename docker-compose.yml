@@ -51,8 +51,15 @@ services:
       context: .
       dockerfile: Dockerfile
       target: migrate
+      args:
+        API_URL: ${API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
     env_file:
       - ./.env.docker
+    environment:
+      # Keep auth initialization identical to the API service even when the
+      # local Docker env file leaves the secret empty.
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-docker-dev-only-secret-change-me}
     depends_on:
       postgres:
         condition: service_healthy
@@ -63,6 +70,9 @@ services:
       context: .
       dockerfile: Dockerfile
       target: api
+      args:
+        API_URL: ${API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
     env_file:
       - ./.env.docker
     environment:
@@ -74,6 +84,8 @@ services:
         condition: service_started
       postgres:
         condition: service_healthy
+      rustfs-init:
+        condition: service_completed_successfully
     healthcheck:
       test:
         [
@@ -90,6 +102,9 @@ services:
       context: .
       dockerfile: Dockerfile
       target: web
+      args:
+        API_URL: ${API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
     env_file:
       - ./.env.docker
     environment:

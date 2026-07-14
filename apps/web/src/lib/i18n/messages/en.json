@@ -1,5 +1,6 @@
 {
 	"common": {
+		"name": "Name",
 		"email": "Email",
 		"password": "Password",
 		"login": "Login",
@@ -10,26 +11,42 @@
 		"sendEmail": "Send Email",
 		"newPassword": "New Password",
 		"confirmPassword": "Confirm Password",
+		"resetPassword": "Reset password",
 		"loginWithGoogle": "Login with Google",
 		"rememberPassword": "Do you remember your password?"
 	},
 	"auth": {
 		"signIn": {
-			"title": "Login"
+			"title": "Login",
+			"error": "Unable to sign in. Please try again."
 		},
 		"signUp": {
-			"title": "Sign Up"
+			"title": "Sign Up",
+			"error": "Unable to create your account. Please try again."
 		},
 		"forgotPassword": {
 			"title": "Forgot Password",
-			"subtitle": "Reset password"
+			"subtitle": "Reset password",
+			"success": "If an account exists for that address, a password reset link is on its way.",
+			"error": "Unable to request a password reset. Please try again."
 		},
 		"resetPassword": {
 			"title": "Reset Password",
-			"subtitle": "Enter your new password"
+			"subtitle": "Enter your new password",
+			"invalidLink": "This password reset link is invalid or incomplete.",
+			"error": "Unable to reset your password. Request a new link and try again."
 		}
 	},
 	"home": {
+		"title": "Items",
+		"welcome": "Welcome, {name}",
+		"itemName": "Item name",
+		"createItem": "Create item",
+		"loading": "Loading items…",
+		"empty": "No items yet. Create the first one above.",
+		"loadError": "Unable to load items.",
+		"createError": "Unable to create the item.",
+		"invalidResponse": "The server returned an invalid response.",
 		"session": "Session",
 		"signOut": "Sign out",
 		"greetings": "Hello world",

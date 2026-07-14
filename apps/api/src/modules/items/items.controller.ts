@@ -18,14 +18,14 @@ export class ItemsController {
 	constructor(private readonly itemsService: ItemsService) {}
 
 	@Get()
-	@ApiOperation({ summary: "List all items" })
+	@ApiOperation({ summary: "List the current user's items" })
 	@ApiOkResponse({
 		description: "Items list.",
 		type: ItemDto,
 		isArray: true,
 	})
-	async getAll(@Session() _session: UserSession): Promise<SelectItem[]> {
-		return this.itemsService.findAll();
+	async getAll(@Session() session: UserSession): Promise<SelectItem[]> {
+		return this.itemsService.findAll(session.user.id);
 	}
 
 	@Post()

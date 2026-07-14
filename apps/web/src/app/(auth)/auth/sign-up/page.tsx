@@ -25,44 +25,50 @@ import { z } from "zod";
 import { signUp } from "@/lib/auth-client";
 
 const schemaSignUp = z.object({
-	email: z.string(), // .min(1, { message: 'Email is required' }).email({ message: 'Invalid email address' }),
-	password: z.string(), // .min(6, { message: 'Password must be at least 6 characters long' }),
+	name: z.string().trim().min(1, { message: "Name is required" }).max(100),
+	email: z
+		.string()
+		.min(1, { message: "Email is required" })
+		.email({ message: "Invalid email address" }),
+	password: z
+		.string()
+		.min(8, { message: "Password must be at least 8 characters long" }),
 });
 
 type SignUpSchema = z.infer<typeof schemaSignUp>;
 
 const SignUpPage = () => {
 	const t = useTranslations();
-
+	const router = useRouter();
 	const methods = useForm<SignUpSchema>({
 		resolver: zodResolver(schemaSignUp),
-		defaultValues: {
-			email: "",
-			password: "",
-		},
+		defaultValues: { name: "", email: "", password: "" },
 	});
+	const {
+		control,
+		formState: { errors, isSubmitting },
+		handleSubmit,
+		setError,
+	} = methods;
 
-	const { control, handleSubmit, setError } = methods;
-
-	const router = useRouter();
-
-	const onSubmit = async ({ email, password }: SignUpSchema) => {
-		const signUpResponse = await signUp.email({
-			email,
-			password,
-			name: "",
-			callbackURL: "/",
-			fetchOptions: {
-				onSuccess: () => {
-					router.push("/");
-				},
-			},
-		});
-
-		if (signUpResponse.error) {
-			setError("root", {
-				message: signUpResponse.error.message,
+	const onSubmit = async ({ name, email, password }: SignUpSchema) => {
+		try {
+			const response = await signUp.email({
+				name: name.trim(),
+				email,
+				password,
+				callbackURL: "/",
 			});
+			if (response.error) {
+				setError("root", {
+					message: response.error.message || t("auth.signUp.error"),
+				});
+				return;
+			}
+			router.push("/");
+			router.refresh();
+		} catch {
+			setError("root", { message: t("auth.signUp.error") });
 		}
 	};
 
@@ -80,18 +86,35 @@ const SignUpPage = () => {
 							<div className="flex flex-col gap-6">
 								<FormField
 									control={control}
-									name="email"
+									name="name"
 									render={({ field }) => (
 										<FormItem>
-											<FormLabel>{t("common.email")}</FormLabel>
+											<FormLabel>{t("common.name")}</FormLabel>
 											<FormControl>
-												<Input placeholder="m@gmail.com" {...field} />
+												<Input {...field} autoComplete="name" />
 											</FormControl>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
-
+								<FormField
+									control={control}
+									name="email"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("common.email")}</FormLabel>
+											<FormControl>
+												<Input
+													{...field}
+													autoComplete="email"
+													spellCheck={false}
+													type="email"
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
 								<FormField
 									control={control}
 									name="password"
@@ -99,14 +122,26 @@ const SignUpPage = () => {
 										<FormItem>
 											<FormLabel>{t("common.password")}</FormLabel>
 											<FormControl>
-												<Input {...field} />
+												<Input
+													{...field}
+													autoComplete="new-password"
+													type="password"
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
-
-								<Button className="w-full" type="submit">
+								{errors.root?.message ? (
+									<p className="text-destructive text-sm" role="alert">
+										{errors.root.message}
+									</p>
+								) : null}
+								<Button
+									className="w-full"
+									disabled={isSubmitting}
+									type="submit"
+								>
 									{t("common.signUp")}
 								</Button>
 							</div>

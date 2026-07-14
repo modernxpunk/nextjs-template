@@ -3,12 +3,10 @@ import { redirect } from "next/navigation";
 import AdminDashboard from "@/app/(main)/admin/admin-dashboard";
 import { env } from "@/env/server";
 import { isAdminRole } from "@/lib/auth-roles";
-
-type SessionResponse = {
-	user?: {
-		role?: string | string[] | null;
-	};
-};
+import {
+	isSessionResponse,
+	type SessionResponse,
+} from "@/lib/session-response";
 
 const getSession = async (): Promise<SessionResponse | null> => {
 	try {
@@ -18,14 +16,15 @@ const getSession = async (): Promise<SessionResponse | null> => {
 				cookie: cookieStore.toString(),
 			},
 			cache: "no-store",
+			signal: AbortSignal.timeout(5000),
 		});
 
 		if (!response.ok) {
 			return null;
 		}
 
-		const data = (await response.json()) as SessionResponse;
-		return data;
+		const data: unknown = await response.json();
+		return isSessionResponse(data) ? data : null;
 	} catch {
 		return null;
 	}

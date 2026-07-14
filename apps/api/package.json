@@ -10,7 +10,9 @@
 		"start:dev": "nest start --watch",
 		"start:debug": "nest start --debug --watch",
 		"start:prod": "node dist/main.js",
-		"check-types": "tsc --noEmit -p tsconfig.build.json"
+		"check-types": "tsc --noEmit -p tsconfig.build.json",
+		"test": "node --test --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/modules/auth/*.spec.ts src/modules/storage/*.spec.ts",
+		"seed:admin": "DB_LOGGING=false tsx src/scripts/seed-admin.ts"
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "^3.1078.0",
@@ -25,8 +27,6 @@
 		"better-auth": "^1.6.23",
 		"class-transformer": "^0.5.1",
 		"class-validator": "^0.15.1",
-		"drizzle-orm": "^0.45.2",
-		"pg": "^8.22.0",
 		"reflect-metadata": "^0.2.2",
 		"rxjs": "^7.8.2",
 		"swagger-ui-express": "^5.0.1"
@@ -35,7 +35,7 @@
 		"@nestjs/cli": "^11.0.23",
 		"@repo/typescript-config": "workspace:*",
 		"@types/node": "^26.1.0",
-		"@types/pg": "^8.20.0",
+		"tsx": "^4.23.1",
 		"typescript": "^6.0.3"
 	}
 }

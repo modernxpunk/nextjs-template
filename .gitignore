@@ -45,3 +45,6 @@ next-env.d.ts
 /**/generated
 
 /**/dist
+
+# mcp
+# /.codebase-memory

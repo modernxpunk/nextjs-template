@@ -42,7 +42,7 @@
             }
           }
         },
-        "summary": "List all items",
+        "summary": "List the current user's items",
         "tags": [
           "items"
         ]

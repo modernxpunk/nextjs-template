@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, MaxLength } from "class-validator";
+import { Transform } from "class-transformer";
+import { IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateItemDto {
 	@ApiProperty({
@@ -7,7 +8,9 @@ export class CreateItemDto {
 		example: "My first item",
 		maxLength: 20,
 	})
-	@IsNotEmpty()
+	@Transform(({ value }) => (typeof value === "string" ? value.trim() : value))
+	@IsString()
+	@MinLength(1)
 	@MaxLength(20)
-	name: string;
+	name!: string;
 }

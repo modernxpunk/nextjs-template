@@ -1,8 +1,8 @@
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import dotenv from "dotenv";
-import { drizzle } from "drizzle-orm/node-postgres";
-import { EnhancedQueryLogger } from "drizzle-query-logger";
+import { DefaultLogger } from "drizzle-orm/logger";
+import { drizzle, type NodePgDatabase } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "./schema";
 
@@ -32,4 +32,19 @@ if (process.env.NODE_ENV !== "production") {
 	globalForDb.__dbPool = pool;
 }
 
-export const db = drizzle(pool, { schema, logger: new EnhancedQueryLogger() });
+export type AppDatabase = NodePgDatabase<typeof schema>;
+
+export const db: AppDatabase = drizzle(pool, {
+	schema,
+	logger:
+		process.env.NODE_ENV === "production" || process.env.DB_LOGGING === "false"
+			? undefined
+			: new DefaultLogger(),
+});
+
+export async function closeDbConnection(): Promise<void> {
+	await pool.end();
+	if (globalForDb.__dbPool === pool) {
+		delete globalForDb.__dbPool;
+	}
+}

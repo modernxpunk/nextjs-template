@@ -8,35 +8,41 @@ import {
 	DropdownMenuTrigger,
 } from "@repo/ui/components/dropdown-menu";
 import { Languages } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
+import { useTransition } from "react";
 import { type Locale, locales } from "@/lib/i18n/config";
 import { setUserLocale } from "@/lib/i18n/locale";
 
 const LocaleSwitch = () => {
-	const locale = useLocale() as Locale;
+	const locale = useLocale();
 	const t = useTranslations("languages");
+	const router = useRouter();
+	const [isPending, startTransition] = useTransition();
 
-	const changeLanguage = async (newLocale: Locale) => {
-		setUserLocale(newLocale);
+	const changeLanguage = (newLocale: Locale) => {
+		startTransition(async () => {
+			await setUserLocale(newLocale);
+			router.refresh();
+		});
 	};
 
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<div>
-					<Button size="sm" variant="outline">
-						<Languages /> {t(locale)}
-					</Button>
-				</div>
+				<Button disabled={isPending} size="sm" variant="outline">
+					<Languages aria-hidden="true" /> {t(locale)}
+				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent>
-				{locales.map((locale) => {
+				{locales.map((newLocale) => {
 					return (
 						<DropdownMenuItem
-							key={locale}
-							onClick={() => changeLanguage(locale)}
+							disabled={isPending || locale === newLocale}
+							key={newLocale}
+							onClick={() => changeLanguage(newLocale)}
 						>
-							{t(locale)}
+							{t(newLocale)}
 						</DropdownMenuItem>
 					);
 				})}

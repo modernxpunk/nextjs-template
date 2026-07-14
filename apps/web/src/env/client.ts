@@ -2,9 +2,11 @@ import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
 export const env = createEnv({
-	clientPrefix: "PUBLIC_",
+	clientPrefix: "NEXT_PUBLIC_",
 	client: {
-		PUBLIC_API_URL: z.string().url().default("http://localhost:4000"),
+		NEXT_PUBLIC_API_URL: z.string().url(),
 	},
-	runtimeEnv: process.env,
+	runtimeEnv: {
+		NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
+	},
 });

@@ -26,6 +26,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
+import { toast } from "sonner";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { authClient, signOut, useSession } from "@/lib/auth-client";
 import { isAdminRole } from "@/lib/auth-roles";
@@ -61,13 +62,18 @@ const ProfileButton = () => {
 	const handleSignOut = async (e: Event) => {
 		e.preventDefault();
 
-		await signOut({
-			fetchOptions: {
-				onSuccess: () => {
-					router.push("/auth/sign-in");
+		try {
+			const { error } = await signOut({
+				fetchOptions: {
+					onSuccess: () => {
+						router.push("/auth/sign-in");
+					},
 				},
-			},
-		});
+			});
+			if (error) toast.error(error.message || "Failed to sign out");
+		} catch {
+			toast.error("Failed to sign out");
+		}
 	};
 
 	const handleStopImpersonating = async (e: Event) => {
@@ -75,6 +81,7 @@ const ProfileButton = () => {
 
 		const { error } = await authClient.admin.stopImpersonating();
 		if (error) {
+			toast.error(error.message || "Failed to stop impersonating");
 			return;
 		}
 
@@ -93,11 +100,19 @@ const ProfileButton = () => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger className="rounded-full" disabled={isPending}>
+			<DropdownMenuTrigger
+				aria-label="Open profile menu"
+				className="rounded-full"
+				disabled={isPending}
+			>
 				<Avatar>
-					<AvatarImage className="object-cover" src={avatarUrl} />
+					<AvatarImage
+						alt={session?.user.name || "Profile avatar"}
+						className="object-cover"
+						src={avatarUrl}
+					/>
 					{isPending ? (
-						<Skeleton className="h-full w-full rounded-full" />
+						<Skeleton className="h-full w-full rounded-full motion-reduce:animate-none" />
 					) : (
 						<AvatarFallback className="bg-primary text-primary-foreground">
 							{fallbackLabel}
@@ -111,11 +126,11 @@ const ProfileButton = () => {
 					className="flex items-center gap-2"
 					onSelect={handleConnectionToggle}
 				>
-					{isConnected ? (
+					{isConnected && address ? (
 						<>
 							<div className="flex items-center gap-2">
-								<Wallet />
-								{formatAddress(address as `0x${string}`)}
+								<Wallet aria-hidden="true" />
+								{formatAddress(address)}
 							</div>
 							<span className="ml-auto text-muted-foreground text-xs">
 								{t("home.disconnect")}
@@ -123,14 +138,18 @@ const ProfileButton = () => {
 						</>
 					) : (
 						<div className="flex items-center gap-2">
-							<Wallet />
+							<Wallet aria-hidden="true" />
 							{t("home.connectWallet")}
 						</div>
 					)}
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onSelect={toggleTheme}>
-					{theme === "light" ? <Sun /> : <Moon />}
+					{theme === "light" ? (
+						<Sun aria-hidden="true" />
+					) : (
+						<Moon aria-hidden="true" />
+					)}
 					Theme
 					<span className="ml-auto text-muted-foreground text-xs">
 						{theme === "light" ? "Light" : "Dark"}
@@ -138,23 +157,23 @@ const ProfileButton = () => {
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
 				<DropdownMenuItem onSelect={() => router.push("/settings")}>
-					<Settings />
+					<Settings aria-hidden="true" />
 					Settings
 				</DropdownMenuItem>
 				{isAdmin ? (
 					<DropdownMenuItem onSelect={() => router.push("/admin")}>
-						<ShieldCheck />
+						<ShieldCheck aria-hidden="true" />
 						Admin
 					</DropdownMenuItem>
 				) : null}
 				{isImpersonating ? (
 					<DropdownMenuItem onSelect={handleStopImpersonating}>
-						<UserCheck />
+						<UserCheck aria-hidden="true" />
 						Stop impersonating
 					</DropdownMenuItem>
 				) : null}
 				<DropdownMenuItem onSelect={handleSignOut} variant="destructive">
-					<LogOut />
+					<LogOut aria-hidden="true" />
 					{t("home.signOut")}
 				</DropdownMenuItem>
 			</DropdownMenuContent>

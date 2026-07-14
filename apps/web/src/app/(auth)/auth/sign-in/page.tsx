@@ -19,6 +19,7 @@ import {
 import { Input } from "@repo/ui/components/input";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { signIn } from "@/lib/auth-client";
@@ -30,44 +31,64 @@ const schemaSignIn = z.object({
 		.email({ message: "Invalid email address" }),
 	password: z
 		.string()
-		.min(6, { message: "Password must be at least 8 characters long" }),
+		.min(8, { message: "Password must be at least 8 characters long" }),
 });
 
 type SignInSchema = z.infer<typeof schemaSignIn>;
 
 const SignInPage = () => {
 	const t = useTranslations();
-
+	const [isGooglePending, setIsGooglePending] = useState(false);
 	const methods = useForm<SignInSchema>({
 		resolver: zodResolver(schemaSignIn),
-		defaultValues: {
-			email: "",
-			password: "",
-		},
+		defaultValues: { email: "", password: "" },
 	});
 
-	const { handleSubmit, control, setError } = methods;
+	const {
+		control,
+		formState: { errors, isSubmitting },
+		handleSubmit,
+		setError,
+	} = methods;
 
 	const onSubmit = async ({ email, password }: SignInSchema) => {
-		const signInResponse = await signIn.email({
-			email,
-			password,
-			rememberMe: true,
-			callbackURL: "/",
-		});
-		if (signInResponse.error) {
-			setError("root", {
-				message: signInResponse.error.message,
+		try {
+			const response = await signIn.email({
+				email,
+				password,
+				rememberMe: true,
+				callbackURL: "/",
 			});
+			if (response.error) {
+				setError("root", {
+					message: response.error.message || t("auth.signIn.error"),
+				});
+			}
+		} catch {
+			setError("root", { message: t("auth.signIn.error") });
 		}
 	};
 
 	const signInGoogle = async () => {
-		await signIn.social({
-			provider: "google",
-			callbackURL: "/",
-		});
+		setIsGooglePending(true);
+		try {
+			const response = await signIn.social({
+				provider: "google",
+				callbackURL: "/",
+			});
+			if (response.error) {
+				setError("root", {
+					message: response.error.message || t("auth.signIn.error"),
+				});
+			}
+		} catch {
+			setError("root", { message: t("auth.signIn.error") });
+		} finally {
+			setIsGooglePending(false);
+		}
 	};
+
+	const isPending = isSubmitting || isGooglePending;
 
 	return (
 		<div className="flex w-full max-w-sm flex-col gap-6 px-4">
@@ -88,7 +109,12 @@ const SignInPage = () => {
 										<FormItem>
 											<FormLabel>{t("common.email")}</FormLabel>
 											<FormControl>
-												<Input {...field} />
+												<Input
+													{...field}
+													autoComplete="email"
+													spellCheck={false}
+													type="email"
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
@@ -110,20 +136,29 @@ const SignInPage = () => {
 												</Link>
 											</FormLabel>
 											<FormControl>
-												<Input type="password" {...field} />
+												<Input
+													{...field}
+													autoComplete="current-password"
+													type="password"
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
 
-								<Button className="w-full" type="submit">
+								{errors.root?.message ? (
+									<p className="text-destructive text-sm" role="alert">
+										{errors.root.message}
+									</p>
+								) : null}
+
+								<Button className="w-full" disabled={isPending} type="submit">
 									{t("common.login")}
 								</Button>
-								<FormMessage className="text-red-500 text-sm" />
-
 								<Button
 									className="w-full"
+									disabled={isPending}
 									onClick={signInGoogle}
 									type="button"
 									variant="outline"

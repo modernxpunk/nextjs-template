@@ -23,53 +23,52 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { resetPassword } from "@/lib/auth-client";
 
-const schemaResetPassword = z.object({
-	newPassword: z
-		.string()
-		.min(8, { message: "Password must be at least 8 characters long" }),
-});
+const schemaResetPassword = z
+	.object({
+		newPassword: z
+			.string()
+			.min(8, { message: "Password must be at least 8 characters long" }),
+		confirmPassword: z.string(),
+	})
+	.refine((values) => values.newPassword === values.confirmPassword, {
+		message: "Passwords do not match",
+		path: ["confirmPassword"],
+	});
 
 type ResetPasswordSchema = z.infer<typeof schemaResetPassword>;
 
 const ResetPasswordPage = () => {
 	const t = useTranslations();
-
 	const router = useRouter();
-
 	const methods = useForm<ResetPasswordSchema>({
 		resolver: zodResolver(schemaResetPassword),
-		defaultValues: {
-			newPassword: "",
-		},
+		defaultValues: { newPassword: "", confirmPassword: "" },
 	});
-
-	const { handleSubmit, control, setError } = methods;
+	const {
+		control,
+		formState: { errors, isSubmitting },
+		handleSubmit,
+		setError,
+	} = methods;
 
 	const onSubmit = async ({ newPassword }: ResetPasswordSchema) => {
 		const token = new URLSearchParams(window.location.search).get("token");
 		if (!token) {
-			setError("root", {
-				message: "Token is required",
-			});
+			setError("root", { message: t("auth.resetPassword.invalidLink") });
 			return;
 		}
 
-		const resetPasswordResponse = await resetPassword(
-			{
-				newPassword,
-				token,
-			},
-			{
-				onSuccess() {
-					router.replace("/auth/sign-in");
-				},
-			},
-		);
-
-		if (resetPasswordResponse.error) {
-			setError("root", {
-				message: resetPasswordResponse.error.message,
-			});
+		try {
+			const response = await resetPassword({ newPassword, token });
+			if (response.error) {
+				setError("root", {
+					message: response.error.message || t("auth.resetPassword.error"),
+				});
+				return;
+			}
+			router.replace("/auth/sign-in");
+		} catch {
+			setError("root", { message: t("auth.resetPassword.error") });
 		}
 	};
 
@@ -92,16 +91,45 @@ const ResetPasswordPage = () => {
 										<FormItem>
 											<FormLabel>{t("common.newPassword")}</FormLabel>
 											<FormControl>
-												<Input type="password" {...field} />
+												<Input
+													{...field}
+													autoComplete="new-password"
+													type="password"
+												/>
 											</FormControl>
 											<FormMessage />
 										</FormItem>
 									)}
 								/>
-								<Button className="w-full" type="submit">
-									{t("auth.resetPassword.subtitle")}
+								<FormField
+									control={control}
+									name="confirmPassword"
+									render={({ field }) => (
+										<FormItem>
+											<FormLabel>{t("common.confirmPassword")}</FormLabel>
+											<FormControl>
+												<Input
+													{...field}
+													autoComplete="new-password"
+													type="password"
+												/>
+											</FormControl>
+											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								{errors.root?.message ? (
+									<p className="text-destructive text-sm" role="alert">
+										{errors.root.message}
+									</p>
+								) : null}
+								<Button
+									className="w-full"
+									disabled={isSubmitting}
+									type="submit"
+								>
+									{t("common.resetPassword")}
 								</Button>
-								<FormMessage className="text-red-500 text-sm" />
 							</div>
 						</form>
 					</Form>

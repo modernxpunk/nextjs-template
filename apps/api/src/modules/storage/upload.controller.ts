@@ -1,4 +1,10 @@
-import { Controller, Post, Req } from "@nestjs/common";
+import {
+	Controller,
+	Post,
+	UploadedFile,
+	UseInterceptors,
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import {
 	ApiBody,
 	ApiConsumes,
@@ -7,16 +13,11 @@ import {
 	ApiTags,
 	ApiUnauthorizedResponse,
 } from "@nestjs/swagger";
+import { Session, type UserSession } from "@thallesp/nestjs-better-auth";
+import { MAX_AVATAR_FILE_SIZE, type UploadedAvatarFile } from "./avatar-file";
 import { UploadAvatarResponseDto } from "./dto";
 // biome-ignore lint/style/useImportType: NestJS DI requires runtime import
 import { UploadService } from "./upload.service";
-
-interface ExpressRequest {
-	headers: Record<string, string | string[] | undefined>;
-	on(event: "data", listener: (chunk: Buffer) => void): this;
-	on(event: "end", listener: () => void): this;
-	on(event: "error", listener: (err: Error) => void): this;
-}
 
 @ApiTags("upload")
 @Controller("upload")
@@ -24,6 +25,11 @@ export class UploadController {
 	constructor(private readonly uploadService: UploadService) {}
 
 	@Post("avatar")
+	@UseInterceptors(
+		FileInterceptor("file", {
+			limits: { fileSize: MAX_AVATAR_FILE_SIZE, files: 1 },
+		}),
+	)
 	@ApiOperation({ summary: "Upload user avatar" })
 	@ApiConsumes("multipart/form-data")
 	@ApiBody({
@@ -43,8 +49,9 @@ export class UploadController {
 	})
 	@ApiUnauthorizedResponse({ description: "Not authenticated" })
 	async uploadAvatar(
-		@Req() req: ExpressRequest,
+		@Session() session: UserSession,
+		@UploadedFile() file: UploadedAvatarFile | undefined,
 	): Promise<UploadAvatarResponseDto> {
-		return this.uploadService.uploadAvatar(req);
+		return this.uploadService.uploadAvatar(session.user, file);
 	}
 }

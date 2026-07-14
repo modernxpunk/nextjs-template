@@ -8,9 +8,13 @@ WORKDIR /app
 
 FROM base AS pruner
 COPY . .
-RUN pnpm dlx turbo@2.8.14 prune --scope=api --scope=web --docker
+RUN pnpm dlx turbo@2.10.5 prune --scope=api --scope=web --docker
 
 FROM base AS builder
+ARG API_URL=http://localhost:4000
+ARG NEXT_PUBLIC_API_URL=http://localhost:4000
+ENV API_URL=$API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 COPY --from=pruner /app/out/json/ ./
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 RUN pnpm install --frozen-lockfile
@@ -33,4 +37,4 @@ EXPOSE 3000
 CMD ["pnpm", "--filter", "web", "start"]
 
 FROM runner-base AS migrate
-CMD ["pnpm", "--filter", "@repo/db", "db:deploy"]
+CMD ["sh", "-c", "pnpm --filter @repo/db db:deploy && pnpm --filter api seed:admin"]
