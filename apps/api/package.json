@@ -1,0 +1,41 @@
+{
+	"name": "api",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "nest start --watch",
+		"build": "nest build && node dist/scripts/generate-openapi.js",
+		"start": "node dist/main.js",
+		"start:nest": "nest start",
+		"start:dev": "nest start --watch",
+		"start:debug": "nest start --debug --watch",
+		"start:prod": "node dist/main.js",
+		"check-types": "tsc --noEmit -p tsconfig.build.json",
+		"test": "node --test --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON src/modules/auth/*.spec.ts src/modules/storage/*.spec.ts",
+		"seed:admin": "DB_LOGGING=false tsx src/scripts/seed-admin.ts"
+	},
+	"dependencies": {
+		"@aws-sdk/client-s3": "^3.1078.0",
+		"@aws-sdk/s3-request-presigner": "^3.1078.0",
+		"@nestjs/common": "^11.1.27",
+		"@nestjs/core": "^11.1.27",
+		"@nestjs/platform-express": "^11.1.27",
+		"@nestjs/swagger": "^11.4.5",
+		"@repo/db": "workspace:*",
+		"@repo/email": "workspace:*",
+		"@thallesp/nestjs-better-auth": "^2.6.1",
+		"better-auth": "^1.6.23",
+		"class-transformer": "^0.5.1",
+		"class-validator": "^0.15.1",
+		"reflect-metadata": "^0.2.2",
+		"rxjs": "^7.8.2",
+		"swagger-ui-express": "^5.0.1"
+	},
+	"devDependencies": {
+		"@nestjs/cli": "^11.0.23",
+		"@repo/typescript-config": "workspace:*",
+		"@types/node": "^26.1.0",
+		"tsx": "^4.23.1",
+		"typescript": "^6.0.3"
+	}
+}

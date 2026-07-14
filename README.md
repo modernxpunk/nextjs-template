@@ -1,34 +1,88 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# nextjs-template
 
-## Getting Started
+Production-oriented TypeScript monorepo with a Next.js web app, a NestJS API,
+Better Auth, PostgreSQL/Drizzle, S3-compatible object storage, shared UI and email
+packages, and local observability through Loki and Grafana.
 
-First, run the development server:
+## Prerequisites
+
+- Node.js 22.6 or newer
+- pnpm 10.16.1 (managed through Corepack)
+- Docker with Compose
+
+## Local development
+
+The automated setup installs dependencies, starts the local services, and applies
+database migrations:
 
 ```bash
-npm run dev
-# or
-yarn dev
+pnpm setup:local
+pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+For manual setup:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm install
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env
+docker compose up -d postgres rustfs rustfs-init loki grafana
+pnpm db:deploy
+pnpm dev
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+Local endpoints:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- Web: http://localhost:3000
+- API: http://localhost:4000
+- API documentation: http://localhost:4000/docs
+- Sample admin: admin@example.com / change-me-admin-password
+- RustFS console: http://localhost:9001
+- Grafana: http://localhost:3001
 
-## Learn More
+## Validation
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm lint
+pnpm check-types
+pnpm test
+pnpm build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a migration after changing `packages/db/src/schema.ts`, then apply it:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+pnpm --filter @repo/db db:generate
+pnpm db:deploy
+```
 
-## Deploy on Vercel
+Seed or refresh the local sample admin user:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm db:seed
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Docker stack
+
+Copy the Docker environment template and bootstrap the complete stack:
+
+```bash
+cp .env.docker.example .env.docker
+pnpm docker:bootstrap
+```
+
+Useful commands:
+
+```bash
+pnpm docker:logs
+pnpm docker:migrate
+pnpm docker:down
+```
+
+`API_URL` is used for server-to-server calls. `NEXT_PUBLIC_API_URL` is embedded
+in the browser bundle and must be reachable by users. `WEB_ORIGIN` accepts a
+comma-separated list of exact frontend origins. Configure `RESEND_TOKEN` and
+`RESEND_FROM` to enable password-reset email delivery.
+
+Run `docker compose --env-file .env.docker down -v` only when you intentionally want to remove local
+PostgreSQL, Grafana, Loki, and RustFS data volumes.

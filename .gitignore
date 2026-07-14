@@ -1,5 +1,5 @@
 # dependencies
-/node_modules
+/**/node_modules
 /.pnp
 .pnp.js
 
@@ -9,10 +9,6 @@
 # next.js
 /.next/
 /out/
-
-# ide
-/.idea
-/.vscode
 
 # production
 /build
@@ -30,6 +26,7 @@ yarn-error.log*
 # local env files
 .env
 .env*.local
+.env.docker
 
 # vercel
 .vercel
@@ -40,3 +37,14 @@ next-env.d.ts
 
 # cache
 .eslintcache
+
+# monorepo
+.turbo
+
+# prisma
+/**/generated
+
+/**/dist
+
+# mcp
+# /.codebase-memory

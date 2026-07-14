@@ -1,46 +1,40 @@
-FROM node:18-alpine AS base
+# syntax=docker/dockerfile:1.7
 
-FROM base AS deps
-RUN apk add --no-cache libc6-compat python3 make g++
+FROM node:22-bookworm-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 WORKDIR /app
 
-COPY package.json package-lock.json* ./
-RUN npm install --frozen-lockfile
+FROM base AS pruner
+COPY . .
+RUN pnpm dlx turbo@2.10.5 prune --scope=api --scope=web --docker
 
 FROM base AS builder
+ARG API_URL=http://localhost:4000
+ARG NEXT_PUBLIC_API_URL=http://localhost:4000
+ENV API_URL=$API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+COPY --from=pruner /app/out/json/ ./
+COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+RUN pnpm install --frozen-lockfile
+COPY --from=pruner /app/out/full/ ./
+RUN pnpm turbo run build --filter=api --filter=web
+
+FROM node:22-bookworm-slim AS runner-base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY --from=builder /app /app
 
-ENV NEXT_TELEMETRY_DISABLED=1
+FROM runner-base AS api
+EXPOSE 4000
+CMD ["pnpm", "--filter", "api", "start"]
 
-RUN npm run build
-
-FROM base AS app
-
-RUN apk add --no-cache tini
-
-WORKDIR /app
-
-COPY --from=builder --chown=node /app/.next/standalone ./
-COPY --from=builder --chown=node /app/.next/static ./.next/static
-COPY --from=builder --chown=node /app/prisma ./prisma
-COPY --from=builder --chown=node /app/public ./public
-
-RUN npm install --global --save-exact "prisma@$(node --print 'require("./node_modules/@prisma/client/package.json").version')"
-
-COPY start.sh /usr/local/bin
-RUN chmod +x /usr/local/bin/start.sh
-
-ENV CHECKPOINT_DISABLE=1
-ENV DISABLE_PRISMA_TELEMETRY=true
-ENV HOSTNAME=0.0.0.0
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV NODE_ENV=production
-ENV PORT=3000
-
+FROM runner-base AS web
 EXPOSE 3000
+CMD ["pnpm", "--filter", "web", "start"]
 
-USER node
-
-ENTRYPOINT [ "start.sh" ]
+FROM runner-base AS migrate
+CMD ["sh", "-c", "pnpm --filter @repo/db db:deploy && pnpm --filter api seed:admin"]

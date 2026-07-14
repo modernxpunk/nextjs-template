@@ -1,25 +1,31 @@
 {
+	"$schema": "https://biomejs.dev/schemas/2.5.2/schema.json",
+	"javascript": {
+		"parser": {
+			"unsafeParameterDecoratorsEnabled": true
+		}
+	},
 	"files": {
-		"ignore": ["node_modules", ".next"]
-	},
-	"linter": {
-		"rules": {
-			"recommended": true,
-			"a11y": {
-				"useButtonType": "off",
-				"useValidAnchor": "off"
-			}
-		}
-	},
-	"overrides": [
-		{
-			"linter": {
-				"rules": {
-					"style": {
-						"noDefaultExport": "off"
-					}
-				}
-			}
-		}
-	]
+		"includes": [
+			"**",
+
+			"!**/.codebase-memory",
+			"!**/globals.css",
+
+			"!packages/ui/src/components",
+			"!packages/ui/src/lib",
+			"!packages/ui/src/hooks",
+
+			"!**/.next",
+			"!**/node_modules",
+			"!**/generated",
+			"!**/dist",
+			"!**/build",
+			"!**/out",
+			"!**/turbo",
+			"!**/.turbo",
+
+			"!**/openapi.json"
+		]
+	}
 }

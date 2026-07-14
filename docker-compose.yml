@@ -1,47 +1,165 @@
+name: nextjs-template
+
 services:
-  web:
-    build: .
+  loki:
+    image: grafana/loki:3.2.1
+    container_name: nextjs-template-loki
+    command: -config.file=/etc/loki/config.yml
     ports:
-      - "3000:3000"
+      - "3100:3100"
+    volumes:
+      - ./infra/loki/config.yml:/etc/loki/config.yml:ro
+      - loki-data:/loki
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.2.2
+    container_name: nextjs-template-grafana
+    ports:
+      - "3001:3000"
     environment:
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/postgres?schema=public
-    networks:
-      - prisma-network
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./infra/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+    depends_on:
+      - loki
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: nextjs-template-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: modernpunk
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: app
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U modernpunk -d app"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: migrate
+      args:
+        API_URL: ${API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    env_file:
+      - ./.env.docker
+    environment:
+      # Keep auth initialization identical to the API service even when the
+      # local Docker env file leaves the secret empty.
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-docker-dev-only-secret-change-me}
     depends_on:
       postgres:
         condition: service_healthy
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "3"
+    restart: "no"
 
-  postgres:
-    image: postgres:15
-    restart: always
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+      args:
+        API_URL: ${API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    env_file:
+      - ./.env.docker
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-docker-dev-only-secret-change-me}
     ports:
-      - "5433:5432"
-    networks:
-      - prisma-network
+      - "4000:4000"
+    depends_on:
+      loki:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      rustfs-init:
+        condition: service_completed_successfully
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      test:
+        [
+          "CMD-SHELL",
+          'node -e "fetch(''http://localhost:4000/health'').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"',
+        ]
       interval: 5s
-      timeout: 2s
-      retries: 20
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    command: postgres -c listen_addresses='*'
-    logging:
-      options:
-        max-size: "10m"
-        max-file: "3"
+      timeout: 3s
+      retries: 30
+    restart: unless-stopped
 
-networks:
-  prisma-network:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web
+      args:
+        API_URL: ${API_URL:-http://localhost:4000}
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
+    env_file:
+      - ./.env.docker
+    environment:
+      # Web server-side calls should use internal Docker DNS.
+      API_URL: http://api:4000
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: nextjs-template-rustfs
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      RUSTFS_ROOT_USER: ${RUSTFS_ROOT_USER:-admin}
+      RUSTFS_ROOT_PASSWORD: ${RUSTFS_ROOT_PASSWORD:-password123}
+    volumes:
+      - rustfs-data:/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl -s -o /dev/null -w '%{http_code}' http://localhost:9000 | grep -q '403\\|200'",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    restart: unless-stopped
+
+  rustfs-init:
+    image: minio/mc:latest
+    container_name: nextjs-template-rustfs-init
+    depends_on:
+      rustfs:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set storage http://rustfs:9000 $${RUSTFS_ROOT_USER} $${RUSTFS_ROOT_PASSWORD};
+      mc mb storage/uploads --ignore-existing;
+      mc anonymous set download storage/uploads;
+      echo 'Bucket uploads created with public read access';
+      "
+    environment:
+      RUSTFS_ROOT_USER: ${RUSTFS_ROOT_USER:-admin}
+      RUSTFS_ROOT_PASSWORD: ${RUSTFS_ROOT_PASSWORD:-password123}
+    restart: "no"
 
 volumes:
-  postgres_data:
+  postgres-data:
+  loki-data:
+  grafana-data:
+  rustfs-data:
