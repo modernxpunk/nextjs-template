@@ -5,10 +5,11 @@
 	"scripts": {
 		"dev": "node ./scripts/with-api-ready.mjs next dev -p 3000 --turbopack",
 		"dev:types": "kubb --watch --config ./kubb.config.ts",
-		"build": "kubb --config ./kubb.config.ts && next build",
+		"generate:api": "kubb --config ./kubb.config.ts",
+		"build": "pnpm generate:api && next build",
 		"start": "node ./scripts/with-api-ready.mjs next start",
 		"export": "next export",
-		"check-types": "tsc --noEmit"
+		"check-types": "next typegen && pnpm generate:api && tsc --noEmit"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.4.0",

@@ -4,16 +4,16 @@
 	"ui": "tui",
 	"envMode": "loose",
 	"tasks": {
-		"topo": {
-			"dependsOn": ["^topo"]
-		},
 		"check-types": {
-			"dependsOn": ["topo"]
+			"dependsOn": ["^build"]
+		},
+		"web#check-types": {
+			"dependsOn": ["api#build", "^build"]
 		},
 		"build": {
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
 			"dependsOn": ["^build"],
-			"env": ["DATABASE_URL"],
+			"env": ["API_URL", "DATABASE_URL", "NEXT_PUBLIC_API_URL"],
 			"outputs": ["dist/**", ".next/**", "!.next/cache/**", "openapi.json"]
 		},
 		"web#build": {
