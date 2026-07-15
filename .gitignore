@@ -46,5 +46,10 @@ next-env.d.ts
 
 /**/dist
 
-# mcp
-# /.codebase-memory
+# agents / mcp / skills
+/.vscode
+/.codebase-memory
+/.claude
+/.agents
+.mcp.json
+skills-lock.json

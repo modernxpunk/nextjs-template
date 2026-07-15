@@ -10,7 +10,13 @@ node_modules
 **/dist
 **/.turbo
 coverage
+**/coverage
 *.log
-.env
-.env*.local
+.env*
+**/.env*
+!.env.docker.example
+**/*.spec.ts
+**/*.test.*
+README*
+**/README*
 CHANGELOG.md
