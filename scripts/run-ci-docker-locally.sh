@@ -1,0 +1,1 @@
+act pull_request -W .github/workflows/ci.yml -j docker -P ubuntu-24.04=-self-hosted --action-offline-mode
